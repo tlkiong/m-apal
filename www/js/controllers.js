@@ -386,10 +386,11 @@ angular.module('mapal.controllers', [])
             console.log(userClassID)
 
             var userRef = ref.child("users").child($rootScope.userId);
-            var userRef = ref.child("users").child($rootScope.userId).child("class").child($scope.day.named);
+            var userRef = ref.child("users").child($rootScope.userId).child("class");
             console.log("userRef: "+userRef);
             try{
                 userRef.push({
+                    classDay: $scope.day.named,
                     classNamed: userClass.classNamed,
                     classVenue: userClass.classVenue,
                     classStartTime: userClass.startTime,
@@ -407,19 +408,16 @@ angular.module('mapal.controllers', [])
     }
 
     $scope.getClassTimetable = function(){
-        console.log("We are now in get Class Timetable");
-        ref.child("users").child($rootScope.userId).child("class").child("Sunday").once('value', function (snapshot) {
+        var ref = new Firebase($scope.firebaseUrl);
+        var classRef = ref.child("users").child($rootScope.userId).child("class");
+
+        classRef.orderByChild("classDay").on("child_added", function (snapshot) {
             console.log("We are now in sunday");
-            var val = snapshot.name();
-
-            var result = [];
-            val.getKey();
-            for(var i in val){
-                console.log("name: "+i);
-            }
-                //result.push([i,val[i]]);
-
-            console.log("Val: "+String(result));
+            console.log(snapshot.key() + " was " + snapshot.val().classDay);
+            //var result = [];
+            //val.getKey();
+            
+            
         });
     }
 })
