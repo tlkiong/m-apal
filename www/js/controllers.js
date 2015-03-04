@@ -184,7 +184,7 @@ angular.module('mapal.controllers', [])
     }
     console.log("We are at AddClassScheduleCtrl");
     console.log("email Address: "+String($rootScope.emailAddress));
-    
+
     //For dropdown list day items
     $scope.days = [
         {named:'Sunday'},
@@ -369,7 +369,7 @@ angular.module('mapal.controllers', [])
     var ref = new Firebase($scope.firebaseUrl);
 
     //Create new class
-    $scope.createNewClass = function (userClass) {
+    $scope.createNewClass = function (userClass,day) {
         console.log("Create new class function called");
 
         var startTime = String($scope.startHour.values)+":"+String($scope.startMinute.values)+":"+String($scope.startSecond.values);
@@ -382,7 +382,7 @@ angular.module('mapal.controllers', [])
                 template: 'Creating new class...'
             });
 
-            var userClassID = "class"+String($scope.day.named);
+            var userClassID = "class"+String(day.named);
             console.log(userClassID)
 
             var userRef = ref.child("users").child($rootScope.userId);
@@ -390,7 +390,7 @@ angular.module('mapal.controllers', [])
             console.log("userRef: "+userRef);
             try{
                 userRef.push({
-                    classDay: $scope.day.named,
+                    classDay: day.named,
                     classNamed: userClass.classNamed,
                     classVenue: userClass.classVenue,
                     classStartTime: userClass.startTime,
@@ -474,9 +474,9 @@ angular.module('mapal.controllers', [])
                 break;
             }
         });
-
-        
     }
+
+    $scope.getClassTimetable($rootScope.userId);
 })
 
 .controller('StudentViewGroupListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
