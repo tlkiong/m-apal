@@ -171,7 +171,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('AddClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup) {
+.controller('AddClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
