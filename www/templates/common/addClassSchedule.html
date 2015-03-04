@@ -11,5 +11,50 @@
 		  Get class timetable
 		</button>
 
+		<div class="item item-divider">
+	    	Sunday
+	    </div>
+
+	    <ion-list>
+		    <ion-item ng-repeat="item in sundayList">
+		    	<span>Class Name: {{ item.classNamed }}</span>
+				<br/> 
+		    	<span>Start time: {{ item.classStartTime }} - {{ item.classEndTime }}</span>
+				<br/>  
+				<span>Class Venue: {{ item.classVenue }}</span>
+		    </ion-item>
+	    </ion-list>
+	    
+
+	    <div class="item item-divider">
+	    	Monday
+	    </div>
+
+	    <div class="item item-divider">
+	    	Tuesday
+	    </div>
+
+	    <div class="item item-divider">
+	    	Wednesday
+	    </div>
+
+	    <div class="item item-divider">
+	    	Thursday
+	    </div>
+
+	    <div class="item item-divider">
+	    	Friday
+	    </div>
+
+	    <div class="item item-divider">
+	    	Saturday
+	    </div>
+
+		<div class="list">
+            <div ng-repeat="classInfo in classInformation" class="item">
+                {{todo.title}}
+            </div>
+        </div>
+
 	</ion-content>
 </ion-view>
