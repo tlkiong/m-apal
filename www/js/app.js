@@ -85,7 +85,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state('addClassSchedule', {
         url: "/common/addClassSchedule",
         templateUrl: "templates/common/addClassSchedule.html",
-        controller: 'AddClassScheduleCtrl',
+        controller: 'ClassScheduleCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -212,7 +212,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-my_class': {
                 templateUrl: 'templates/student/student-tab-my_class.html',
-                controller: 'AddClassScheduleCtrl'
+                controller: 'ClassScheduleCtrl'
             }
         }
     })

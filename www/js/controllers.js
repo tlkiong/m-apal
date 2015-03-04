@@ -171,7 +171,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('AddClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth) {
+.controller('ClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -197,185 +197,33 @@ angular.module('mapal.controllers', [])
     ];
     $scope.day = $scope.days[0]; // Sunday
 
-    //For dropdown list hour items
-    $scope.hours = [
-        {values:'00'},
-        {values:'01'},
-        {values:'02'},
-        {values:'03'},
-        {values:'04'},
-        {values:'05'},
-        {values:'06'},
-        {values:'07'},
-        {values:'08'},
-        {values:'09'},
-        {values:'10'},
-        {values:'11'},
-        {values:'12'},
-        {values:'13'},
-        {values:'14'},
-        {values:'15'},
-        {values:'16'},
-        {values:'17'},
-        {values:'18'},
-        {values:'19'},
-        {values:'20'},
-        {values:'21'},
-        {values:'22'},
-        {values:'23'}
-    ];
-    $scope.startHour = $scope.hours[0]; // 00
-    $scope.endHour = $scope.hours[0]; // 00
-
-    //For dropdown list minute items
-    $scope.minutes = [
-        {values:'00'},
-        {values:'01'},
-        {values:'02'},
-        {values:'03'},
-        {values:'04'},
-        {values:'05'},
-        {values:'06'},
-        {values:'07'},
-        {values:'08'},
-        {values:'09'},
-        {values:'10'},
-        {values:'11'},
-        {values:'12'},
-        {values:'13'},
-        {values:'14'},
-        {values:'15'},
-        {values:'16'},
-        {values:'17'},
-        {values:'18'},
-        {values:'19'},
-        {values:'20'},
-        {values:'21'},
-        {values:'22'},
-        {values:'23'},
-        {values:'24'},
-        {values:'25'},
-        {values:'26'},
-        {values:'27'},
-        {values:'28'},
-        {values:'29'},
-        {values:'30'},
-        {values:'31'},
-        {values:'32'},
-        {values:'33'},
-        {values:'34'},
-        {values:'35'},
-        {values:'36'},
-        {values:'37'},
-        {values:'38'},
-        {values:'39'},
-        {values:'40'},
-        {values:'41'},
-        {values:'42'},
-        {values:'43'},
-        {values:'44'},
-        {values:'45'},
-        {values:'46'},
-        {values:'47'},
-        {values:'48'},
-        {values:'49'},
-        {values:'50'},
-        {values:'51'},
-        {values:'52'},
-        {values:'53'},
-        {values:'54'},
-        {values:'55'},
-        {values:'56'},
-        {values:'57'},
-        {values:'58'},
-        {values:'59'}
-    ];
-    $scope.startMinute = $scope.minutes[0]; // 00
-    $scope.endMinute = $scope.minutes[0]; // 00
-
-    //For dropdown list seconds items
-    $scope.seconds = [
-        {values:'00'},
-        {values:'01'},
-        {values:'02'},
-        {values:'03'},
-        {values:'04'},
-        {values:'05'},
-        {values:'06'},
-        {values:'07'},
-        {values:'08'},
-        {values:'09'},
-        {values:'10'},
-        {values:'11'},
-        {values:'12'},
-        {values:'13'},
-        {values:'14'},
-        {values:'15'},
-        {values:'16'},
-        {values:'17'},
-        {values:'18'},
-        {values:'19'},
-        {values:'20'},
-        {values:'21'},
-        {values:'22'},
-        {values:'23'},
-        {values:'24'},
-        {values:'25'},
-        {values:'26'},
-        {values:'27'},
-        {values:'28'},
-        {values:'29'},
-        {values:'30'},
-        {values:'31'},
-        {values:'32'},
-        {values:'33'},
-        {values:'34'},
-        {values:'35'},
-        {values:'36'},
-        {values:'37'},
-        {values:'38'},
-        {values:'39'},
-        {values:'40'},
-        {values:'41'},
-        {values:'42'},
-        {values:'43'},
-        {values:'44'},
-        {values:'45'},
-        {values:'46'},
-        {values:'47'},
-        {values:'48'},
-        {values:'49'},
-        {values:'50'},
-        {values:'51'},
-        {values:'52'},
-        {values:'53'},
-        {values:'54'},
-        {values:'55'},
-        {values:'56'},
-        {values:'57'},
-        {values:'58'},
-        {values:'59'}
-    ];
-    $scope.startSecond = $scope.seconds[0]; // 00
-    $scope.endSecond = $scope.seconds[0]; // 00
-
-    //Open modal
-    $ionicModal.fromTemplateUrl('templates/common/newClass.html', {
+    //newClassModal
+    $ionicModal.fromTemplateUrl('templates/common/newClassModal.html', {
         scope: $scope
-    }).then(function (modal) {
-        $scope.modal = modal;
+    }).then(function (newClassModal) {
+        $scope.newClassModal = newClassModal;
     });
+
+    //editClassModal
+    $ionicModal.fromTemplateUrl('templates/common/editClassModal.html', {
+        scope: $scope
+    }).then(function (editClassModal) {
+        $scope.editClassModal = editClassModal;
+    });
+
+    //itemOptionModal
+    $ionicModal.fromTemplateUrl('templates/common/itemOptionModal.html', {
+        scope: $scope
+    }).then(function (itemOptionModal) {
+        $scope.itemOptionModal = itemOptionModal;
+    });
+    
 
     var ref = new Firebase($scope.firebaseUrl);
 
     //Create new class
     $scope.createNewClass = function (userClass,day) {
         console.log("Create new class function called");
-
-        var startTime = String($scope.startHour.values)+":"+String($scope.startMinute.values)+":"+String($scope.startSecond.values);
-        var endTime = String($scope.endHour.values)+":"+String($scope.endMinute.values)+":"+String($scope.endSecond.values);
-            console.log("StartTime: "+startTime);
-            console.log("EndTime: "+endTime);
 
         if (userClass && userClass.classNamed && userClass.classVenue) {
             $ionicLoading.show({
@@ -401,7 +249,7 @@ angular.module('mapal.controllers', [])
             };
             
             $ionicLoading.hide();
-            $scope.modal.hide();
+            $scope.newClassModal.hide();
             $scope.getClassTimetable($rootScope.userId);
             
         } else
@@ -409,7 +257,6 @@ angular.module('mapal.controllers', [])
     }
 
     $scope.getClassTimetable = function(userID){
-        var ref = new Firebase($scope.firebaseUrl);
         var classRef = ref.child("users").child(userID).child("class");
 
         //free time usage
@@ -438,8 +285,9 @@ angular.module('mapal.controllers', [])
 
         classRef.orderByChild("classDay").on("child_added", function (snapshot) {
             var value = snapshot.val();
-        var dayOfClass = value.classDay;
-        
+            var dayOfClass = value.classDay;
+            value.key = String(snapshot.key());
+
             //will have different list for different days.
             switch(dayOfClass){
                 case "Friday":{
@@ -484,6 +332,55 @@ angular.module('mapal.controllers', [])
 
     $scope.goTimeline = function(){
         $state.go('student-tab.timeline');
+    }
+
+    $scope.editClassSchedule = function(classItem){
+        $scope.itemOptionModal.show();
+        $scope.classItem = classItem;
+        console.log("classitem.classStartTime: "+$scope.classItem.classStartTime);
+        console.log("classitem.classEndTime: "+$scope.classItem.classEndTime);
+    }
+
+    $scope.edit = function(){
+        $scope.itemOptionModal.hide();
+        $scope.editClassModal.show();
+        switch($scope.classItem.classDay){
+            case "Sunday": $scope.day = $scope.days[0];
+            break;
+            case "Monday": $scope.day = $scope.days[1];
+            break;
+            case "Tuesday": $scope.day = $scope.days[2];
+            break;
+            case "Wednesday": $scope.day = $scope.days[3];
+            break;
+            case "Thursday": $scope.day = $scope.days[4];
+            break;
+            case "Friday": $scope.day = $scope.days[5];
+            break;
+            case "Saturday": $scope.day = $scope.days[6];
+            break;
+            default: console.log("Scope.day is null or not of the 7 days");
+            break;
+        }
+    }
+
+    $scope.updateClassItem = function(classItem,day){
+        ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).update({
+            classDay: day.named,
+            classNamed: classItem.classNamed,
+            classVenue: classItem.classVenue,
+            classStartTime: classItem.classStartTime,
+            classEndTime: classItem.classEndTime
+        });
+        $scope.getClassTimetable($rootScope.userId);
+        $scope.editClassModal.hide();
+    }
+
+    $scope.deleteFromFirebase = function() {
+        ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).remove();
+        console.log($scope.classItem.Key + " deleted");
+        $scope.getClassTimetable($rootScope.userId);
+        $scope.itemOptionModal.hide();
     }
 })
 

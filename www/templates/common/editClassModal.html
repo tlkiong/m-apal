@@ -1,0 +1,32 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Edit Class</h1>
+        <button class="button button-clear button-primary" ng-click="editClassModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Class Name</span>
+                <input ng-model="classItem.classNamed" type="text" value="classItem.classNamed">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Class Venue</span>
+                <input ng-model="classItem.classVenue" type="text" value="classItem.classVenue">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Day</span>
+                <select ng-model="day" ng-options="day.named for day in days"></select>
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Start Time (24 hour format)</span><br>
+                <input ng-model="classItem.classStartTime" type="text" value="classItem.classStartTime">
+            </label>
+            
+            <label class="item item-input">
+                <span class="input-label">End Time (24 hour format)</span><br>
+                <input ng-model="classItem.classEndTime" type="text" value="classItem.classEndTime">
+            </label>
+            <button class="button button-full button-positive" ng-click="updateClassItem(classItem,day)">Update Class</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

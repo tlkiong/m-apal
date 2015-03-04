@@ -1,0 +1,16 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Options</h1>
+        <button class="button button-clear button-primary" ng-click="itemOptionModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <ion-list>
+            <ion-item ng-click="edit()" ng-tap="edit()" align="center">
+                Edit
+            </ion-item>
+            <ion-item ng-click="deleteFromFirebase()" ng-tap="deleteFromFirebase()" align="center">
+                Delete
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-modal-view>
