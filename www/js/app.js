@@ -212,7 +212,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-my_class': {
                 templateUrl: 'templates/student/student-tab-my_class.html',
-                controller: ''
+                controller: 'AddClassScheduleCtrl'
             }
         }
     })

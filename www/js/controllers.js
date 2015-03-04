@@ -19,7 +19,7 @@ angular.module('mapal.controllers', [])
         $scope.modal = modal;
     });
 
-    $scope.createUser = function (user) {
+    $scope.createUser = function (user,Role) {
         console.log("Create User Function called");
 
         if (user && user.email && user.password && user.fullname && user.contactnumber && user.icnumber) {
@@ -38,7 +38,7 @@ angular.module('mapal.controllers', [])
                     fullName: user.fullname,
                     contactNumber: user.contactnumber,
                     icNumber: user.icnumber,
-                    role: $scope.Role.types
+                    role: Role
                 });
                 
                 $ionicLoading.hide();
@@ -477,6 +477,14 @@ angular.module('mapal.controllers', [])
     }
 
     $scope.getClassTimetable($rootScope.userId);
+
+    $scope.goViewGroupList = function(){
+        $state.go('student-viewGroupList');
+    }
+
+    $scope.goTimeline = function(){
+        $state.go('student-tab.timeline');
+    }
 })
 
 .controller('StudentViewGroupListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
