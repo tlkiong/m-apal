@@ -402,17 +402,16 @@ angular.module('mapal.controllers', [])
             
             $ionicLoading.hide();
             $scope.modal.hide();
+            $scope.getClassTimetable($rootScope.userId);
             
         } else
             alert("Please fill all details");
     }
 
-    $scope.getClassTimetable = function(){
+    $scope.getClassTimetable = function(userID){
         var ref = new Firebase($scope.firebaseUrl);
-        var classRef = ref.child("users").child($rootScope.userId).child("class");
+        var classRef = ref.child("users").child(userID).child("class");
 
-        
-              
         //free time usage
         var dayArray=new Array(7)
         for (var i=0; i <7 ;i++){
