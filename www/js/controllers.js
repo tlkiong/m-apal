@@ -385,7 +385,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('StudentViewGroupListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller('GroupCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
     console.log("We are at StudentViewGroupListCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog

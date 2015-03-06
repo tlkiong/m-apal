@@ -102,7 +102,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state('student-viewGroupList', {
         url: "/student/student-viewGroupList",
         templateUrl: "templates/student/student-ViewGroupList.html",
-        controller: 'StudentViewGroupListCtrl',
+        controller: 'GroupCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -119,7 +119,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state('viewGroupMemberList', {
         url: "/common/viewGroupMemberList",
         templateUrl: "templates/common/viewGroupMemberList.html",
-        controller: 'ViewGroupMemberListCtrl',
+        controller: 'GroupCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -136,7 +136,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state('leader-CreateGroup', {
         url: "/leader/leader-CreateGroup",
         templateUrl: "templates/leader/leader-CreateGroup.html",
-        controller: 'CreateGroupCtrl',
+        controller: 'GroupCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
