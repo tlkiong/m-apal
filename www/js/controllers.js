@@ -22,7 +22,7 @@ angular.module('mapal.controllers', [])
     $scope.createUser = function (user,Role) {
         console.log("Create User Function called");
 
-        if (user && user.email && user.password && user.fullname && user.contactnumber && user.icnumber) {
+        if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
             $ionicLoading.show({
                 template: 'Signing Up...'
             });
@@ -38,7 +38,7 @@ angular.module('mapal.controllers', [])
                     fullName: user.fullname,
                     contactNumber: user.contactnumber,
                     icNumber: user.icnumber,
-                    role: Role
+                    role: Role.types
                 });
                 
                 $ionicLoading.hide();
@@ -181,206 +181,207 @@ angular.module('mapal.controllers', [])
         alertPopup.then(function(res) {
             $state.go('login');
         });
-    }
-    console.log("We are at AddClassScheduleCtrl");
-    console.log("email Address: "+String($rootScope.emailAddress));
+    } else {
+        console.log("We are at AddClassScheduleCtrl");
+        console.log("email Address: "+String($rootScope.emailAddress));
 
-    //For dropdown list day items
-    $scope.days = [
-        {named:'Sunday'},
-        {named:'Monday'},
-        {named:'Tuesday'},
-        {named:'Wednesday'},
-        {named:'Thursday'},
-        {named:'Friday'},
-        {named:'Saturday'}
-    ];
-    $scope.day = $scope.days[0]; // Sunday
+        //For dropdown list day items
+        $scope.days = [
+            {named:'Sunday'},
+            {named:'Monday'},
+            {named:'Tuesday'},
+            {named:'Wednesday'},
+            {named:'Thursday'},
+            {named:'Friday'},
+            {named:'Saturday'}
+        ];
+        $scope.day = $scope.days[0]; // Sunday
 
-    //newClassModal
-    $ionicModal.fromTemplateUrl('templates/common/newClassModal.html', {
-        scope: $scope
-    }).then(function (newClassModal) {
-        $scope.newClassModal = newClassModal;
-    });
+        //newClassModal
+        $ionicModal.fromTemplateUrl('templates/common/newClassModal.html', {
+            scope: $scope
+        }).then(function (newClassModal) {
+            $scope.newClassModal = newClassModal;
+        });
 
-    //editClassModal
-    $ionicModal.fromTemplateUrl('templates/common/editClassModal.html', {
-        scope: $scope
-    }).then(function (editClassModal) {
-        $scope.editClassModal = editClassModal;
-    });
+        //editClassModal
+        $ionicModal.fromTemplateUrl('templates/common/editClassModal.html', {
+            scope: $scope
+        }).then(function (editClassModal) {
+            $scope.editClassModal = editClassModal;
+        });
 
-    //itemOptionModal
-    $ionicModal.fromTemplateUrl('templates/common/itemOptionModal.html', {
-        scope: $scope
-    }).then(function (itemOptionModal) {
-        $scope.itemOptionModal = itemOptionModal;
-    });
-    
+        //itemOptionModal
+        $ionicModal.fromTemplateUrl('templates/common/itemOptionModal.html', {
+            scope: $scope
+        }).then(function (itemOptionModal) {
+            $scope.itemOptionModal = itemOptionModal;
+        });
+        
 
-    var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($scope.firebaseUrl);
 
-    //Create new class
-    $scope.createNewClass = function (userClass,day) {
-        console.log("Create new class function called");
+        //Create new class
+        $scope.createNewClass = function (userClass,day) {
+            console.log("Create new class function called");
 
-        if (userClass && userClass.classNamed && userClass.classVenue) {
-            $ionicLoading.show({
-                template: 'Creating new class...'
+            if (userClass && userClass.classNamed && userClass.classVenue) {
+                $ionicLoading.show({
+                    template: 'Creating new class...'
+                });
+
+                var userClassID = "class"+String(day.named);
+                console.log(userClassID)
+
+                var userRef = ref.child("users").child($rootScope.userId);
+                var userRef = ref.child("users").child($rootScope.userId).child("class");
+                console.log("userRef: "+userRef);
+                try{
+                    userRef.push({
+                        classDay: day.named,
+                        classNamed: userClass.classNamed,
+                        classVenue: userClass.classVenue,
+                        classStartTime: userClass.startTime,
+                        classEndTime: userClass.endTime
+                    })
+                }catch(error) {
+                    console.log("HAHAHAHA Error!");
+                };
+                
+                $ionicLoading.hide();
+                $scope.newClassModal.hide();
+                $scope.getClassTimetable($rootScope.userId);
+                
+            } else
+                alert("Please fill all details");
+        }
+
+        $scope.getClassTimetable = function(userID){
+            var classRef = ref.child("users").child(userID).child("class");
+
+            //free time usage
+            var dayArray=new Array(7)
+            for (var i=0; i <7 ;i++){
+                dayArray[i]=new Array(11);
+            }
+            var hourCounter = 8;
+            for (var j = 0; j<7 ;j++){
+                for (var k = 0; k<11; k++){
+                    dayArray[j][k] = hourCounter;
+                     hourCounter++;
+                }
+                hourCounter = 8;
+            }
+            //dayArray[day][hour]
+            //day: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
+
+            $scope.sundayList = [];
+            $scope.mondayList = [];
+            $scope.tuesdayList = [];
+            $scope.wednesdayList = [];
+            $scope.thursdayList = [];
+            $scope.fridayList = [];
+            $scope.saturdayList = [];
+
+            classRef.orderByChild("classDay").on("child_added", function (snapshot) {
+                var value = snapshot.val();
+                var dayOfClass = value.classDay;
+                value.key = String(snapshot.key());
+
+                //will have different list for different days.
+                switch(dayOfClass){
+                    case "Friday":{
+                        $scope.fridayList.push(value);
+                    }
+                    break;
+                    case "Monday":{
+                        $scope.mondayList.push(value);
+                    }
+                    break;
+                    case "Saturday":{
+                        $scope.saturdayList.push(value);
+                    }
+                    break;
+                    case "Sunday":{
+                        $scope.sundayList.push(value);
+                    }
+                    break;
+                    case "Tuesday":{
+                        $scope.tuesdayList.push(value);
+                    }
+                    break;
+                    case "Thursday":{
+                        $scope.thursdayList.push(value);
+                    }
+                    break;
+                    case "Wednesday":{
+                        $scope.wednesdayList.push(value);
+                    }
+                    break;
+                    default: console.log("ERROR!! dayOfClass: "+dayOfClass);
+                    break;
+                }
             });
+        }
 
-            var userClassID = "class"+String(day.named);
-            console.log(userClassID)
+        $scope.getClassTimetable($rootScope.userId);
 
-            var userRef = ref.child("users").child($rootScope.userId);
-            var userRef = ref.child("users").child($rootScope.userId).child("class");
-            console.log("userRef: "+userRef);
-            try{
-                userRef.push({
-                    classDay: day.named,
-                    classNamed: userClass.classNamed,
-                    classVenue: userClass.classVenue,
-                    classStartTime: userClass.startTime,
-                    classEndTime: userClass.endTime
-                })
-            }catch(error) {
-                console.log("HAHAHAHA Error!");
-            };
-            
-            $ionicLoading.hide();
-            $scope.newClassModal.hide();
+        $scope.goViewGroupList = function(){
+            $state.go('student-viewGroupList');
+        }
+
+        $scope.goTimeline = function(){
+            $state.go('student-tab.timeline');
+        }
+
+        $scope.editClassSchedule = function(classItem){
+            $scope.itemOptionModal.show();
+            $scope.classItem = classItem;
+            console.log("classitem.classStartTime: "+$scope.classItem.classStartTime);
+            console.log("classitem.classEndTime: "+$scope.classItem.classEndTime);
+        }
+
+        $scope.edit = function(){
+            $scope.itemOptionModal.hide();
+            $scope.editClassModal.show();
+            switch($scope.classItem.classDay){
+                case "Sunday": $scope.day = $scope.days[0];
+                break;
+                case "Monday": $scope.day = $scope.days[1];
+                break;
+                case "Tuesday": $scope.day = $scope.days[2];
+                break;
+                case "Wednesday": $scope.day = $scope.days[3];
+                break;
+                case "Thursday": $scope.day = $scope.days[4];
+                break;
+                case "Friday": $scope.day = $scope.days[5];
+                break;
+                case "Saturday": $scope.day = $scope.days[6];
+                break;
+                default: console.log("Scope.day is null or not of the 7 days");
+                break;
+            }
+        }
+
+        $scope.updateClassItem = function(classItem,day){
+            ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).update({
+                classDay: day.named,
+                classNamed: classItem.classNamed,
+                classVenue: classItem.classVenue,
+                classStartTime: classItem.classStartTime,
+                classEndTime: classItem.classEndTime
+            });
             $scope.getClassTimetable($rootScope.userId);
-            
-        } else
-            alert("Please fill all details");
-    }
-
-    $scope.getClassTimetable = function(userID){
-        var classRef = ref.child("users").child(userID).child("class");
-
-        //free time usage
-        var dayArray=new Array(7)
-        for (var i=0; i <7 ;i++){
-            dayArray[i]=new Array(11);
+            $scope.editClassModal.hide();
         }
-        var hourCounter = 8;
-        for (var j = 0; j<7 ;j++){
-            for (var k = 0; k<11; k++){
-                dayArray[j][k] = hourCounter;
-                 hourCounter++;
-            }
-            hourCounter = 8;
+
+        $scope.deleteFromFirebase = function() {
+            ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).remove();
+            console.log($scope.classItem.Key + " deleted");
+            $scope.getClassTimetable($rootScope.userId);
+            $scope.itemOptionModal.hide();
         }
-        //dayArray[day][hour]
-        //day: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
-
-        $scope.sundayList = [];
-        $scope.mondayList = [];
-        $scope.tuesdayList = [];
-        $scope.wednesdayList = [];
-        $scope.thursdayList = [];
-        $scope.fridayList = [];
-        $scope.saturdayList = [];
-
-        classRef.orderByChild("classDay").on("child_added", function (snapshot) {
-            var value = snapshot.val();
-            var dayOfClass = value.classDay;
-            value.key = String(snapshot.key());
-
-            //will have different list for different days.
-            switch(dayOfClass){
-                case "Friday":{
-                    $scope.fridayList.push(value);
-                }
-                break;
-                case "Monday":{
-                    $scope.mondayList.push(value);
-                }
-                break;
-                case "Saturday":{
-                    $scope.saturdayList.push(value);
-                }
-                break;
-                case "Sunday":{
-                    $scope.sundayList.push(value);
-                }
-                break;
-                case "Tuesday":{
-                    $scope.tuesdayList.push(value);
-                }
-                break;
-                case "Thursday":{
-                    $scope.thursdayList.push(value);
-                }
-                break;
-                case "Wednesday":{
-                    $scope.wednesdayList.push(value);
-                }
-                break;
-                default: console.log("ERROR!! dayOfClass: "+dayOfClass);
-                break;
-            }
-        });
-    }
-
-    $scope.getClassTimetable($rootScope.userId);
-
-    $scope.goViewGroupList = function(){
-        $state.go('student-viewGroupList');
-    }
-
-    $scope.goTimeline = function(){
-        $state.go('student-tab.timeline');
-    }
-
-    $scope.editClassSchedule = function(classItem){
-        $scope.itemOptionModal.show();
-        $scope.classItem = classItem;
-        console.log("classitem.classStartTime: "+$scope.classItem.classStartTime);
-        console.log("classitem.classEndTime: "+$scope.classItem.classEndTime);
-    }
-
-    $scope.edit = function(){
-        $scope.itemOptionModal.hide();
-        $scope.editClassModal.show();
-        switch($scope.classItem.classDay){
-            case "Sunday": $scope.day = $scope.days[0];
-            break;
-            case "Monday": $scope.day = $scope.days[1];
-            break;
-            case "Tuesday": $scope.day = $scope.days[2];
-            break;
-            case "Wednesday": $scope.day = $scope.days[3];
-            break;
-            case "Thursday": $scope.day = $scope.days[4];
-            break;
-            case "Friday": $scope.day = $scope.days[5];
-            break;
-            case "Saturday": $scope.day = $scope.days[6];
-            break;
-            default: console.log("Scope.day is null or not of the 7 days");
-            break;
-        }
-    }
-
-    $scope.updateClassItem = function(classItem,day){
-        ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).update({
-            classDay: day.named,
-            classNamed: classItem.classNamed,
-            classVenue: classItem.classVenue,
-            classStartTime: classItem.classStartTime,
-            classEndTime: classItem.classEndTime
-        });
-        $scope.getClassTimetable($rootScope.userId);
-        $scope.editClassModal.hide();
-    }
-
-    $scope.deleteFromFirebase = function() {
-        ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).remove();
-        console.log($scope.classItem.Key + " deleted");
-        $scope.getClassTimetable($rootScope.userId);
-        $scope.itemOptionModal.hide();
     }
 })
 
