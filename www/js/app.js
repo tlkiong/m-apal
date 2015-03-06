@@ -172,7 +172,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-timeline': {
                 templateUrl: 'templates/student/student-tab-timeline.html',
-                controller: 'StudentTimelineController'
+                controller: 'TimelineController'
             }
         }
     })
@@ -182,7 +182,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-task': {
                 templateUrl: 'templates/student/student-tab-task.html',
-                controller: ''
+                controller: 'TaskCtrl'
             }
         }
     })
@@ -192,7 +192,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-members': {
                 templateUrl: 'templates/student/student-tab-members.html',
-                controller: ''
+                controller: 'GroupCtrl'
             }
         }
     })
@@ -202,7 +202,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-discussion': {
                 templateUrl: 'templates/student/student-tab-discussion.html',
-                controller: ''
+                controller: 'DiscussionCtrl'
             }
         }
     })
@@ -240,7 +240,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'leader-tab-timeline': {
                 templateUrl: 'templates/leader/leader-tab-timeline.html',
-                controller: ''
+                controller: 'TimelineController'
             }
         }
     })
@@ -250,7 +250,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'leader-tab-task': {
                 templateUrl: 'templates/leader/leader-tab-task.html',
-                controller: ''
+                controller: 'TaskCtrl'
             }
         }
     })
@@ -260,7 +260,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'leader-tab-members': {
                 templateUrl: 'templates/leader/leader-tab-members.html',
-                controller: ''
+                controller: 'GroupCtrl'
             }
         }
     })
@@ -270,7 +270,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'leader-tab-discussion': {
                 templateUrl: 'templates/leader/leader-tab-discussion.html',
-                controller: ''
+                controller: 'DiscussionCtrl'
             }
         }
     })
@@ -280,7 +280,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'leader-tab-my_class': {
                 templateUrl: 'templates/leader/leader-tab-my_class.html',
-                controller: ''
+                controller: 'ClassScheduleCtrl'
             }
         }
     })

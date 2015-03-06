@@ -386,7 +386,7 @@ angular.module('mapal.controllers', [])
 })
 
 .controller('GroupCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at StudentViewGroupListCtrl");
+    console.log("We are at GroupCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -396,11 +396,13 @@ angular.module('mapal.controllers', [])
         alertPopup.then(function(res) {
             $state.go('login');
         });
+    } else {
+
     }
 })
 
-.controller('ViewGroupMemberListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at ViewGroupMemberListCtrl");
+.controller('TimelineController', function ($scope, $rootScope, $state, $ionicPopup) {
+    console.log("We are at TimelineController");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -410,11 +412,13 @@ angular.module('mapal.controllers', [])
         alertPopup.then(function(res) {
             $state.go('login');
         });
+    } else {
+
     }
 })
 
-.controller('CreateGroupCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at CreateGroupCtrl");
+.controller('DiscussionCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+    console.log("We are at DiscussionCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -424,11 +428,13 @@ angular.module('mapal.controllers', [])
         alertPopup.then(function(res) {
             $state.go('login');
         });
+    } else {
+
     }
 })
 
-.controller('StudentTimelineController', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at StudentTimelineController");
+.controller('TaskCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+    console.log("We are at TaskCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -438,5 +444,7 @@ angular.module('mapal.controllers', [])
         alertPopup.then(function(res) {
             $state.go('login');
         });
+    } else {
+        
     }
 })
