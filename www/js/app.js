@@ -255,11 +255,11 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
-    .state('leader-tab.members', {
-        url: '/leader/leader-tab-members',
+    .state('leader-tab.groupMembers', {
+        url: '/leader/leader-tab-groupMembers',
         views: {
-            'leader-tab-members': {
-                templateUrl: 'templates/leader/leader-tab-members.html',
+            'leader-tab-groupMembers': {
+                templateUrl: 'templates/leader/leader-tab-groupMembers.html',
                 controller: 'GroupCtrl'
             }
         }

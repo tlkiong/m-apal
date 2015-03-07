@@ -386,7 +386,6 @@ angular.module('mapal.controllers', [])
 })
 
 .controller('GroupCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at GroupCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -397,12 +396,17 @@ angular.module('mapal.controllers', [])
             $state.go('login');
         });
     } else {
+        console.log("We are at GroupCtrl");
 
+        var ref = new Firebase($scope.firebaseUrl);
+
+        $scope.addNewGroup = function () {
+
+        }
     }
 })
 
 .controller('TimelineController', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at TimelineController");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -413,12 +417,13 @@ angular.module('mapal.controllers', [])
             $state.go('login');
         });
     } else {
+        console.log("We are at TimelineController");
 
+        var ref = new Firebase($scope.firebaseUrl);
     }
 })
 
 .controller('DiscussionCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at DiscussionCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -429,12 +434,13 @@ angular.module('mapal.controllers', [])
             $state.go('login');
         });
     } else {
+        console.log("We are at DiscussionCtrl");
 
+        var ref = new Firebase($scope.firebaseUrl);
     }
 })
 
 .controller('TaskCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
-    console.log("We are at TaskCtrl");
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -445,6 +451,8 @@ angular.module('mapal.controllers', [])
             $state.go('login');
         });
     } else {
-        
+        console.log("We are at TaskCtrl");
+
+        var ref = new Firebase($scope.firebaseUrl);
     }
 })
