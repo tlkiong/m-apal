@@ -19,7 +19,7 @@
 	    	Sunday
 	    </div>
 	    <ion-list>
-		    <ion-item ng-repeat="item in sundayList" ng-click="itemOptionModal.show()" ng-tap="itemOptionModal.show()">
+		    <ion-item ng-repeat="item in sundayList" ng-click="editClassSchedule(item)" ng-tap="editClassSchedule(item)">
 		    	<span>Class Name: {{ item.classNamed }}</span>
 				<br/> 
 		    	<span>Start time: {{ item.classStartTime }} - {{ item.classEndTime }}</span>

@@ -154,7 +154,7 @@ angular.module('mapal.controllers', [])
                     } else if ($rootScope.role == 'lecturer'){
                         $ionicLoading.hide();
                         console.log("role is lecturer");
-
+                        $state.go('lecturer-tab.report');
                     } else {
                         $ionicLoading.hide();
                         console.log("Role is not student, leader or lecturer: "+String($rootScope.role));
@@ -211,11 +211,11 @@ angular.module('mapal.controllers', [])
             $scope.editClassModal = editClassModal;
         });
 
-        //itemOptionModal
-        $ionicModal.fromTemplateUrl('templates/common/itemOptionModal.html', {
+        //classItemOptionModal
+        $ionicModal.fromTemplateUrl('templates/common/classItemOptionModal.html', {
             scope: $scope
-        }).then(function (itemOptionModal) {
-            $scope.itemOptionModal = itemOptionModal;
+        }).then(function (classItemOptionModal) {
+            $scope.classItemOptionModal = classItemOptionModal;
         });
         
 
@@ -233,7 +233,6 @@ angular.module('mapal.controllers', [])
                 var userClassID = "class"+String(day.named);
                 console.log(userClassID)
 
-                var userRef = ref.child("users").child($rootScope.userId);
                 var userRef = ref.child("users").child($rootScope.userId).child("class");
                 console.log("userRef: "+userRef);
                 try{
@@ -324,8 +323,6 @@ angular.module('mapal.controllers', [])
             });
         }
 
-        $scope.getClassTimetable($rootScope.userId);
-
         $scope.goViewGroupList = function(){
             $state.go('student-viewGroupList');
         }
@@ -335,14 +332,14 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.editClassSchedule = function(classItem){
-            $scope.itemOptionModal.show();
+            $scope.classItemOptionModal.show();
             $scope.classItem = classItem;
             console.log("classitem.classStartTime: "+$scope.classItem.classStartTime);
             console.log("classitem.classEndTime: "+$scope.classItem.classEndTime);
         }
 
-        $scope.edit = function(){
-            $scope.itemOptionModal.hide();
+        $scope.editClass = function(){
+            $scope.classItemOptionModal.hide();
             $scope.editClassModal.show();
             switch($scope.classItem.classDay){
                 case "Sunday": $scope.day = $scope.days[0];
@@ -376,12 +373,14 @@ angular.module('mapal.controllers', [])
             $scope.editClassModal.hide();
         }
 
-        $scope.deleteFromFirebase = function() {
+        $scope.deleteClassFromFirebase = function() {
             ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).remove();
             console.log($scope.classItem.Key + " deleted");
             $scope.getClassTimetable($rootScope.userId);
-            $scope.itemOptionModal.hide();
+            $scope.classItemOptionModal.hide();
         }
+
+        $scope.getClassTimetable($rootScope.userId);
     }
 })
 
@@ -397,10 +396,20 @@ angular.module('mapal.controllers', [])
         });
     } else {
         console.log("We are at GroupCtrl");
-
         var ref = new Firebase($scope.firebaseUrl);
+        ref.child("tasks").orderByChild("taskName").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+        });
+        //For dropdown list items
+        $scope.tasks = [
+            {types:'student'},
+            {types:'leader'},
+            {types:'lecturer'}
+        ];
+        $scope.Role = $scope.roles[0]; // student
+        
 
-        $scope.addNewGroup = function () {
+        $scope.createGroup = function () {
 
         }
     }
@@ -440,7 +449,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('TaskCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller('TaskCtrl', function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -454,5 +463,124 @@ angular.module('mapal.controllers', [])
         console.log("We are at TaskCtrl");
 
         var ref = new Firebase($scope.firebaseUrl);
+
+        //itemOptionModal
+        $ionicModal.fromTemplateUrl('templates/common/taskItemOptionModal.html', {
+            scope: $scope
+        }).then(function (taskItemOptionModal) {
+            $scope.taskItemOptionModal = taskItemOptionModal;
+        });
+
+        //editTaskModal
+        $ionicModal.fromTemplateUrl('templates/common/editTaskModal.html', {
+            scope: $scope
+        }).then(function (editTaskModal) {
+            $scope.editTaskModal = editTaskModal;
+        });
+
+        $scope.createTask = function (task) {
+            $scope.getGuidelines(taskItem);
+            
+            console.log("we are in createTask!");
+            ref.child("tasks").push({
+                    taskName: task.taskName,
+                    taskDescription: task.taskDescription
+                    //taskGuideline: guidelines
+                });
+            $scope.getTaskCreated();
+        }
+
+        $scope.getTaskCreated = function(){
+            $scope.taskList = [];
+
+            var taskRef = ref.child("tasks");
+            taskRef.orderByChild("taskName").on("child_added", function (snapshot) {
+                var value = snapshot.val();
+                value.key = String(snapshot.key());
+                $scope.taskList.push(value);
+            });
+        }
+
+        $scope.editTaskCreated = function(taskItem){
+            $scope.taskItemOptionModal.show();
+            $scope.taskItem = taskItem;
+        }
+
+        $scope.editTask = function(){
+            $scope.taskItemOptionModal.hide();
+            $scope.editTaskModal.show();
+            
+        }
+
+        $scope.updateTaskItem = function(taskItem){
+            //$scope.getGuidelines(taskItem);
+            ref.child("tasks").child($scope.taskItem.key).update({
+                taskName: taskItem.taskName,
+                taskDescription: taskItem.taskDescription
+                //TODO:update guidelines too
+            });
+            $scope.getTaskCreated();
+            $scope.editTaskModal.hide();
+        }
+
+        $scope.deleteTaskFromFirebase = function() {
+            ref.child("tasks").child($scope.taskItem.key).remove();
+            console.log($scope.taskItem.Key + " deleted");
+            $scope.getTaskCreated();
+            $scope.taskItemOptionModal.hide();
+        }
+
+        $scope.getGuidelines = function (task){
+            //TODO: for guidelines
+            // ref.child("guidelines").orderByChild("dataStructure").on("child_added", function (snapshot){
+            //     var value = snapshot.val();
+            //     if(value.dataStructure == task.taskName){
+            //         var array = task.taskDescription.split(' ');
+
+            //         for(var i = 0; i < array.length; i++){
+            //             console.log("array " + i + " = " + array[i]);
+            //         }
+            //     } else {
+            //         Console.log("takda takda");
+            //     }
+            // })
+        }
+
+        $scope.getTaskCreated();
+
+    }
+})
+
+.controller('StudentsCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+    if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+            title: 'Error',
+            template: 'You are not logged in, please log in first'
+        });
+        alertPopup.then(function(res) {
+            $state.go('login');
+        });
+    } else {
+        console.log("We are at StudentsCtrl");
+
+        
+    }
+})
+
+.controller('ReportCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+    if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+            title: 'Error',
+            template: 'You are not logged in, please log in first'
+        });
+        alertPopup.then(function(res) {
+            $state.go('login');
+        });
+    } else {
+        console.log("We are at ReportCtrl");
+
+        
     }
 })

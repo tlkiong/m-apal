@@ -1,0 +1,42 @@
+<ion-view view-title="CONFIRM PAL GROUP" hide-back-button="true">
+	<ion-nav-buttons side="right">
+      <img src="img/role_leader_icon.png" class="nav_bar_icon">
+	</ion-nav-buttons>
+
+	<ion-content class="padding">
+        <ion-list>
+            <ion-item>
+                <b>Group Name</b>
+                <br>
+                {{group.groupName}}
+            </ion-item>
+            <ion-item>
+                <b>Task Name</b>
+                <br>
+                {{group.taskName}}
+            </ion-item>
+            <ion-item>
+                <b>Start Date</b>
+                <br>
+                {{group.startDate}}
+            </ion-item>
+            <ion-item>
+                <b>End Date</b>
+                <br>
+                {{group.endDate}}
+            </ion-item>
+            <ion-item>
+                <b>Task Description</b>
+                <br>
+                {{group.taskDescription}}
+            </ion-item>
+            <ion-item>
+                <b>Task Guideline</b>
+                <br>
+                {{group.taskGuideline}}
+            </ion-item>
+        </ion-list>
+        <button class="button button-full button-dark" ng-click="editCreateGroup">Edit</button>
+        <button class="button button-full button-positive" ng-click="confirmCreateGroup">Confirm</button>
+    </ion-content>
+</ion-view>

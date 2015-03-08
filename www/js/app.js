@@ -187,11 +187,11 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
-    .state('student-tab.members', {
-        url: '/student/student-tab-members',
+    .state('student-tab.groupMembers', {
+        url: '/student/student-tab-groupMembers',
         views: {
-            'student-tab-members': {
-                templateUrl: 'templates/student/student-tab-members.html',
+            'student-tab-groupMembers': {
+                templateUrl: 'templates/student/student-tab-groupMembers.html',
                 controller: 'GroupCtrl'
             }
         }
@@ -281,6 +281,54 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
             'leader-tab-my_class': {
                 templateUrl: 'templates/leader/leader-tab-my_class.html',
                 controller: 'ClassScheduleCtrl'
+            }
+        }
+    })
+
+    // setup an abstract state for LEADER tabs directive
+    .state('lecturer-tab', {
+        url: "/lecturer/lecturer-tab",
+        abstract: true,
+        templateUrl: "templates/lecturer/lecturer-tab.html",
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+            }]
+        }
+    })
+
+    // Each tab has its own nav history stack:
+    .state('lecturer-tab.report', {
+        url: '/lecturer/lecturer-tab-report',
+        views: {
+            'lecturer-tab-report': {
+                templateUrl: 'templates/lecturer/lecturer-tab-report.html',
+                controller: 'ReportCtrl'
+            }
+        }
+    })
+
+    .state('lecturer-tab.students', {
+        url: '/lecturer/lecturer-tab-students',
+        views: {
+            'lecturer-tab-students': {
+                templateUrl: 'templates/lecturer/lecturer-tab-students.html',
+                controller: 'StudentsCtrl'
+            }
+        }
+    })
+
+    .state('lecturer-tab.tasks', {
+        url: '/lecturer/lecturer-tab-tasks',
+        views: {
+            'lecturer-tab-tasks': {
+                templateUrl: 'templates/lecturer/lecturer-tab-tasks.html',
+                controller: 'TaskCtrl'
             }
         }
     })

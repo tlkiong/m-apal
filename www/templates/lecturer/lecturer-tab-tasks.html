@@ -1,0 +1,32 @@
+<ion-view view-title="TASKS" hide-back-button="true">
+	<ion-nav-buttons side="right">
+      <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
+	</ion-nav-buttons>
+	<ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Task Name</span>
+                <input ng-model="task.taskName" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Task Description</span>
+                <input ng-model="task.taskDescription" type="text"></select>
+            </label>
+            <button class="button button-full button-positive" ng-click="createTask(task)">Create Task</button>
+        </div>
+
+        <div class="item item-divider">
+	    	ALL TASKS
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in taskList" ng-click="editTaskCreated(item)" ng-tap="editTaskCreated(item)">
+		    	<span>Task Name: {{ item.taskName }}</span>
+				<br/> 
+		    	<span>Task Description: {{ item.taskDescription }}</span>
+				<br/>  
+				<span>Task Guidelines: {{ item.taskGuidelines }}</span>
+
+		    </ion-item>
+	    </ion-list>
+    </ion-content>
+</ion-view>
