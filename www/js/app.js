@@ -81,10 +81,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
-    // State to represent AddClassSchedule View
-    .state('addClassSchedule', {
-        url: "/common/addClassSchedule",
-        templateUrl: "templates/common/addClassSchedule.html",
+    // State to represent studentAddClassSchedule View
+    .state('studentAddClassSchedule', {
+        url: "/common/studentAddClassSchedule",
+        templateUrl: "templates/common/studentAddClassSchedule.html",
         controller: 'ClassScheduleCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
@@ -102,7 +102,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state('student-viewGroupList', {
         url: "/student/student-viewGroupList",
         templateUrl: "templates/student/student-ViewGroupList.html",
-        controller: 'GroupCtrl',
+        controller: 'ViewGroupListCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -115,11 +115,11 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
-    // State to represent ViewGroupMemberList View
-    .state('viewGroupMemberList', {
-        url: "/common/viewGroupMemberList",
-        templateUrl: "templates/common/viewGroupMemberList.html",
-        controller: 'GroupCtrl',
+    // State to represent leader-viewGroupMemberList View
+    .state('leader-viewGroupMemberList', {
+        url: "/leader/leader-viewGroupMemberList",
+        templateUrl: "templates/leader/leader-viewGroupMemberList.html",
+        controller: 'ViewGroupMemberListCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -131,11 +131,63 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
             }]
         }
     })
+
+    // State to represent student-viewGroupMemberList View
+    .state('student-viewGroupMemberList', {
+        url: "/student/student-viewGroupMemberList",
+        templateUrl: "templates/student/student-viewGroupMemberList.html",
+        controller: 'ViewGroupMemberListCtrl',
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+            }]
+        }
+    })
+
 
     // State to represent CreateGroup View
     .state('leader-CreateGroup', {
         url: "/leader/leader-CreateGroup",
         templateUrl: "templates/leader/leader-CreateGroup.html",
+        controller: 'GroupCtrl',
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+            }]
+        }
+    })
+
+    // State to represent leaderAddClassSchedule View
+    .state('leaderAddClassSchedule', {
+        url: "/common/leaderAddClassSchedule",
+        templateUrl: "templates/common/leaderAddClassSchedule.html",
+        controller: 'ClassScheduleCtrl',
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+            }]
+        }
+    })
+
+    // State to represent leaderAddClassSchedule View
+    .state('leader-confirmCreateGroup', {
+        url: "/leader/leader-confirmCreateGroup",
+        templateUrl: "templates/leader/leader-confirmCreateGroup.html",
         controller: 'GroupCtrl',
         resolve: {
             // controller will not be loaded until $requireAuth resolves
@@ -192,7 +244,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'student-tab-groupMembers': {
                 templateUrl: 'templates/student/student-tab-groupMembers.html',
-                controller: 'GroupCtrl'
+                controller: 'ViewGroupMemberListCtrl'
             }
         }
     })
@@ -260,7 +312,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         views: {
             'leader-tab-groupMembers': {
                 templateUrl: 'templates/leader/leader-tab-groupMembers.html',
-                controller: 'GroupCtrl'
+                controller: 'ViewGroupMemberListCtrl'
             }
         }
     })

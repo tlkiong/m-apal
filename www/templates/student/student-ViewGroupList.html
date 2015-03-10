@@ -7,8 +7,8 @@
 	    	Groups
 	    </div>
 	    <ion-list>
-		    <ion-item ng-repeat="item in groupList">
-		    	<span>Group Name: {{ item.groupName }}</span>
+		    <ion-item ng-repeat="item in groupList" ng-click="joinGroup(item)" ng-tap="joinGroup(item)">
+		    	<span>{{ item.groupName }}</span>
 		    </ion-item>
 	    </ion-list>
 	</ion-content>

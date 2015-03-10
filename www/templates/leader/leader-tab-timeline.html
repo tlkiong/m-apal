@@ -2,4 +2,68 @@
     <ion-nav-buttons side="right">
       <img src="img/role_leader_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
+	<ion-content class="padding">
+		<div class="item item-divider">
+	    	Sunday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in sundayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+	    
+	    <div class="item item-divider">
+	    	Monday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+
+	    <div class="item item-divider">
+	    	Tuesday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+
+	    <div class="item item-divider">
+	    	Wednesday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+
+	    <div class="item item-divider">
+	    	Thursday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+
+	    <div class="item item-divider">
+	    	Friday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+
+	    <div class="item item-divider">
+	    	Saturday
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in saturdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+		    	<span>{{ item.classNamed }}</span>
+		    </ion-item>
+	    </ion-list>
+	</ion-content>
 </ion-view>

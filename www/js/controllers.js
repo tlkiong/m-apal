@@ -73,7 +73,7 @@ angular.module('mapal.controllers', [])
                         $rootScope.icNumber = val.icNumber;
                         $rootScope.role = val.role;
                         $rootScope.classSchedule = val.classSchedule;
-                        $rootScope.groupID = val.groupID;
+                        $rootScope.groupId = val.groupId;
                     });
                     $rootScope.userId = authData.uid;
                     $rootScope.signedIn = true;
@@ -89,29 +89,24 @@ angular.module('mapal.controllers', [])
                         console.log("role is student");
                         if($rootScope.classSchedule == null){
                             $ionicLoading.hide();
-                            $state.go('addClassSchedule');
+                            $state.go('studentAddClassSchedule');
                         } else {
-                            if($rootScope.groupID == null){
-                                $state.go('student-ViewGroupList');
+                            if($rootScope.groupId == null){
+                                $ionicLoading.hide();
+                                $state.go('student-viewGroupList');
                             }else{
 
                                 //Get group data from Firebase
-                                ref.child("groups").child($rootScope.groupID).once('value', function (snapshot) {
+                                ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
                                     var val = snapshot.val();
-
-                                    // To Update AngularJS $scope either use $apply or $timeout
-                                    $scope.$apply(function () {
-                                        $rootScope.groupName = val.Name;
-                                        //TODO: Add all the group data here
-                                    });
-
-                                    if($rootScope.groupStatus == "pending"){
-                                        $state.go('viewGroupMemberList');
-                                    } else if ($rootScope.groupStatus == "active"){
+                                    $ionicLoading.hide();
+                                    if(val.groupStatus == "pending"){
+                                        $state.go('student-viewGroupMemberList');
+                                    } else if (val.groupStatus == "active"){
                                         $state.go('student-tab.timeline');
-                                    } else if ($rootScope.groupStatus == "disabled"){
+                                    } else if (val.groupStatus == "disabled"){
                                         console.log("Group status disabled. Not supposed to have this. Something went wrong somewhere");
-                                    } else if ($rootScope.groupStatus == null){
+                                    } else if (val.groupStatus == null){
                                         console.log ("group status is null");
                                     } else {
                                         console.log ("group status is not pending or active");
@@ -123,27 +118,20 @@ angular.module('mapal.controllers', [])
                         $ionicLoading.hide();
                         console.log("role is leader");
                         if($rootScope.classSchedule == null){
-                            $state.go('addClassSchedule');
+                            $state.go('leaderAddClassSchedule');
                         } else {
-                            if($rootScope.groupID == null){
+                            if($rootScope.groupId == null){
                                 $state.go('leader-CreateGroup');
                             }else{
-
                                 //Get group data from Firebase
-                                ref.child("groups").child($rootScope.groupID).once('value', function (snapshot) {
+                                ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
                                     var val = snapshot.val();
-
-                                    // To Update AngularJS $scope either use $apply or $timeout
-                                    $scope.$apply(function () {
-                                        $rootScope.groupName = val.Name;
-                                        //TODO: Add all the group data here
-                                    });
                                     
-                                    if($rootScope.groupStatus == "pending"){
-                                        $state.go('viewGroupMemberList');
-                                    } else if ($rootScope.groupStatus == "active"){
+                                    if(val.groupStatus == "pending"){
+                                        $state.go('leader-viewGroupMemberList');
+                                    } else if (val.groupStatus == "active"){
                                         $state.go('leader-tab.timeline');
-                                    } else if ($rootScope.groupStatus == "disabled"){
+                                    } else if (val.groupStatus == "disabled"){
                                         console.log("Group status disabled. Not supposed to have this. Something went wrong somewhere");
                                     } else {
                                         console.log ("group status is not pending or active");
@@ -222,7 +210,7 @@ angular.module('mapal.controllers', [])
         var ref = new Firebase($scope.firebaseUrl);
 
         //Create new class
-        $scope.createNewClass = function (userClass,day) {
+        $scope.createNewClassSchedule = function (userClass,day) {
             console.log("Create new class function called");
 
             if (userClass && userClass.classNamed && userClass.classVenue) {
@@ -233,7 +221,7 @@ angular.module('mapal.controllers', [])
                 var userClassID = "class"+String(day.named);
                 console.log(userClassID)
 
-                var userRef = ref.child("users").child($rootScope.userId).child("class");
+                var userRef = ref.child("users").child($rootScope.userId).child("classSchedule");
                 console.log("userRef: "+userRef);
                 try{
                     userRef.push({
@@ -244,7 +232,7 @@ angular.module('mapal.controllers', [])
                         classEndTime: userClass.endTime
                     })
                 }catch(error) {
-                    console.log("HAHAHAHA Error!");
+                    console.log("HAHAHAHA Error! classSchedule");
                 };
                 
                 $ionicLoading.hide();
@@ -256,23 +244,7 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.getClassTimetable = function(userID){
-            var classRef = ref.child("users").child(userID).child("class");
-
-            //free time usage
-            var dayArray=new Array(7)
-            for (var i=0; i <7 ;i++){
-                dayArray[i]=new Array(11);
-            }
-            var hourCounter = 8;
-            for (var j = 0; j<7 ;j++){
-                for (var k = 0; k<11; k++){
-                    dayArray[j][k] = hourCounter;
-                     hourCounter++;
-                }
-                hourCounter = 8;
-            }
-            //dayArray[day][hour]
-            //day: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
+            var classRef = ref.child("users").child(userID).child("classSchedule");
 
             $scope.sundayList = [];
             $scope.mondayList = [];
@@ -324,7 +296,16 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.goViewGroupList = function(){
-            $state.go('student-viewGroupList');
+            if($rootScope.role == 'student'){
+                console.log("student role to view group list");
+                $state.go('student-viewGroupList');
+            } else if ($rootScope.role == 'leader') {
+                console.log("leader role to create group");
+                $state.go('leader-CreateGroup');
+            } else {
+                console.log("role: "+$rootScope.role);
+            }
+            
         }
 
         $scope.goTimeline = function(){
@@ -362,7 +343,7 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.updateClassItem = function(classItem,day){
-            ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).update({
+            ref.child("users").child($rootScope.userId).child("classSchedule").child($scope.classItem.key).update({
                 classDay: day.named,
                 classNamed: classItem.classNamed,
                 classVenue: classItem.classVenue,
@@ -374,7 +355,7 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.deleteClassFromFirebase = function() {
-            ref.child("users").child($rootScope.userId).child("class").child($scope.classItem.key).remove();
+            ref.child("users").child($rootScope.userId).child("classSchedule").child($scope.classItem.key).remove();
             console.log($scope.classItem.Key + " deleted");
             $scope.getClassTimetable($rootScope.userId);
             $scope.classItemOptionModal.hide();
@@ -400,17 +381,135 @@ angular.module('mapal.controllers', [])
         ref.child("tasks").orderByChild("taskName").on("child_added", function (snapshot) {
             var value = snapshot.val();
         });
-        //For dropdown list items
-        $scope.tasks = [
-            {types:'student'},
-            {types:'leader'},
-            {types:'lecturer'}
-        ];
-        $scope.Role = $scope.roles[0]; // student
         
+        $scope.taskList = [];
 
-        $scope.createGroup = function () {
+        var taskRef = ref.child("tasks");
+        taskRef.orderByChild("taskName").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+            value.key = String(snapshot.key());
+            $scope.taskList.push(value);
+            $scope.Task = $scope.taskList[0];
+        });
 
+        $scope.createGroup = function(group,Task){
+            console.log("In CreateGRoup")
+            $rootScope.group = {
+                groupName : group.groupName,
+                startDate : group.startDate,
+                taskName : Task.taskName,
+                taskDescription : Task.taskDescription,
+                taskGuideline : "Empty guidelines first"
+            };
+            $state.go('leader-confirmCreateGroup');
+        }
+
+        $scope.confirmCreateGroup = function (group){
+            console.log("In ConfirmCreateGroup")
+            try{
+                var groupRef = ref.child("groups").push({
+                    groupName: group.groupName,
+                    groupStartDate: group.startDate,
+                    groupTask: group.taskName,
+                    groupTaskDescription: group.taskDescription,
+                    groupTaskGuideline: group.taskGuideline,
+                    groupStatus: 'pending'
+                });
+                ref.child("users").child($rootScope.userId).update({
+                    groupId: groupRef.key()
+                });
+                $rootScope.groupId = groupRef.key();
+                $state.go('leader-viewGroupMemberList');
+            }catch(error) {
+                console.log("HAHAHAHA Error! createGroup");
+            };
+        }
+    }
+})
+
+.controller('ViewGroupMemberListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+    if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+            title: 'Error',
+            template: 'You are not logged in, please log in first'
+        });
+        alertPopup.then(function(res) {
+            $state.go('login');
+        });
+    } else {
+        console.log("We are at ViewGroupMemberListCtrl");
+
+        var ref = new Firebase($scope.firebaseUrl);
+
+        $scope.userList = [];
+
+        ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
+            var value = snapshot.val();
+            $scope.groupName = value.groupName;
+        });
+
+        ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+            if(value.groupId == $rootScope.groupId){
+                value.key = String(snapshot.key());
+                $scope.userList.push(value);
+            }
+        });
+
+        // ref.child("groups").child($rootScope.groupId).child("groupStatus").on('child_changed', function(childSnapshot, prevChildName){
+        //     if(childSnapshot == "active"){
+        //         if($rootScope.role=="leader"){
+        //             $state.go('leader-tab.timeline');
+        //         } else if ($rootScope.role=="student"){
+        //             $state.go('student-tab.timeline');
+        //         } else {
+        //             console.log("is neither leader or student");
+        //         }
+        //     }
+        // });
+
+        $scope.closeGroup = function () {
+            ref.child("groups").child($rootScope.groupId).update({
+                groupStatus: "active"
+            });
+            $state.go('leader-tab.timeline');
+        }
+    }
+})
+
+.controller('ViewGroupListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+    if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+            title: 'Error',
+            template: 'You are not logged in, please log in first'
+        });
+        alertPopup.then(function(res) {
+            $state.go('login');
+        });
+    } else {
+        console.log("We are at ViewGroupListCtrl");
+
+        $scope.groupList = [];
+
+        var ref = new Firebase($scope.firebaseUrl);
+
+        ref.child("groups").orderByChild("groupName").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+            
+            if(value.groupStatus == 'pending'){
+                value.key = String(snapshot.key());
+                $scope.groupList.push(value);
+            }
+        });
+        
+        $scope.joinGroup = function(item){
+            ref.child("users").child($rootScope.userId).update({
+                groupId: item.key
+            });
+            $rootScope.groupId = item.key;
+            $state.go('student-viewGroupMemberList');
         }
     }
 })
@@ -429,6 +528,29 @@ angular.module('mapal.controllers', [])
         console.log("We are at TimelineController");
 
         var ref = new Firebase($scope.firebaseUrl);
+
+        //free time usage
+        var dayArray=new Array(7)
+        for (var i=0; i <7 ;i++){
+            dayArray[i]=new Array(11);
+        }
+        var hourCounter = 8;
+        for (var j = 0; j<7 ;j++){
+            for (var k = 0; k<11; k++){
+                dayArray[j][k] = hourCounter;
+                 hourCounter++;
+            }
+            hourCounter = 8;
+        }
+        //dayArray[day][hour]
+        //day: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
+
+
+        ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+            value.key = String(snapshot.key());
+            $scope.taskList.push(value);
+        });
     }
 })
 
