@@ -567,7 +567,7 @@ angular.module('mapal.controllers', [])
                 var classEndTimeHourArray = value.classEndTime.split(":");
                 //change the hour from string to number
                 var classStartTimeHour = parseInt(classStartTimeHourArray[0]);
-                var classEndTimeHour = parseInt(classEndTimeHourArray[0]);
+                var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray[0]));
 
                 switch(dayOfClass){
                     case "Friday":{
