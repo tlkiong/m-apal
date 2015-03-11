@@ -119,6 +119,40 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
+    // State to represent leaderViewClassSchedule View
+    .state('leaderViewClassSchedule', {
+        url: "/leader/leaderViewClassSchedule",
+        templateUrl: "templates/leader/leaderViewClassSchedule.html",
+        controller: 'ClassScheduleCtrl',
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+            }]
+        }
+    })
+
+    // State to represent leaderViewClassSchedule View
+    .state('studentViewClassSchedule', {
+        url: "/student/studentViewClassSchedule",
+        templateUrl: "templates/student/studentViewClassSchedule.html",
+        controller: 'ClassScheduleCtrl',
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $requireAuth returns a promise so the resolve waits for it to complete
+                    // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+            }]
+        }
+    })
+
     // State to represent ViewGroupList View
     .state('student-viewGroupList', {
         url: "/student/student-viewGroupList",

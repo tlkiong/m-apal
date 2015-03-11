@@ -159,7 +159,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('ClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth) {
+.controller('ClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicNavBarDelegate) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -359,6 +359,10 @@ angular.module('mapal.controllers', [])
             $scope.classItemOptionModal.hide();
         }
 
+        $scope.goBack = function(){
+            $ionicNavBarDelegate.back();
+        }
+
         $scope.getClassTimetable($rootScope.userId);
     }
 })
@@ -389,6 +393,10 @@ angular.module('mapal.controllers', [])
             $scope.taskList.push(value);
             $scope.Task = $scope.taskList[0];
         });
+
+        $scope.leaderViewClassSchedule = function(){
+            $state.go('leaderViewClassSchedule')
+        }
 
         $scope.createGroup = function(group,Task){
             console.log("In CreateGRoup")
@@ -475,6 +483,14 @@ angular.module('mapal.controllers', [])
             $state.go('leader-tab.timeline');
         }
 
+        $scope.studentViewClassSchedule = function(){
+            $state.go('studentViewClassSchedule')
+        }
+
+        $scope.leaderViewClassSchedule = function(){
+            $state.go('leaderViewClassSchedule')
+        }
+
         $scope.closeGroup = function () {
             ref.child("groups").child($rootScope.groupId).update({
                 groupStatus: "active"
@@ -510,6 +526,10 @@ angular.module('mapal.controllers', [])
             }
         });
         
+        $scope.studentViewClassSchedule = function(){
+            $state.go('studentViewClassSchedule')
+        }
+
         $scope.joinGroup = function(item){
             ref.child("users").child($rootScope.userId).update({
                 groupId: item.key
