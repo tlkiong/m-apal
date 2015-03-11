@@ -724,10 +724,12 @@ angular.module('mapal.controllers', [])
             $scope.closeGroupModal = closeGroupModal;
         });
 
-        ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
+        if($rootScope.role != 'lecturer'){
+            ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
             var val = snapshot.val();
             $scope.myTask = val;
         });
+        }
 
         $scope.closeGroup = function(){
             ref.child("groups").child($rootScope.groupId).update({
