@@ -726,9 +726,9 @@ angular.module('mapal.controllers', [])
 
         if($rootScope.role != 'lecturer'){
             ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
-            var val = snapshot.val();
-            $scope.myTask = val;
-        });
+                var val = snapshot.val();
+                $scope.myTask = val;
+            });
         }
 
         $scope.closeGroup = function(){
@@ -764,7 +764,7 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.createTask = function (task) {
-            $scope.getGuidelines(taskItem);
+            //$scope.getGuidelines(task);
             
             console.log("we are in createTask!");
             ref.child("tasks").push({
