@@ -496,14 +496,6 @@ angular.module('mapal.controllers', [])
         //     }
         // });
 
-        $scope.studentGoTimeline = function(){
-            $state.go('student-tab.timeline');
-        }
-
-        $scope.leaderGoTimeline = function(){
-            $state.go('leader-tab.timeline');
-        }
-
         $scope.studentViewClassSchedule = function(){
             $state.go('studentViewClassSchedule')
         }
