@@ -305,7 +305,7 @@ angular.module('mapal.controllers', [])
             }
             
         }
-        
+
         $scope.studentGoTimeline = function(){
             $state.go('student-tab.timeline');
         }
@@ -676,6 +676,56 @@ angular.module('mapal.controllers', [])
         }).then(function (editTaskModal) {
             $scope.editTaskModal = editTaskModal;
         });
+
+        //closegroup confirmation
+        $ionicModal.fromTemplateUrl('templates/common/closeGroupConfirmationModal.html', {
+            scope: $scope
+        }).then(function (closeGroupConfirmationModal) {
+            $scope.closeGroupConfirmationModal = closeGroupConfirmationModal;
+        });
+
+        //closegroup
+        $ionicModal.fromTemplateUrl('templates/common/closeGroupModal.html', {
+            scope: $scope
+        }).then(function (closeGroupModal) {
+            $scope.closeGroupModal = closeGroupModal;
+        });
+
+        ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
+            var val = snapshot.val();
+            $scope.myTask = val;
+        });
+
+        $scope.closeGroup = function(){
+            ref.child("groups").child($rootScope.groupId).update({
+                groupStatus: 'disabled'
+            });
+
+            ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
+                var value = snapshot.val();
+                if(value.groupId == $rootScope.groupId){
+                    value.key = String(snapshot.key());
+                    $scope.removeGroupIdFromUserList(value.key);
+                }
+            });
+
+            $scope.closeGroupConfirmationModal.hide();
+            $scope.closeGroupModal.show();
+        }
+
+        $scope.removeGroupIdFromUserList = function(userId){
+            ref.child("users").child(userId).child("groupId").remove();
+        }
+
+        $scope.ok = function(){
+            if($rootScope.role == "student"){
+                $state.go('studentAddClassSchedule');
+            } else if ($rootScope.role == "leader") {
+                $state.go('leaderAddClassSchedule');
+            } else {
+                console.log("role: "+$rootScope.role);
+            }
+        }
 
         $scope.createTask = function (task) {
             $scope.getGuidelines(taskItem);

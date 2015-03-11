@@ -8,7 +8,11 @@
 	    </div>
 	    <ion-list>
 		    <ion-item ng-repeat="item in userList">
-		    	<span>{{ item.fullName }}</span>
+		    	<span>Full Name: {{ item.fullName }}</span>
+		    	<br>
+		    	<span>Contact Number: {{ item.contactNumber }}</span>
+		    	<br>
+		    	<span>Email Address: {{ item.email }}</span>
 		    </ion-item>
 	    </ion-list>
 	</ion-content>
