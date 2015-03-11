@@ -718,6 +718,7 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.ok = function(){
+            $scope.closeGroupModal.hide();
             if($rootScope.role == "student"){
                 $state.go('studentAddClassSchedule');
             } else if ($rootScope.role == "leader") {
