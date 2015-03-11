@@ -305,9 +305,13 @@ angular.module('mapal.controllers', [])
             }
             
         }
-
-        $scope.goTimeline = function(){
+        
+        $scope.studentGoTimeline = function(){
             $state.go('student-tab.timeline');
+        }
+
+        $scope.leaderGoTimeline = function(){
+            $state.go('leader-tab.timeline');
         }
 
         $scope.editClassSchedule = function(classItem){
@@ -463,6 +467,14 @@ angular.module('mapal.controllers', [])
         //     }
         // });
 
+        $scope.studentGoTimeline = function(){
+            $state.go('student-tab.timeline');
+        }
+
+        $scope.leaderGoTimeline = function(){
+            $state.go('leader-tab.timeline');
+        }
+
         $scope.closeGroup = function () {
             ref.child("groups").child($rootScope.groupId).update({
                 groupStatus: "active"
@@ -556,7 +568,7 @@ angular.module('mapal.controllers', [])
                 //change the hour from string to number
                 var classStartTimeHour = parseInt(classStartTimeHourArray[0]);
                 var classEndTimeHour = parseInt(classEndTimeHourArray[0]);
-                
+
                 switch(dayOfClass){
                     case "Friday":{
                         while(classStartTimeHour != (classEndTimeHour+1)){

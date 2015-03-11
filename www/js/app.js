@@ -11,7 +11,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 // 'mapal.controllers' is found in controllers.js
 angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controllers', 'mapal.services'])
 
-.run(function ($ionicPlatform, $rootScope, $location, Auth, $ionicLoading) {
+.run(function ($ionicPlatform, $rootScope, $location, Auth, $ionicLoading, $state) {
     $ionicPlatform.ready(function () {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -46,6 +46,11 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
             Auth.$unauth();
         }
 
+        $rootScope.aboutUs = function () {
+            console.log("Aboutus btn clicked");
+            $state.go('aboutUs');
+        }
+
 
         $rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
             // We can catch the error thrown when the $requireAuth promise is rejected
@@ -70,6 +75,22 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         url: "/login",
         templateUrl: "templates/common/login.html",
         controller: 'LoginCtrl',
+        resolve: {
+            // controller will not be loaded until $waitForAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+                    // $waitForAuth returns a promise so the resolve waits for it to complete
+                    return Auth.$waitForAuth();
+        }]
+        }
+    })
+
+    // State to represent Login View
+    .state('aboutUs', {
+        url: "/aboutUs",
+        templateUrl: "templates/common/aboutUs.html",
+        controller: '',
         resolve: {
             // controller will not be loaded until $waitForAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
