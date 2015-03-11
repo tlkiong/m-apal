@@ -576,14 +576,6 @@ angular.module('mapal.controllers', [])
         
         var userList = [];
 
-        ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
-            var value = snapshot.val();
-            if(value.groupId == $rootScope.groupId){
-                value.key = String(snapshot.key());
-                $scope.getUsersTimetable(value.key);
-            }
-        });
-
         $scope.getUsersTimetable = function (userKey) {
             ref.child("users").child(userKey).child("classSchedule").orderByChild("classDay").on("child_added", function (snapshot) {
                 var value = snapshot.val();
@@ -651,8 +643,13 @@ angular.module('mapal.controllers', [])
             });
         }
 
-
-            
+        ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+            if(value.groupId == $rootScope.groupId){
+                value.key = String(snapshot.key());
+                $scope.getUsersTimetable(value.key);
+            }
+        });
     }
 })
 
