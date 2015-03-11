@@ -159,7 +159,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('ClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicNavBarDelegate) {
+.controller('ClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicHistory) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -360,7 +360,7 @@ angular.module('mapal.controllers', [])
         }
 
         $scope.goBack = function(){
-            $ionicNavBarDelegate.back();
+            $ionicHistory.goBack()
         }
 
         $scope.getClassTimetable($rootScope.userId);
