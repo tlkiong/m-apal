@@ -367,7 +367,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('GroupCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller('GroupCtrl', function ($scope, $rootScope, $state, $ionicPopup, $ionicModal) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -429,6 +429,27 @@ angular.module('mapal.controllers', [])
             }catch(error) {
                 console.log("HAHAHAHA Error! createGroup");
             };
+        }
+
+        //editGroupModal
+        $ionicModal.fromTemplateUrl('templates/common/editGroupModal.html', {
+            scope: $scope
+        }).then(function (editGroupModal) {
+            $scope.editGroupModal = editGroupModal;
+        });
+
+        $scope.editCreateGroup = function (group) {
+            $scope.editGroupModal.show();
+            $scope.groupItem = group;
+            for (var item in $scope.taskList){
+                if ($scope.groupItem.taskName==item.taskName){
+                    $scope.Task = item;
+                }
+            }
+        }
+
+        $scope.updateGroupItem = function(groupItem,Task){
+            $scope.editGroupModal.hide();
         }
     }
 })
