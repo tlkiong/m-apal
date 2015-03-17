@@ -1,0 +1,32 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">New Class</h1>
+        <button class="button button-clear button-primary" ng-click="newClassModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Class Name</span>
+                <input ng-model="userClass.classNamed" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Class Venue</span>
+                <input ng-model="userClass.classVenue" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Day</span>
+                <select ng-model="day" ng-options="day.named for day in days"></select>
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Start Time (24 hour format)</span><br>
+                <input ng-model="userClass.startTime" type="text">
+            </label>
+            
+            <label class="item item-input">
+                <span class="input-label">End Time (24 hour format)</span><br>
+                <input ng-model="userClass.endTime" type="text">
+            </label>
+            <button class="button button-full button-positive" ng-click="createNewClassSchedule(userClass,day)">Create</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

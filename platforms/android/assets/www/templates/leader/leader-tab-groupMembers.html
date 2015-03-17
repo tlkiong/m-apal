@@ -1,0 +1,19 @@
+<ion-view view-title="PAL GROUP MEMBERS">
+    <ion-nav-buttons side="right">
+      <img src="img/role_leader_icon.png" class="nav_bar_icon">
+	</ion-nav-buttons>
+	<ion-content class="padding">
+		<div class="item item-divider">
+	    	{{groupName}}
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in userList">
+		    	<span>Full Name: {{ item.fullName }}</span>
+		    	<br>
+		    	<span>Contact Number: {{ item.contactNumber }}</span>
+		    	<br>
+		    	<span>Email Address: {{ item.email }}</span>
+		    </ion-item>
+	    </ion-list>
+	</ion-content>
+</ion-view>

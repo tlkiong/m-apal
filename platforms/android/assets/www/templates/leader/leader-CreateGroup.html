@@ -1,0 +1,27 @@
+<ion-view view-title="CREATE PAL GROUP" hide-back-button="true">
+	<ion-nav-buttons side="right">
+      <img src="img/role_leader_icon.png" class="nav_bar_icon">
+	</ion-nav-buttons>
+
+	<ion-content class="padding">
+        <button class="button button-block button-balanced" ng-click="leaderViewClassSchedule()">
+          Class Schedule
+        </button>
+
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Group Name</span>
+                <input ng-model="group.groupName" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Task</span>
+                <select ng-model="Task" ng-options="Task.taskName for Task in taskList"></select>
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Start Date</span>
+                <input ng-model="group.startDate" type="text">
+            </label>
+            <button class="button button-full button-positive" ng-click="createGroup(group,Task)">Create Group</button>
+        </div>
+    </ion-content>
+</ion-view>

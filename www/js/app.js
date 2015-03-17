@@ -28,6 +28,9 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         $rootScope.firebaseUrl = firebaseUrl;
         $rootScope.displayName = null;
 
+        $rootScope.showMyAccount = false;
+        $rootScope.showLogout = false;
+
         Auth.$onAuth(function (authData) {
             if (authData) {
                 console.log("Logged in as:", authData.email);
@@ -44,6 +47,8 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
                 template: 'Logging Out...'
             });
             Auth.$unauth();
+            $rootScope.showMyAccount = false;
+            $rootScope.showLogout = false;
         }
 
         $rootScope.aboutUs = function () {

@@ -22,33 +22,38 @@ angular.module('mapal.controllers', [])
     $scope.createUser = function (user,Role) {
         console.log("Create User Function called");
 
-        if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
-            $ionicLoading.show({
-                template: 'Signing Up...'
-            });
-
-            auth.$createUser({
-                email: user.emailAddress,
-                password: user.password
-            }).then(function (userData) {
-                alert("User created successfully!");
-
-                ref.child("users").child(userData.uid).set({
-                    email: user.emailAddress,
-                    fullName: user.fullname,
-                    contactNumber: user.contactnumber,
-                    icNumber: user.icnumber,
-                    role: Role.types
+        if(user.confirmPassword == user.cpassword) {
+            if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
+                $ionicLoading.show({
+                    template: 'Signing Up...'
                 });
-                
-                $ionicLoading.hide();
-                $scope.modal.hide();
-            }).catch(function (error) {
-                alert("Error: " + error);
-                $ionicLoading.hide();
-            });
-        } else
-            alert("Please fill all details");
+
+                auth.$createUser({
+                    email: user.emailAddress,
+                    password: user.password
+                }).then(function (userData) {
+                    alert("User created successfully!");
+
+                    ref.child("users").child(userData.uid).set({
+                        email: user.emailAddress,
+                        fullName: user.fullname,
+                        contactNumber: user.contactnumber,
+                        icNumber: user.icnumber,
+                        role: Role.types
+                    });
+                    
+                    $ionicLoading.hide();
+                    $scope.modal.hide();
+                }).catch(function (error) {
+                    alert("Error: " + error);
+                    $ionicLoading.hide();
+                });
+            } else{
+                alert("Please fill all details");
+            }
+        } else {
+            alert("Please make sure your password is the same");
+        }
     }
 
     $scope.signIn = function (user) {
@@ -84,7 +89,10 @@ angular.module('mapal.controllers', [])
                     console.log("Contact Number: " + String($rootScope.contactNumber));
                     console.log("IC Number: " + String($rootScope.icNumber));
                     console.log("Role: " + String($rootScope.role));
-
+                    
+                    $rootScope.showMyAccount = true;
+                    $rootScope.showLogout = true;
+                    
                     if(String($rootScope.role) == 'student'){
                         console.log("role is student");
                         if($rootScope.classSchedule == null){
@@ -394,6 +402,7 @@ angular.module('mapal.controllers', [])
             console.log("In CreateGRoup")
             $rootScope.group = {
                 groupName : group.groupName,
+                leaderName: $rootScope.fullName,
                 startDate : group.startDate,
                 taskName : Task.taskName,
                 taskDescription : Task.taskDescription,
@@ -407,6 +416,7 @@ angular.module('mapal.controllers', [])
             try{
                 var groupRef = ref.child("groups").push({
                     groupName: group.groupName,
+                    leaderName: group.leaderName,
                     groupStartDate: group.startDate,
                     groupTask: group.taskName,
                     groupTaskDescription: group.taskDescription,
@@ -588,7 +598,7 @@ angular.module('mapal.controllers', [])
 
                 switch(dayOfClass){
                     case "Friday":{
-                        while(classStartTimeHour != (classEndTimeHour+1)){
+                        while(classStartTimeHour != (classEndTimeHour)){
                             var index = $scope.fridayList.indexOf(classStartTimeHour);
                             if(index > -1){
                                 $scope.fridayList.splice(index,1);
@@ -598,7 +608,7 @@ angular.module('mapal.controllers', [])
                     }
                     break;
                     case "Monday":{
-                        while(classStartTimeHour != (classEndTimeHour+1)){
+                        while(classStartTimeHour != (classEndTimeHour)){
                             var index = $scope.mondayList.indexOf(classStartTimeHour);
                             if(index > -1){
                                 $scope.mondayList.splice(index,1);
@@ -608,7 +618,7 @@ angular.module('mapal.controllers', [])
                     }
                     break;
                     case "Tuesday":{
-                        while(classStartTimeHour != (classEndTimeHour+1)){
+                        while(classStartTimeHour != (classEndTimeHour)){
                             var index = $scope.tuesdayList.indexOf(classStartTimeHour);
                             if(index > -1){
                                 $scope.tuesdayList.splice(index,1);
@@ -618,7 +628,7 @@ angular.module('mapal.controllers', [])
                     }
                     break;
                     case "Thursday":{
-                        while(classStartTimeHour != (classEndTimeHour+1)){
+                        while(classStartTimeHour != (classEndTimeHour)){
                             var index = $scope.thursdayList.indexOf(classStartTimeHour);
                             if(index > -1){
                                 $scope.thursdayList.splice(index,1);
@@ -628,7 +638,7 @@ angular.module('mapal.controllers', [])
                     }
                     break;
                     case "Wednesday":{
-                        while(classStartTimeHour != (classEndTimeHour+1)){
+                        while(classStartTimeHour != (classEndTimeHour)){
                             var index = $scope.wednesdayList.indexOf(classStartTimeHour);
                             if(index > -1){
                                 $scope.wednesdayList.splice(index,1);
