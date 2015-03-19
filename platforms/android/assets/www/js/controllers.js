@@ -89,7 +89,10 @@ angular.module('mapal.controllers', [])
                     console.log("Contact Number: " + String($rootScope.contactNumber));
                     console.log("IC Number: " + String($rootScope.icNumber));
                     console.log("Role: " + String($rootScope.role));
-
+                    
+                    $rootScope.showMyAccount = true;
+                    $rootScope.showLogout = true;
+                    
                     if(String($rootScope.role) == 'student'){
                         console.log("role is student");
                         if($rootScope.classSchedule == null){

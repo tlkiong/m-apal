@@ -28,6 +28,9 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         $rootScope.firebaseUrl = firebaseUrl;
         $rootScope.displayName = null;
 
+        $rootScope.showMyAccount = false;
+        $rootScope.showLogout = false;
+
         Auth.$onAuth(function (authData) {
             if (authData) {
                 console.log("Logged in as:", authData.email);
@@ -44,6 +47,8 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
                 template: 'Logging Out...'
             });
             Auth.$unauth();
+            $rootScope.showMyAccount = false;
+            $rootScope.showLogout = false;
         }
 
         $rootScope.aboutUs = function () {
@@ -71,10 +76,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     $stateProvider
 
     // State to represent Login View
-    .state('login', {
+    .state("login", {
         url: "/login",
-        templateUrl: "templates/common/login.html",
-        controller: 'LoginCtrl',
+        templateUrl: "./templates/common/login.html",
+        controller: "LoginCtrl",
         resolve: {
             // controller will not be loaded until $waitForAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -87,10 +92,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent Login View
-    .state('aboutUs', {
+    .state("aboutUs", {
         url: "/aboutUs",
-        templateUrl: "templates/common/aboutUs.html",
-        controller: '',
+        templateUrl: "./templates/common/aboutUs.html",
+        controller: "",
         resolve: {
             // controller will not be loaded until $waitForAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -103,10 +108,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent studentAddClassSchedule View
-    .state('studentAddClassSchedule', {
+    .state("studentAddClassSchedule", {
         url: "/common/studentAddClassSchedule",
-        templateUrl: "templates/common/studentAddClassSchedule.html",
-        controller: 'ClassScheduleCtrl',
+        templateUrl: "./templates/common/studentAddClassSchedule.html",
+        controller: "ClassScheduleCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -120,10 +125,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent leaderViewClassSchedule View
-    .state('leaderViewClassSchedule', {
+    .state("leaderViewClassSchedule", {
         url: "/leader/leaderViewClassSchedule",
-        templateUrl: "templates/leader/leaderViewClassSchedule.html",
-        controller: 'ClassScheduleCtrl',
+        templateUrl: "./templates/leader/leaderViewClassSchedule.html",
+        controller: "ClassScheduleCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -137,10 +142,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent leaderViewClassSchedule View
-    .state('studentViewClassSchedule', {
+    .state("studentViewClassSchedule", {
         url: "/student/studentViewClassSchedule",
-        templateUrl: "templates/student/studentViewClassSchedule.html",
-        controller: 'ClassScheduleCtrl',
+        templateUrl: "./templates/student/studentViewClassSchedule.html",
+        controller: "ClassScheduleCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -154,10 +159,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent ViewGroupList View
-    .state('student-viewGroupList', {
+    .state("student-viewGroupList", {
         url: "/student/student-viewGroupList",
-        templateUrl: "templates/student/student-ViewGroupList.html",
-        controller: 'ViewGroupListCtrl',
+        templateUrl: "./templates/student/student-ViewGroupList.html",
+        controller: "ViewGroupListCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -171,10 +176,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent leader-viewGroupMemberList View
-    .state('leader-viewGroupMemberList', {
+    .state("leader-viewGroupMemberList", {
         url: "/leader/leader-viewGroupMemberList",
-        templateUrl: "templates/leader/leader-viewGroupMemberList.html",
-        controller: 'ViewGroupMemberListCtrl',
+        templateUrl: "./templates/leader/leader-viewGroupMemberList.html",
+        controller: "ViewGroupMemberListCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -188,10 +193,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent student-viewGroupMemberList View
-    .state('student-viewGroupMemberList', {
+    .state("student-viewGroupMemberList", {
         url: "/student/student-viewGroupMemberList",
-        templateUrl: "templates/student/student-viewGroupMemberList.html",
-        controller: 'ViewGroupMemberListCtrl',
+        templateUrl: "./templates/student/student-viewGroupMemberList.html",
+        controller: "ViewGroupMemberListCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -206,10 +211,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
 
 
     // State to represent CreateGroup View
-    .state('leader-CreateGroup', {
+    .state("leader-CreateGroup", {
         url: "/leader/leader-CreateGroup",
-        templateUrl: "templates/leader/leader-CreateGroup.html",
-        controller: 'GroupCtrl',
+        templateUrl: "./templates/leader/leader-CreateGroup.html",
+        controller: "GroupCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -223,10 +228,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent leaderAddClassSchedule View
-    .state('leaderAddClassSchedule', {
+    .state("leaderAddClassSchedule", {
         url: "/common/leaderAddClassSchedule",
-        templateUrl: "templates/common/leaderAddClassSchedule.html",
-        controller: 'ClassScheduleCtrl',
+        templateUrl: "./templates/common/leaderAddClassSchedule.html",
+        controller: "ClassScheduleCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -240,10 +245,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // State to represent leaderAddClassSchedule View
-    .state('leader-confirmCreateGroup', {
+    .state("leader-confirmCreateGroup", {
         url: "/leader/leader-confirmCreateGroup",
-        templateUrl: "templates/leader/leader-confirmCreateGroup.html",
-        controller: 'GroupCtrl',
+        templateUrl: "./templates/leader/leader-confirmCreateGroup.html",
+        controller: "GroupCtrl",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -257,10 +262,10 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // setup an abstract state for STUDENT tabs directive
-    .state('student-tab', {
+    .state("student-tab", {
         url: "/student/student-tab",
         abstract: true,
-        templateUrl: "templates/student/student-tab.html",
+        templateUrl: "./templates/student/student-tab.html",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -274,61 +279,61 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // Each tab has its own nav history stack:
-    .state('student-tab.timeline', {
-        url: '/student/student-tab-timeline',
+    .state("student-tab.timeline", {
+        url: "/student/student-tab-timeline",
         views: {
-            'student-tab-timeline': {
-                templateUrl: 'templates/student/student-tab-timeline.html',
-                controller: 'TimelineController'
+            "student-tab-timeline": {
+                templateUrl: "./templates/student/student-tab-timeline.html",
+                controller: "TimelineController"
             }
         }
     })
 
-    .state('student-tab.task', {
-        url: '/student/student-tab-task',
+    .state("student-tab.task", {
+        url: "/student/student-tab-task",
         views: {
-            'student-tab-task': {
-                templateUrl: 'templates/student/student-tab-task.html',
-                controller: 'TaskCtrl'
+            "student-tab-task": {
+                templateUrl: "./templates/student/student-tab-task.html",
+                controller: "TaskCtrl"
             }
         }
     })
 
-    .state('student-tab.groupMembers', {
-        url: '/student/student-tab-groupMembers',
+    .state("student-tab.groupMembers", {
+        url: "/student/student-tab-groupMembers",
         views: {
-            'student-tab-groupMembers': {
-                templateUrl: 'templates/student/student-tab-groupMembers.html',
-                controller: 'ViewGroupMemberListCtrl'
+            "student-tab-groupMembers": {
+                templateUrl: "./templates/student/student-tab-groupMembers.html",
+                controller: "ViewGroupMemberListCtrl"
             }
         }
     })
 
-    .state('student-tab.discussion', {
-        url: '/student/student-tab-discussion',
+    .state("student-tab.discussion", {
+        url: "/student/student-tab-discussion",
         views: {
-            'student-tab-discussion': {
-                templateUrl: 'templates/student/student-tab-discussion.html',
-                controller: 'DiscussionCtrl'
+            "student-tab-discussion": {
+                templateUrl: "./templates/student/student-tab-discussion.html",
+                controller: "DiscussionCtrl"
             }
         }
     })
 
-    .state('student-tab.my_class', {
-        url: '/student/student-tab-my_class',
+    .state("student-tab.my_class", {
+        url: "/student/student-tab-my_class",
         views: {
-            'student-tab-my_class': {
-                templateUrl: 'templates/student/student-tab-my_class.html',
-                controller: 'ClassScheduleCtrl'
+            "student-tab-my_class": {
+                templateUrl: "./templates/student/student-tab-my_class.html",
+                controller: "ClassScheduleCtrl"
             }
         }
     })
 
     // setup an abstract state for LEADER tabs directive
-    .state('leader-tab', {
+    .state("leader-tab", {
         url: "/leader/leader-tab",
         abstract: true,
-        templateUrl: "templates/leader/leader-tab.html",
+        templateUrl: "./templates/leader/leader-tab.html",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -342,61 +347,61 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // Each tab has its own nav history stack:
-    .state('leader-tab.timeline', {
-        url: '/leader/leader-tab-timeline',
+    .state("leader-tab.timeline", {
+        url: "/leader/leader-tab-timeline",
         views: {
-            'leader-tab-timeline': {
-                templateUrl: 'templates/leader/leader-tab-timeline.html',
-                controller: 'TimelineController'
+            "leader-tab-timeline": {
+                templateUrl: "./templates/leader/leader-tab-timeline.html",
+                controller: "TimelineController"
             }
         }
     })
 
-    .state('leader-tab.task', {
-        url: '/leader/leader-tab-task',
+    .state("leader-tab.task", {
+        url: "/leader/leader-tab-task",
         views: {
-            'leader-tab-task': {
-                templateUrl: 'templates/leader/leader-tab-task.html',
-                controller: 'TaskCtrl'
+            "leader-tab-task": {
+                templateUrl: "./templates/leader/leader-tab-task.html",
+                controller: "TaskCtrl"
             }
         }
     })
 
-    .state('leader-tab.groupMembers', {
-        url: '/leader/leader-tab-groupMembers',
+    .state("leader-tab.groupMembers", {
+        url: "/leader/leader-tab-groupMembers",
         views: {
-            'leader-tab-groupMembers': {
-                templateUrl: 'templates/leader/leader-tab-groupMembers.html',
-                controller: 'ViewGroupMemberListCtrl'
+            "leader-tab-groupMembers": {
+                templateUrl: "./templates/leader/leader-tab-groupMembers.html",
+                controller: "ViewGroupMemberListCtrl"
             }
         }
     })
 
-    .state('leader-tab.discussion', {
-        url: '/leader/leader-tab-discussion',
+    .state("leader-tab.discussion", {
+        url: "/leader/leader-tab-discussion",
         views: {
-            'leader-tab-discussion': {
-                templateUrl: 'templates/leader/leader-tab-discussion.html',
-                controller: 'DiscussionCtrl'
+            "leader-tab-discussion": {
+                templateUrl: "./templates/leader/leader-tab-discussion.html",
+                controller: "DiscussionCtrl"
             }
         }
     })
 
-    .state('leader-tab.my_class', {
-        url: '/leader/leader-tab-my_class',
+    .state("leader-tab.my_class", {
+        url: "/leader/leader-tab-my_class",
         views: {
-            'leader-tab-my_class': {
-                templateUrl: 'templates/leader/leader-tab-my_class.html',
-                controller: 'ClassScheduleCtrl'
+            "leader-tab-my_class": {
+                templateUrl: "./templates/leader/leader-tab-my_class.html",
+                controller: "ClassScheduleCtrl"
             }
         }
     })
 
     // setup an abstract state for LEADER tabs directive
-    .state('lecturer-tab', {
+    .state("lecturer-tab", {
         url: "/lecturer/lecturer-tab",
         abstract: true,
-        templateUrl: "templates/lecturer/lecturer-tab.html",
+        templateUrl: "./templates/lecturer/lecturer-tab.html",
         resolve: {
             // controller will not be loaded until $requireAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above
@@ -410,37 +415,37 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     })
 
     // Each tab has its own nav history stack:
-    .state('lecturer-tab.report', {
-        url: '/lecturer/lecturer-tab-report',
+    .state("lecturer-tab.report", {
+        url: "/lecturer/lecturer-tab-report",
         views: {
-            'lecturer-tab-report': {
-                templateUrl: 'templates/lecturer/lecturer-tab-report.html',
-                controller: 'ReportCtrl'
+            "lecturer-tab-report": {
+                templateUrl: "./templates/lecturer/lecturer-tab-report.html",
+                controller: "ReportCtrl"
             }
         }
     })
 
-    .state('lecturer-tab.students', {
-        url: '/lecturer/lecturer-tab-students',
+    .state("lecturer-tab.students", {
+        url: "/lecturer/lecturer-tab-students",
         views: {
-            'lecturer-tab-students': {
-                templateUrl: 'templates/lecturer/lecturer-tab-students.html',
-                controller: 'StudentsCtrl'
+            "lecturer-tab-students": {
+                templateUrl: "./templates/lecturer/lecturer-tab-students.html",
+                controller: "StudentsCtrl"
             }
         }
     })
 
-    .state('lecturer-tab.tasks', {
-        url: '/lecturer/lecturer-tab-tasks',
+    .state("lecturer-tab.tasks", {
+        url: "/lecturer/lecturer-tab-tasks",
         views: {
-            'lecturer-tab-tasks': {
-                templateUrl: 'templates/lecturer/lecturer-tab-tasks.html',
-                controller: 'TaskCtrl'
+            "lecturer-tab-tasks": {
+                templateUrl: "./templates/lecturer/lecturer-tab-tasks.html",
+                controller: "TaskCtrl"
             }
         }
     })
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise("/login");
 
 });

@@ -1,6 +1,6 @@
-angular.module('mapal.controllers', [])
+angular.module("mapal.controllers", [])
 
-.controller('LoginCtrl', function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope) {
+.controller("LoginCtrl", function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope) {
 
     //For dropdown list items
     $scope.roles = [
@@ -13,7 +13,7 @@ angular.module('mapal.controllers', [])
     var ref = new Firebase($scope.firebaseUrl);
     var auth = $firebaseAuth(ref);
 
-    $ionicModal.fromTemplateUrl('templates/common/signup.html', {
+    $ionicModal.fromTemplateUrl("templates/common/signup.html", {
         scope: $scope
     }).then(function (modal) {
         $scope.modal = modal;
@@ -167,7 +167,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('ClassScheduleCtrl', function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicHistory) {
+.controller("ClassScheduleCtrl", function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicHistory) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -367,7 +367,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('GroupCtrl', function ($scope, $rootScope, $state, $ionicPopup, $ionicModal) {
+.controller("GroupCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -456,7 +456,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('ViewGroupMemberListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("ViewGroupMemberListCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -515,7 +515,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('ViewGroupListCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("ViewGroupListCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -555,7 +555,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('TimelineController', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("TimelineController", function ($scope, $rootScope, $state, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -663,7 +663,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('DiscussionCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("DiscussionCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -680,7 +680,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('TaskCtrl', function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup) {
+.controller("TaskCtrl", function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -835,7 +835,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('StudentsCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("StudentsCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -852,7 +852,7 @@ angular.module('mapal.controllers', [])
     }
 })
 
-.controller('ReportCtrl', function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("ReportCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -866,5 +866,33 @@ angular.module('mapal.controllers', [])
         console.log("We are at ReportCtrl");
 
         
+    }
+})
+
+.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup){
+    if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
+        // An alert dialog
+        var alertPopup = $ionicPopup.alert({
+            title: 'Error',
+            template: 'You are not logged in, please log in first'
+        });
+        alertPopup.then(function(res) {
+            $state.go('login');
+        });
+    } else {
+        console.log("We are at UserCtrl");
+        var ref = new Firebase($scope.firebaseUrl);
+        
+        ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
+            var val = snapshot.val();
+            $scope.userInfo = {
+                userEmail : val.email,
+                userFullName: val.fullName,
+                userGroupID: val.groupId,
+                userIcNumber: val.icNumber,
+                userContactNumber: val.contactNumber
+            }
+        });
+
     }
 })

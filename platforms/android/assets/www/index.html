@@ -62,10 +62,10 @@
                 <ion-item nav-clear menu-close ng-click="aboutUs()">
                   About M-APAL
                 </ion-item>
-                <ion-item nav-clear menu-.close ng-click="myAccount()">
+                <ion-item nav-clear menu-.close ng-click="myAccount()" ng-show="showMyAccount">
                   My Account
                 </ion-item>
-                <ion-item nav-clear menu-close ng-click="logout()">
+                <ion-item nav-clear menu-close ng-click="logout()" ng-show="showLogout">
                   Logout
                 </ion-item>
               </ion-list>

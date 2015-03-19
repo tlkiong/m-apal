@@ -1,0 +1,32 @@
+<ion-view view-title="ACCOUNT SETTINGS">
+    <ion-content class="padding">
+        <div class="list card padding">
+        	<ul class="list">
+			    <li class="item">
+			    	<strong>Email: </strong>
+                	{{userInfo.userEmail}}
+			    </li>
+			    <li class="item">
+			    	<strong>Full Name: </strong>
+               		{{userInfo.userFullName}}
+			    </li>
+			    <li class="item">
+				    <strong>Group ID: </strong>
+                	{{userInfo.userGroupID}}
+			    </li>
+			    <li class="item">
+				    <strong>IC Number: </strong>
+                	{{userInfo.userIcNumber}}
+			    </li>
+			    <li class="item">
+			    	<strong>Contact Number: </strong>
+                	{{userInfo.userContactNumber}}
+			    </li>
+			</ul>
+            <button ng-click="showEditInformationModal()" class="button button-block button-positive activated">
+                Edit Information
+            </button>
+        </div>
+    </ion-content>
+</ion-view>
+

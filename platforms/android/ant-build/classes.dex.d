@@ -1,6 +1,6 @@
 C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes.dex : \
 C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes\com\ionicframework\ionicfirebase121384\BuildConfig.class \
-C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes\com\ionicframework\ionicfirebase121384\CordovaApp.class \
+C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes\com\ionicframework\ionicfirebase121384\MainActivity.class \
 C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes\com\ionicframework\ionicfirebase121384\R$attr.class \
 C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes\com\ionicframework\ionicfirebase121384\R$drawable.class \
 C:\Users\Kiong\Desktop\M-APAL\platforms\android\ant-build\classes\com\ionicframework\ionicfirebase121384\R$string.class \
