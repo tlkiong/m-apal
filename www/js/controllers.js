@@ -869,7 +869,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup){
+.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal){
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -883,6 +883,13 @@ angular.module("mapal.controllers", [])
         console.log("We are at UserCtrl");
         var ref = new Firebase($scope.firebaseUrl);
         
+        //editAccountSettingsModal
+        $ionicModal.fromTemplateUrl('templates/common/editAccountSettingsModal.html', {
+            scope: $scope
+        }).then(function (editAccountSettingsModal) {
+            $scope.editAccountSettingsModal = editAccountSettingsModal;
+        });
+
         ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
             var val = snapshot.val();
             $scope.userInfo = {
@@ -894,5 +901,35 @@ angular.module("mapal.controllers", [])
             }
         });
 
+        $scope.showEditInformationModal = function () {
+            $scope.editAccountSettingsModal.show();
+        }
+
+        $scope.updateAccountSettings = function (userInfo) {
+            console.log ("userInfo.userFullName: "+userInfo.userFullName);
+            console.log ("userInfo.userIcNumber: "+userInfo.userIcNumber);
+            console.log ("userInfo.userContactNumber: "+userInfo.userContactNumber);
+
+            ref.child("users").child($rootScope.userId).update({
+                fullName: userInfo.userFullName,
+                icNumber: userInfo.userIcNumber,
+                contactNumber: userInfo.userContactNumber
+            });
+            $scope.editAccountSettingsModal.hide();
+            //$scope.userInformation();
+        }
+
+        $scope.userInformation = function () {
+            ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
+                var val = snapshot.val();
+                $scope.userInfo = {
+                    userEmail : val.email,
+                    userFullName: val.fullName,
+                    userGroupID: val.groupId,
+                    userIcNumber: val.icNumber,
+                    userContactNumber: val.contactNumber
+                }
+            });
+        }
     }
 })

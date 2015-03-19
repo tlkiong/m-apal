@@ -1,29 +1,33 @@
-<ion-view view-title="ACCOUNT SETTINGS">
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">ACCOUNT SETTINGS</h1>
+        <button class="button button-clear button-primary" ng-click="closeGroupConfirmationModal.hide()">Cancel</button>
+    </ion-header-bar>
     <ion-content class="padding">
         <div class="list card padding">
             <label class="item item-input">
-                <span class="input-label">Email</span>
-                <input type="email" ng-model="user.emailAddress">
+                <strong>Email: </strong>
+                    {{userInfo.userEmail}}
+            </label>
+            <label class="item item-input">
+                <strong>Group ID: </strong>
+                    {{userInfo.userGroupID}}
             </label>
             <label class="item item-input">
                 <span class="input-label">Full Name</span>
-                <input type="password" ng-model="user.pwdForLogin">
-            </label>
-            <label class="item item-input">
-                <span class="input-label">Group ID</span>
-                <input type="password" ng-model="user.pwdForLogin">
-            </label>
-            <label class="item item-input">
-                <span class="input-label">IC Number</span>
-                <input type="password" ng-model="user.pwdForLogin">
+                <input ng-model="userInfo.userFullName" type="text">
             </label>
             <label class="item item-input">
                 <span class="input-label">Contact Number</span>
-                <input type="password" ng-model="user.pwdForLogin">
+                <input ng-model="userInfo.userContactNumber" type="text">
             </label>
-            <button ng-click="signIn(user)" class="button button-block button-positive activated">
+            <label class="item item-input">
+                <span class="input-label">IC Number</span>
+                <input ng-model="userInfo.userIcNumber" type="text">
+            </label>
+            <button ng-click="updateAccountSettings(userInfo)" class="button button-block button-positive activated">
                 Edit Information
             </button>
         </div>
     </ion-content>
-</ion-view>
+</ion-modal-view>
