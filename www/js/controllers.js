@@ -1,6 +1,6 @@
 angular.module("mapal.controllers", [])
 
-.controller("LoginCtrl", function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope) {
+.controller("LoginCtrl", function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope, $ionicPopup) {
 
     //For dropdown list items
     $scope.roles = [
@@ -13,47 +13,33 @@ angular.module("mapal.controllers", [])
     var ref = new Firebase($rootScope.firebaseUrl);
     var auth = $firebaseAuth(ref);
 
-    $ionicModal.fromTemplateUrl("templates/common/signup.html", {
+    $ionicModal.fromTemplateUrl("templates/common/forgotPasswordModal.html", {
         scope: $scope
-    }).then(function (modal) {
-        $scope.modal = modal;
+    }).then(function (forgotPasswordModal) {
+        $scope.forgotPasswordModal = forgotPasswordModal;
     });
 
-    $scope.createUser = function (user,Role) {
-        console.log("Create User Function called");
-
-        if(user.confirmPassword == user.cpassword) {
-            if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
-                $ionicLoading.show({
-                    template: 'Signing Up...'
-                });
-
-                auth.$createUser({
-                    email: user.emailAddress,
-                    password: user.password
-                }).then(function (userData) {
-                    alert("User created successfully!");
-
-                    ref.child("users").child(userData.uid).set({
-                        email: user.emailAddress,
-                        fullName: user.fullname,
-                        contactNumber: user.contactnumber,
-                        icNumber: user.icnumber,
-                        role: Role.types
-                    });
-                    
-                    $ionicLoading.hide();
-                    $scope.modal.hide();
-                }).catch(function (error) {
-                    alert("Error: " + error);
-                    $ionicLoading.hide();
-                });
-            } else{
-                alert("Please fill all details");
-            }
-        } else {
-            alert("Please make sure your password is the same");
-        }
+    $scope.resetPassword = function (emailAddress) {
+        $ionicLoading.show({
+            template: 'Sending Email...'
+        });
+        ref.resetPassword({
+            email : emailAddress
+          }, function(error) {
+          if (error === null) {
+            $ionicLoading.hide();
+            var alertPopup = $ionicPopup.alert({
+                title: "SUCCESS",
+                template: "Password reset email sent successfully"
+            });
+          } else {
+            $ionicLoading.hide();
+            var alertPopup = $ionicPopup.alert({
+                title: "ERROR",
+                template: "Error sending password reset email: " + error
+            });
+          }
+        });
     }
 
     $scope.signIn = function (user) {
@@ -680,7 +666,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("TaskCtrl", function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup) {
+.controller("TaskCtrl", function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup, $ionicLoading) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -724,10 +710,15 @@ angular.module("mapal.controllers", [])
         });
 
         if($rootScope.role != 'lecturer'){
+            $ionicLoading.show({
+                template: 'Getting Tasks...'
+            });
             ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
                 var val = snapshot.val();
                 $scope.myTask = val;
+                $ionicLoading.hide();
             });
+            
         }
 
         $scope.closeGroup = function(){
@@ -835,7 +826,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("StudentsCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("StudentsCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal, $firebaseAuth, $ionicLoading) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -847,6 +838,59 @@ angular.module("mapal.controllers", [])
         });
     } else {
         console.log("We are at StudentsCtrl");
+        $ionicModal.fromTemplateUrl("templates/common/registerUserModal.html", {
+            scope: $scope
+        }).then(function (registerUserModal) {
+            $scope.registerUserModal = registerUserModal;
+        });
+
+        //For dropdown list items
+        $scope.roles = [
+            {types:'student'},
+            {types:'leader'},
+            {types:'lecturer'}
+        ];
+        $scope.Role = $scope.roles[0]; // student
+
+        var ref = new Firebase($rootScope.firebaseUrl);
+        var auth = $firebaseAuth(ref);
+
+        $scope.createUser = function (user,Role) {
+            console.log("Create User Function called");
+
+            if(user.confirmPassword == user.password) {
+                if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
+                    $ionicLoading.show({
+                        template: 'Registering User...'
+                    });
+
+                    auth.$createUser({
+                        email: user.emailAddress,
+                        password: user.password
+                    }).then(function (userData) {
+                        alert("User created successfully!");
+
+                        ref.child("users").child(userData.uid).set({
+                            email: user.emailAddress,
+                            fullName: user.fullname,
+                            contactNumber: user.contactnumber,
+                            icNumber: user.icnumber,
+                            role: Role.types
+                        });
+                        
+                        $ionicLoading.hide();
+                        $scope.registerUserModal.hide();
+                    }).catch(function (error) {
+                        alert("Error: " + error);
+                        $ionicLoading.hide();
+                    });
+                } else{
+                    alert("Please fill all details");
+                }
+            } else {
+                alert("Please make sure your password is the same");
+            }
+        }
 
         
     }
@@ -869,7 +913,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal, $ionicHistory){
+.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal, $ionicHistory, $ionicLoading){
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -888,6 +932,10 @@ angular.module("mapal.controllers", [])
             scope: $scope
         }).then(function (editAccountSettingsModal) {
             $scope.editAccountSettingsModal = editAccountSettingsModal;
+        });
+
+        $ionicLoading.show({
+            template: 'Getting Account Information...'
         });
 
         ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
@@ -909,6 +957,7 @@ angular.module("mapal.controllers", [])
                 userIcNumber: val.icNumber,
                 userContactNumber: val.contactNumber
             }
+            $ionicLoading.hide();
         });
 
         $scope.showEditInformationModal = function () {
@@ -932,13 +981,23 @@ angular.module("mapal.controllers", [])
         $scope.userInformation = function () {
             ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
                 var val = snapshot.val();
-                $scope.userInfo = {
-                    userEmail : val.email,
-                    userFullName: val.fullName,
-                    userGroupID: val.groupId,
-                    userIcNumber: val.icNumber,
-                    userContactNumber: val.contactNumber
+                if($rootScope.role = "lecturer") {
+                    $scope.userInfo = {
+                        userEmail : val.email,
+                        userFullName: val.fullName,
+                        userIcNumber: val.icNumber,
+                        userContactNumber: val.contactNumber
+                    }
+                } else {
+                    $scope.userInfo = {
+                        userEmail : val.email,
+                        userFullName: val.fullName,
+                        userGroupID: val.groupId,
+                        userIcNumber: val.icNumber,
+                        userContactNumber: val.contactNumber
+                    }
                 }
+                
             });
         }
 
