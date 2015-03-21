@@ -10,7 +10,7 @@ angular.module("mapal.controllers", [])
     ];
     $scope.Role = $scope.roles[0]; // student
 
-    var ref = new Firebase($scope.firebaseUrl);
+    var ref = new Firebase($rootScope.firebaseUrl);
     var auth = $firebaseAuth(ref);
 
     $ionicModal.fromTemplateUrl("templates/common/signup.html", {
@@ -213,7 +213,7 @@ angular.module("mapal.controllers", [])
         });
         
 
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
 
         //Create new class
         $scope.createNewClassSchedule = function (userClass,day) {
@@ -379,7 +379,7 @@ angular.module("mapal.controllers", [])
         });
     } else {
         console.log("We are at GroupCtrl");
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
         ref.child("tasks").orderByChild("taskName").on("child_added", function (snapshot) {
             var value = snapshot.val();
         });
@@ -469,7 +469,7 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at ViewGroupMemberListCtrl");
 
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
 
         $scope.userList = [];
 
@@ -530,7 +530,7 @@ angular.module("mapal.controllers", [])
 
         $scope.groupList = [];
 
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
 
         ref.child("groups").orderByChild("groupName").on("child_added", function (snapshot) {
             var value = snapshot.val();
@@ -568,7 +568,7 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at TimelineController");
 
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
 
         $scope.mondayList = [];
         $scope.tuesdayList = [];
@@ -676,7 +676,7 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at DiscussionCtrl");
 
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
     }
 })
 
@@ -693,7 +693,7 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at TaskCtrl");
 
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
 
         //itemOptionModal
         $ionicModal.fromTemplateUrl('templates/common/taskItemOptionModal.html', {
@@ -869,7 +869,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal){
+.controller("AccountSettingsCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal, $ionicHistory){
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -881,7 +881,7 @@ angular.module("mapal.controllers", [])
         });
     } else {
         console.log("We are at UserCtrl");
-        var ref = new Firebase($scope.firebaseUrl);
+        var ref = new Firebase($rootScope.firebaseUrl);
         
         //editAccountSettingsModal
         $ionicModal.fromTemplateUrl('templates/common/editAccountSettingsModal.html', {
@@ -892,6 +892,16 @@ angular.module("mapal.controllers", [])
 
         ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
             var val = snapshot.val();
+
+            if($rootScope.role == "lecturer"){
+                $rootScope.showGroupId = false;
+            }
+
+            console.log("email: "+val.email);
+            console.log("fullName: "+val.fullName);
+            console.log("groupId: "+val.groupId);
+            console.log("icNumber: "+val.icNumber);
+            console.log("contactNumber: "+val.contactNumber);
             $scope.userInfo = {
                 userEmail : val.email,
                 userFullName: val.fullName,
@@ -931,5 +941,17 @@ angular.module("mapal.controllers", [])
                 }
             });
         }
+
+        $scope.back = function () {
+            $ionicHistory.goBack();
+        }  
     }
+})
+
+.controller("AboutUsCtrl", function ($scope, $rootScope, $state, $ionicHistory) {
+    console.log("We are at ReportCtrl");
+
+    $scope.back = function () {
+        $ionicHistory.goBack();
+    }   
 })

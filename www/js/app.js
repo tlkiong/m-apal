@@ -1,11 +1,10 @@
-var firebaseUrl = "https://tutorial-bucket-list.firebaseio.com/";
-
 function onDeviceReady() {
     angular.bootstrap(document, ["mapal"]);
 }
 //console.log("binding device ready");
 // Registering onDeviceReady callback with deviceready event
 document.addEventListener("deviceready", onDeviceReady, false);
+
 
 // 'mapal.services' is found in services.js
 // 'mapal.controllers' is found in controllers.js
@@ -25,8 +24,6 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
         // To Resolve Bug
         ionic.Platform.fullScreen();
-
-        $rootScope.firebaseUrl = firebaseUrl;
         $rootScope.displayName = null;
 
         $rootScope.showMyAccount = false;
@@ -75,6 +72,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
 
 .config(function ($stateProvider, $urlRouterProvider) {
     console.log("setting config");
+
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
@@ -85,32 +83,14 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state("login", {
         url: "/login",
         templateUrl: "./templates/common/login.html",
-        controller: "LoginCtrl",
-        resolve: {
-            // controller will not be loaded until $waitForAuth resolves
-            // Auth refers to our $firebaseAuth wrapper in the example above
-            "currentAuth": ["Auth",
-                function (Auth) {
-                    // $waitForAuth returns a promise so the resolve waits for it to complete
-                    return Auth.$waitForAuth();
-        }]
-        }
+        controller: "LoginCtrl"
     })
 
     // State to represent aboutUs View
     .state("aboutUs", {
         url: "/aboutUs",
         templateUrl: "./templates/common/aboutUs.html",
-        controller: "",
-        resolve: {
-            // controller will not be loaded until $waitForAuth resolves
-            // Auth refers to our $firebaseAuth wrapper in the example above
-            "currentAuth": ["Auth",
-                function (Auth) {
-                    // $waitForAuth returns a promise so the resolve waits for it to complete
-                    return Auth.$waitForAuth();
-        }]
-        }
+        controller: "AboutUsCtrl"
     })
     
 
@@ -129,7 +109,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }]
         }
     })
-    
+
     // State to represent studentAddClassSchedule View
     .state("studentAddClassSchedule", {
         url: "/common/studentAddClassSchedule",

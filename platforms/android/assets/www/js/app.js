@@ -1,5 +1,3 @@
-var firebaseUrl = "https://tutorial-bucket-list.firebaseio.com/";
-
 function onDeviceReady() {
     angular.bootstrap(document, ["mapal"]);
 }
@@ -7,12 +5,14 @@ function onDeviceReady() {
 // Registering onDeviceReady callback with deviceready event
 document.addEventListener("deviceready", onDeviceReady, false);
 
+
 // 'mapal.services' is found in services.js
 // 'mapal.controllers' is found in controllers.js
 angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controllers', 'mapal.services'])
 
 .run(function ($ionicPlatform, $rootScope, $location, Auth, $ionicLoading, $state) {
     $ionicPlatform.ready(function () {
+        console.log("here 1");
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
         if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -24,8 +24,6 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
         // To Resolve Bug
         ionic.Platform.fullScreen();
-
-        $rootScope.firebaseUrl = firebaseUrl;
         $rootScope.displayName = null;
 
         $rootScope.showMyAccount = false;
@@ -37,7 +35,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
             } else {
                 console.log("Logged out");
                 $ionicLoading.hide();
-                $location.path('/common/login');
+                $location.path("common/login");
             }
         });
 
@@ -56,6 +54,11 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
             $state.go('aboutUs');
         }
 
+        $rootScope.accountSettings = function () {
+            console.log ("Account settings btn clicked");
+            $state.go("accountSettings");
+        }
+
 
         $rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
             // We can catch the error thrown when the $requireAuth promise is rejected
@@ -69,6 +72,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
 
 .config(function ($stateProvider, $urlRouterProvider) {
     console.log("setting config");
+
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
@@ -79,23 +83,21 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     .state("login", {
         url: "/login",
         templateUrl: "./templates/common/login.html",
-        controller: "LoginCtrl",
-        resolve: {
-            // controller will not be loaded until $waitForAuth resolves
-            // Auth refers to our $firebaseAuth wrapper in the example above
-            "currentAuth": ["Auth",
-                function (Auth) {
-                    // $waitForAuth returns a promise so the resolve waits for it to complete
-                    return Auth.$waitForAuth();
-        }]
-        }
+        controller: "LoginCtrl"
     })
 
-    // State to represent Login View
+    // State to represent aboutUs View
     .state("aboutUs", {
         url: "/aboutUs",
-        templateUrl: "./templates/common/aboutUs.html",
-        controller: "",
+        templateUrl: "./templates/common/aboutUs.html"
+    })
+    
+
+    // State to represent accountSettings View
+    .state("accountSettings", {
+        url: "/accountSettings",
+        templateUrl: "./templates/common/accountSettings.html",
+        controller: "AccountSettingsCtrl",
         resolve: {
             // controller will not be loaded until $waitForAuth resolves
             // Auth refers to our $firebaseAuth wrapper in the example above

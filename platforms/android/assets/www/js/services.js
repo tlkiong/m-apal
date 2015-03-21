@@ -1,29 +1,16 @@
-angular.module('mapal.services', ['firebase'])
-    .factory("Auth", ["$firebaseAuth", "$rootScope",
-    function ($firebaseAuth, $rootScope) {
-            var ref = new Firebase(firebaseUrl);
+angular.module("mapal.services", ["firebase"])
+
+.constant("firebaseUrl", "https://tutorial-bucket-list.firebaseio.com/")
+
+.factory("Auth", ["$firebaseAuth", "$rootScope", "firebaseUrl",
+    function ($firebaseAuth, $rootScope, firebaseUrl) {
+    	$rootScope.firebaseUrl = firebaseUrl;
+            var ref = new Firebase($rootScope.firebaseUrl);
             return $firebaseAuth(ref);
 }])
 
-.factory('Chats', function ($firebase, Rooms) {
 
-})
 
-/**
- * Simple Service which returns Rooms collection as Array from Salesforce & binds to the Scope in Controller
- */
-.factory('ClassTimetable', function ($firebase) {
-    // Might use a resource here that returns a JSON array
-    var ref = new Firebase(firebaseUrl);
-    var classTimetable = $firebase(ref.child('users').startAt('kato@firebase.com').endAt('kato@firebase.com').once('value', show)).$asArray();
+.factory("Chats", function ($firebase, Rooms) {
 
-    return {
-        all: function () {
-            return rooms;
-        },
-        get: function (roomId) {
-            // Simple index lookup
-            return rooms.$getRecord(roomId);
-        }
-    }
-});
+}); 
