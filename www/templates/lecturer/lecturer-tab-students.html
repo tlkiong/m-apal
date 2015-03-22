@@ -3,9 +3,28 @@
       <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
 	<ion-content class="padding">
-        <button ng-click="registerUserModal.show()" class="button button-small button-outline icon-left ion-person-add button-positive">
+		<button class="button button-block button-royal icon-left ion-plus" ng-click="registerUserModal.show()">
             Create New User
         </button>
+        <!-- Leaders -->
+		<div class="item item-divider" align="center">
+	    	LEADERS
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in leaderList">
+		    	<span>{{ item.fullName }}</span>
+		    </ion-item>
+	    </ion-list>
+	    
+	    <!-- Students -->
+	    <div class="item item-divider" align="center">
+	    	STUDENTS
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in studentList">
+		    	<span>{{ item.fullName }}</span>
+		    </ion-item>
+	    </ion-list>
     </ion-content>
 
 

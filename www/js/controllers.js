@@ -366,9 +366,6 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at GroupCtrl");
         var ref = new Firebase($rootScope.firebaseUrl);
-        ref.child("tasks").orderByChild("taskName").on("child_added", function (snapshot) {
-            var value = snapshot.val();
-        });
         
         $scope.taskList = [];
 
@@ -854,6 +851,35 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
         var auth = $firebaseAuth(ref);
+
+        $scope.leaderList = [];
+        $scope.studentList = [];
+
+        ref.child("users").orderByChild("role").on("child_added", function (snapshot) {
+            var value = snapshot.val();
+            var role = value.role;
+            switch(role){
+                case "leader":{
+                    $scope.leaderList.push(value);
+                    console.log("leaderList= "+$scope.leaderList);
+                    console.log("here"+value.fullName);
+                    //TODO:
+                }
+                break;
+                case "student":{
+                   $scope.studentList.push(value);
+                   console.log("studentList= "+$scope.studentList);
+                   console.log("here"+value.fullName);
+                }
+                break;
+                case "lecturer":{
+                    console.log("Lecturer: " + role);
+                }
+                break;
+                default: console.log("ERROR!! Role: "+role);
+                break;
+            }
+        });
 
         $scope.createUser = function (user,Role) {
             console.log("Create User Function called");
