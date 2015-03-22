@@ -11,7 +11,7 @@
 	    	LEADERS
 	    </div>
 	    <ion-list>
-		    <ion-item ng-repeat="item in leaderList">
+		    <ion-item ng-repeat="item in leaderList" ng-click="showEditUserSettingsModal(item)" ng-tap="showEditUserSettingsModal(item)">
 		    	<span>{{ item.fullName }}</span>
 		    </ion-item>
 	    </ion-list>
@@ -21,7 +21,7 @@
 	    	STUDENTS
 	    </div>
 	    <ion-list>
-		    <ion-item ng-repeat="item in studentList">
+		    <ion-item ng-repeat="item in studentList" ng-click="showEditUserSettingsModal(item)" ng-tap="showEditUserSettingsModal(item)">
 		    	<span>{{ item.fullName }}</span>
 		    </ion-item>
 	    </ion-list>

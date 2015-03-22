@@ -2,14 +2,6 @@ angular.module("mapal.controllers", [])
 
 .controller("LoginCtrl", function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope, $ionicPopup) {
 
-    //For dropdown list items
-    $scope.roles = [
-        {types:'student'},
-        {types:'leader'},
-        {types:'lecturer'}
-    ];
-    $scope.Role = $scope.roles[0]; // student
-
     var ref = new Firebase($rootScope.firebaseUrl);
     var auth = $firebaseAuth(ref);
 
@@ -65,10 +57,12 @@ angular.module("mapal.controllers", [])
                         $rootScope.role = val.role;
                         $rootScope.classSchedule = val.classSchedule;
                         $rootScope.groupId = val.groupId;
+                        $rootScope.userId = authData.uid;
+                        $rootScope.signedIn = true;
+                        $rootScope.showMyAccount = true;
+                        $rootScope.showLogout = true;
                     });
-                    $rootScope.userId = authData.uid;
-                    $rootScope.signedIn = true;
-
+                    
                     console.log("Signed in Logged in as: " + String($rootScope.fullName));
                     console.log("Signed in ID: " + String($rootScope.userId));
                     console.log("Email Address: " + String($rootScope.emailAddress));
@@ -76,8 +70,6 @@ angular.module("mapal.controllers", [])
                     console.log("IC Number: " + String($rootScope.icNumber));
                     console.log("Role: " + String($rootScope.role));
                     
-                    $rootScope.showMyAccount = true;
-                    $rootScope.showLogout = true;
                     
                     if(String($rootScope.role) == 'student'){
                         console.log("role is student");
@@ -835,10 +827,19 @@ angular.module("mapal.controllers", [])
         });
     } else {
         console.log("We are at StudentsCtrl");
+        
+        //Register user
         $ionicModal.fromTemplateUrl("templates/common/registerUserModal.html", {
             scope: $scope
         }).then(function (registerUserModal) {
             $scope.registerUserModal = registerUserModal;
+        });
+
+        //Edit user settings
+        $ionicModal.fromTemplateUrl("templates/common/editUserSettingsModal.html", {
+            scope: $scope
+        }).then(function (editUserSettingsModal) {
+            $scope.editUserSettingsModal = editUserSettingsModal;
         });
 
         //For dropdown list items
@@ -852,34 +853,37 @@ angular.module("mapal.controllers", [])
         var ref = new Firebase($rootScope.firebaseUrl);
         var auth = $firebaseAuth(ref);
 
-        $scope.leaderList = [];
-        $scope.studentList = [];
-
-        ref.child("users").orderByChild("role").on("child_added", function (snapshot) {
-            var value = snapshot.val();
-            var role = value.role;
-            switch(role){
-                case "leader":{
-                    $scope.leaderList.push(value);
-                    console.log("leaderList= "+$scope.leaderList);
-                    console.log("here"+value.fullName);
-                    //TODO:
+        $scope.getStudentList = function () {
+            $scope.leaderList = [];
+            $scope.studentList = [];
+            ref.child("users").orderByChild("role").on("child_added", function (snapshot) {
+                var value = snapshot.val();
+                var role = value.role;
+                value.key = String(snapshot.key());
+                switch(role){
+                    case "leader":{
+                        $scope.leaderList.push(value);
+                    }
+                    break;
+                    case "student":{
+                       $scope.studentList.push(value);
+                    }
+                    break;
+                    case "lecturer":{
+                        console.log("Lecturer: " + role);
+                    }
+                    break;
+                    default: {
+                        console.log("ERROR!! Role: "+role);
+                        console.log("        key: "+value.key);
+                        for(var propertyName in role) {
+                           console.log("Object: "+role[propertyName]);
+                        }
+                    }
+                    break;
                 }
-                break;
-                case "student":{
-                   $scope.studentList.push(value);
-                   console.log("studentList= "+$scope.studentList);
-                   console.log("here"+value.fullName);
-                }
-                break;
-                case "lecturer":{
-                    console.log("Lecturer: " + role);
-                }
-                break;
-                default: console.log("ERROR!! Role: "+role);
-                break;
-            }
-        });
+            });
+        }
 
         $scope.createUser = function (user,Role) {
             console.log("Create User Function called");
@@ -916,9 +920,30 @@ angular.module("mapal.controllers", [])
             } else {
                 alert("Please make sure your password is the same");
             }
+        }  
+
+        $scope.showEditUserSettingsModal = function (userInformations) {
+            console.log("userInformations " + userInformations.key);
+            $scope.editUserSettingsModal.show();
+            $scope.userInformation = userInformations;
+            for (var i=0; i < $scope.roles.length; i++) {
+                console.log("Role out types: "+$scope.roles[i].types);
+                if($scope.roles[i].types == userInformations.role){
+                    $scope.Role = $scope.roles[i];
+                    console.log("Role: "+$scope.roles[i].types);
+                    break;
+                }
+            }
         }
 
-        
+        $scope.editStudentSetting = function (userInformation, Role) {
+            ref.child("users").child(userInformation.key).update({
+                role: Role.types
+            });
+            $scope.editUserSettingsModal.hide();
+            $scope.getStudentList();
+        }
+        $scope.getStudentList();
     }
 })
 
