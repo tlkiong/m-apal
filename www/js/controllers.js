@@ -707,12 +707,13 @@ angular.module("mapal.controllers", [])
                 $scope.myTask = val;
                 $ionicLoading.hide();
             });
-            
         }
 
-        $scope.closeGroup = function(){
+        $scope.closeGroup = function(grade){
+
             ref.child("groups").child($rootScope.groupId).update({
-                groupStatus: 'disabled'
+                groupStatus: 'disabled',
+                groupGrade: grade.toUpperCase()
             });
 
             ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {

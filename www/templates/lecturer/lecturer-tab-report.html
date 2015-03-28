@@ -2,4 +2,17 @@
 	<ion-nav-buttons side="right">
       <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
+	<ion-content class="padding">
+        <!-- Leaders -->
+		<div class="item item-divider" align="center">
+	    	GROUPS
+	    </div>
+	    <ion-list>
+		    <ion-item ng-repeat="item in groupList">
+		    	<span>{{ item.groupName }}</span>
+		    	<br>
+		    	<span>{{ item.groupGrade }}</span>
+		    </ion-item>
+	    </ion-list>
+    </ion-content>
 </ion-view>
