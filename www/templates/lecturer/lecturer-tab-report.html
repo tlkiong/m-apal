@@ -4,15 +4,19 @@
 	</ion-nav-buttons>
 	<ion-content class="padding">
         <!-- Leaders -->
-		<div class="item item-divider" align="center">
-	    	GROUPS
-	    </div>
+		
 	    <ion-list>
-		    <ion-item ng-repeat="item in groupList">
-		    	<span>{{ item.groupName }}</span>
-		    	<br>
-		    	<span>{{ item.groupGrade }}</span>
+		    <ion-item ng-repeat="item in groupTaskList">
+		    	<div class="item item-divider" align="center" ng-click="showGroupItem()" ng-tap="showGroupItem()">
+			    	<strong>{{item.taskName}}</strong>
+			    </div>
+			    <ion-item ng-repeat="groupItem in item.groupList" ng-show="showGroupItems" >
+			    	<span>{{ groupItem.groupName }}</span>
+		    		<span class="badge badge-assertive">{{ item.groupGrade }}</span>
+				</ion-item>
+		    	
 		    </ion-item>
 	    </ion-list>
+
     </ion-content>
 </ion-view>

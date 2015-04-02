@@ -448,6 +448,13 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
+    // State to represent aboutUs View
+    .state("tasksDetails", {
+        url: "/lecturer-task-details",
+        templateUrl: "./templates/lecturer/lecturer-task-details.html",
+        controller: "TaskCtrl"
+    })
+
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise("/login");
 

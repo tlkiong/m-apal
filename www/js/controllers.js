@@ -44,6 +44,25 @@ angular.module("mapal.controllers", [])
                 password: user.pwdForLogin
             }).then(function (authData) {
                 
+                var getServerTime = (function(ref) {
+                    var offset = 0;
+                    ref.child('.info/serverTimeOffset').on('value', function(snap) {
+                       offset = snap.val();
+                    });
+
+                    return function() {
+                       return Date.now() + offset;
+                    }
+                })(ref);
+                //getServerTime() returns time in ms. toUTCString() change it to eg: Tue, 31 Mar 2015 14:57:47 GMT
+                var estimatedServerTimeMs = new Date(getServerTime()); 
+                console.log("estimatedServerTimeMs: "+estimatedServerTimeMs);
+                var serverTime = estimatedServerTimeMs.toUTCString();
+                console.log("server time: "+serverTime);
+
+                
+                
+
                 // Get user data from Firebase
                 ref.child("users").child(authData.uid).once('value', function (snapshot) {
                     var val = snapshot.val();
@@ -381,7 +400,11 @@ angular.module("mapal.controllers", [])
                 startDate : group.startDate,
                 taskName : Task.taskName,
                 taskDescription : Task.taskDescription,
-                taskGuideline : "Empty guidelines first"
+                taskGuideline : "Empty guidelines first",
+                sprintPlanningTimeframe: group.sprintPlanningTimeframe,
+                scrumPlanningTimeframe: group.scrumPlanningTimeframe,
+                sprintReviewTimeframe: group.sprintReviewTimeframe,
+                sprintRetrospectiveTimeframe: group.sprintRetrospectiveTimeframe
             };
             $state.go('leader-confirmCreateGroup');
         }
@@ -396,7 +419,23 @@ angular.module("mapal.controllers", [])
                     groupTask: group.taskName,
                     groupTaskDescription: group.taskDescription,
                     groupTaskGuideline: group.taskGuideline,
-                    groupStatus: 'pending'
+                    groupStatus: "pending",
+                    sprintPlanning: {
+                        confirmedTime: "none",
+                        sprintPlanningTimeframe: group.sprintPlanningTimeframe
+                    },
+                    scrumPlanning: {
+                        confirmedTime: "none",
+                        scrumPlanningTimeframe: group.scrumPlanningTimeframe
+                    },
+                    sprintReview: {
+                        confirmedTime: "none",
+                        sprintReviewTimeframe: group.sprintReviewTimeframe
+                    },
+                    sprintRetrospective: {
+                        confirmedTime: "none",
+                        sprintRetrospectiveTimeframe: group.sprintRetrospectiveTimeframe
+                    }
                 });
                 ref.child("users").child($rootScope.userId).update({
                     groupId: groupRef.key()
@@ -461,18 +500,6 @@ angular.module("mapal.controllers", [])
             }
         });
 
-        // ref.child("groups").child($rootScope.groupId).child("groupStatus").on('child_changed', function(childSnapshot, prevChildName){
-        //     if(childSnapshot == "active"){
-        //         if($rootScope.role=="leader"){
-        //             $state.go('leader-tab.timeline');
-        //         } else if ($rootScope.role=="student"){
-        //             $state.go('student-tab.timeline');
-        //         } else {
-        //             console.log("is neither leader or student");
-        //         }
-        //     }
-        // });
-
         $scope.studentViewClassSchedule = function(){
             $state.go('studentViewClassSchedule')
         }
@@ -481,9 +508,19 @@ angular.module("mapal.controllers", [])
             $state.go('leaderViewClassSchedule')
         }
 
-        $scope.closeGroup = function () {
+        $scope.closeGroup = function (groupMemberInfo) {
+            $scope.members = [];
+            groupMemberInfo.forEach(function(element,index){
+                $scope.members.push(element.key);
+            });
+
+
             ref.child("groups").child($rootScope.groupId).update({
-                groupStatus: "active"
+                groupStatus: "active",
+                groupMembers: {
+                    members: $scope.members,
+                    noOfMembers: $scope.members.length
+                }
             });
             $state.go('leader-tab.timeline');
         }
@@ -545,21 +582,38 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
 
-        $scope.mondayList = [];
-        $scope.tuesdayList = [];
-        $scope.wednesdayList = [];
-        $scope.thursdayList = [];
-        $scope.fridayList = [];
+        $scope.initialise = function (){
+            $scope.mondayList = [];
+            $scope.tuesdayList = [];
+            $scope.wednesdayList = [];
+            $scope.thursdayList = [];
+            $scope.fridayList = [];
 
-        for (var i = 8; i < 19; i++){
-            $scope.mondayList.push(i);
-            $scope.tuesdayList.push(i);
-            $scope.wednesdayList.push(i);
-            $scope.thursdayList.push(i);
-            $scope.fridayList.push(i);
+            for (var i = 8; i < 19; i++){
+                $scope.mondayList.push(i);
+                $scope.tuesdayList.push(i);
+                $scope.wednesdayList.push(i);
+                $scope.thursdayList.push(i);
+                $scope.fridayList.push(i);
+            }
+            
+            var userList = [];
+            $scope.showSprintPlanningList = false;
+            $scope.showScrumPlanningList = false;
+            $scope.showSprintReviewList = false;
+            $scope.showSprintRetrospectiveList = false;
+            $scope.showConfirmedSprintPlanningTime = false;
+            $scope.showConfirmedScrumPlanningTime = false;
+            $scope.showConfirmedSprintReviewTime = false;
+            $scope.showConfirmedSprintRetrospectiveTime = false;
+
+            $scope.getGroupMembersId($rootScope.groupId);
+            $scope.getConfirmedTime();
         }
-        
-        var userList = [];
+
+        $scope.getConfirmedTime = function (){
+
+        }
 
         $scope.getUsersTimetable = function (userKey) {
             ref.child("users").child(userKey).child("classSchedule").orderByChild("classDay").on("child_added", function (snapshot) {
@@ -628,13 +682,47 @@ angular.module("mapal.controllers", [])
             });
         }
 
-        ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
-            var value = snapshot.val();
-            if(value.groupId == $rootScope.groupId){
-                value.key = String(snapshot.key());
-                $scope.getUsersTimetable(value.key);
+        $scope.getGroupMembersId = function(groupId){
+            ref.child("groups").child(groupId).child("groupMembers").child("members").on("child_added", function (snapshot) {
+                var value = snapshot.val();
+                console.log("value here: "+ value);
+                $scope.getUsersTimetable(value);
+            });
+        }
+
+        $scope.showSprintPlanning = function () {
+            if ($scope.showSprintPlanningList){
+                $scope.showSprintPlanningList=false;
+            } else {
+                $scope.showSprintPlanningList = true;
             }
-        });
+        }
+
+        $scope.showScrumPlanning = function () {
+            if ($scope.showScrumPlanningList){
+                $scope.showScrumPlanningList=false;
+            } else {
+                $scope.showScrumPlanningList = true;
+            }
+        }
+
+        $scope.showSprintReview = function () {
+            if ($scope.showSprintReviewList){
+                $scope.showSprintReviewList=false;
+            } else {
+                $scope.showSprintReviewList = true;
+            }
+        }
+
+        $scope.showSprintRetrospective = function () {
+            if ($scope.showSprintRetrospectiveList){
+                $scope.showSprintRetrospectiveList=false;
+            } else {
+                $scope.showSprintRetrospectiveList = true;
+            }
+        }
+
+        $scope.initialise();
     }
 })
 
@@ -744,9 +832,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.createTask = function (task) {
-            //$scope.getGuidelines(task);
-            
             console.log("we are in createTask!");
+            $scope.getGuidelines(task);
             ref.child("tasks").push({
                     taskName: task.taskName,
                     taskDescription: task.taskDescription
@@ -796,19 +883,26 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getGuidelines = function (task){
-            //TODO: for guidelines
-            // ref.child("guidelines").orderByChild("dataStructure").on("child_added", function (snapshot){
-            //     var value = snapshot.val();
-            //     if(value.dataStructure == task.taskName){
-            //         var array = task.taskDescription.split(' ');
+            ref.child("guidelines").orderByChild("dataStructure").on("child_added", function (snapshot){
+                var value = snapshot.val();
+                if(value.dataStructure == task.taskName){
+                    var array = task.taskDescription.split(' ');
 
-            //         for(var i = 0; i < array.length; i++){
-            //             console.log("array " + i + " = " + array[i]);
-            //         }
-            //     } else {
-            //         Console.log("takda takda");
-            //     }
-            // })
+                    for(var i = 0; i < array.length; i++){
+                        console.log("array " + i + " = " + array[i]);
+                    }
+                } else {
+                    Console.log("takda takda");
+                }
+            })
+        }
+
+        $scope.viewTaskDetails = function (task){
+            $scope.taskDetails = {
+                taskName: task.taskName,
+                taskDescription: task.taskDescription,
+                taskGuidelines: task.guidelines
+            }
         }
 
         $scope.getTaskCreated();
@@ -961,7 +1055,20 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at ReportCtrl");
 
-        
+        var ref = new Firebase($rootScope.firebaseUrl);
+
+        var groupTaskList = [];
+        var groupList = [];
+
+        $scope.initialise = function(){
+            $scope.showGroupItems = false;
+        }
+
+        $scope.showGroupItem = function(){
+            $scope.showGroupItems = true;
+        }
+
+        $scope.initialise();
     }
 })
 

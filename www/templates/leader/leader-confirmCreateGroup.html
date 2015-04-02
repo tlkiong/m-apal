@@ -12,13 +12,25 @@
                 <b>Task Name: </b>{{group.taskName}}
             </ion-item>
             <ion-item>
-                <b>Start Date: </b>{{group.startDate}}
-            </ion-item>
-            <ion-item>
                 <b>Task Description: </b>{{group.taskDescription}}
             </ion-item>
             <ion-item>
                 <b>Task Guideline: </b>{{group.taskGuideline}}
+            </ion-item>
+            <ion-item>
+                <b>Timeframe</b>
+            </ion-item>
+            <ion-item>
+                <b>Sprint Planning: </b>{{group.sprintPlanningTimeframe}}
+            </ion-item>
+            <ion-item>
+                <b>Scrum Planning: </b>{{group.scrumPlanningTimeframe}}
+            </ion-item>
+            <ion-item>
+                <b>Sprint Review: </b>{{group.sprintReviewTimeframe}}
+            </ion-item>
+            <ion-item>
+                <b>Sprint Retrospective: </b>{{group.sprintRetrospectiveTimeframe}}
             </ion-item>
         </ion-list>
         <button class="button button-full button-dark" ng-click="editCreateGroup(group)">Edit</button>

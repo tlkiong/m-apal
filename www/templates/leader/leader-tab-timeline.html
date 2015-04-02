@@ -4,123 +4,160 @@
 	</ion-nav-buttons>
 	<ion-content class="padding">
 		<!-- Sprint Planning -->
-		<div class="item item-divider">
+		<div class="item item-divider" align="center" ng-click="showSprintPlanning()" ng-tap="showSprintPlanning()">
 	    	Sprint Planning
 	    </div>
-	    <ion-list>
-		    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Monday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Tuesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Wednesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Thursday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Friday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    
+	    <div ng-show="showSprintPlanningList" class="item-accordion">
+		    <ion-list>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Monday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Tuesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Wednesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Thursday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Friday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+	    </div>
+	    <div ng-show="showConfirmedSprintPlanningTime">
+	    	<ul class="list">
+			    <li class="item">
+			      {{ confirmedSprintPlanningTime }}
+			    </li>
+			</ul>
+	    </div>
+
 	    <!-- Scrum Planning -->
-	    <div class="item item-divider">
+	    <div class="item item-divider" align="center" ng-click="showScrumPlanning()" ng-tap="showScrumPlanning()">
 	    	Scrum Planning
 	    </div>
-	    <ion-list>
-		    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Monday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Tuesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Wednesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Thursday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Friday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
+	    <div ng-show="showScrumPlanningList" class="item-accordion">
+		    <ion-list>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Monday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Tuesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Wednesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Thursday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Friday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		</div>
+		<div ng-show="showConfirmedScrumPlanningTime">
+	    	<ul class="list">
+			    <li class="item">
+			      {{ confirmedScrumPlanningTime }}
+			    </li>
+			</ul>
+	    </div>
 
 	    <!-- Sprint Review -->
-	    <div class="item item-divider">
+	    <div class="item item-divider" align="center" ng-click="showSprintReview()" ng-tap="showSprintReview()">
 	    	Sprint Review
 	    </div>
-	    <ion-list>
-		    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Monday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Tuesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Wednesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Thursday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Friday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
+	    <div ng-show="showSprintReviewList" class="item-accordion">
+		    <ion-list>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Monday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Tuesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Wednesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Thursday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Friday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		</div>
+		<div ng-show="showConfirmedSprintReviewTime">
+	    	<ul class="list">
+			    <li class="item">
+			      {{ confirmedSprintReviewTime }}
+			    </li>
+			</ul>
+	    </div>
 
 	    <!-- Sprint Retrospective -->
-	    <div class="item item-divider">
+	    <div class="item item-divider" align="center" ng-click="showSprintRetrospective()" ng-tap="showSprintRetrospective()">
 	    	Sprint Retrospective
 	    </div>
-	    <ion-list>
-		    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Monday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Tuesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Wednesday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Thursday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
-	    <ion-list>
-		    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-		    	<span>Friday - {{ item }}00H</span>
-		    </ion-item>
-	    </ion-list>
+	    <div ng-show="showSprintRetrospectiveList" class="item-accordion">
+		    <ion-list>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Monday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Tuesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Wednesday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Thursday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
+			    	<span>Friday - {{ item }}00H</span>
+			    </ion-item>
+		    </ion-list>
+		</div>
+		<div ng-show="showConfirmedSprintRetrospectiveTime">
+	    	<ul class="list">
+			    <li class="item">
+			      {{ confirmedSprintRetrospectiveTime }}
+			    </li>
+			</ul>
+	    </div>
+
 	</ion-content>
 </ion-view>

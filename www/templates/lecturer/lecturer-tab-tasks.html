@@ -12,20 +12,15 @@
                 <span class="input-label">Task Description</span>
                 <input ng-model="task.taskDescription" type="text"></select>
             </label>
-            <button class="button button-full button-positive" ng-click="createTask(task)">Create Task</button>
+            <button class="button button-full button-positive" ng-click="confirmCreateTask(task)">Create Task</button>
         </div>
 
         <div class="item item-divider">
 	    	ALL TASKS
 	    </div>
 	    <ion-list>
-		    <ion-item ng-repeat="item in taskList" ng-click="editTaskCreated(item)" ng-tap="editTaskCreated(item)">
+		    <ion-item ng-repeat="item in taskList" ng-click="viewTaskDetails(item)" ng-tap="viewTaskDetails(item)">
 		    	<span>Task Name: {{ item.taskName }}</span>
-				<br/> 
-		    	<span>Task Description: {{ item.taskDescription }}</span>
-				<br/>  
-				<span>Task Guidelines: {{ item.taskGuidelines }}</span>
-
 		    </ion-item>
 	    </ion-list>
     </ion-content>
