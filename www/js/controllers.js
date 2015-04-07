@@ -765,6 +765,20 @@ angular.module("mapal.controllers", [])
             $scope.taskItemOptionModal = taskItemOptionModal;
         });
 
+        //leacturerConfirmCreateTaskModal
+        $ionicModal.fromTemplateUrl('templates/lecturer/leacturerConfirmCreateTaskModal.html', {
+            scope: $scope
+        }).then(function (leacturerConfirmCreateTaskModal) {
+            $scope.leacturerConfirmCreateTaskModal = leacturerConfirmCreateTaskModal;
+        });
+
+        //lecturerCreateGuidelineModal
+        $ionicModal.fromTemplateUrl('templates/lecturer/lecturerCreateGuidelineModal.html', {
+            scope: $scope
+        }).then(function (lecturerCreateGuidelineModal) {
+            $scope.lecturerCreateGuidelineModal = lecturerCreateGuidelineModal;
+        });
+
         //editTaskModal
         $ionicModal.fromTemplateUrl('templates/common/editTaskModal.html', {
             scope: $scope
@@ -831,15 +845,103 @@ angular.module("mapal.controllers", [])
             }
         }
 
-        $scope.createTask = function (task) {
-            console.log("we are in createTask!");
-            $scope.getGuidelines(task);
-            ref.child("tasks").push({
-                    taskName: task.taskName,
-                    taskDescription: task.taskDescription
-                    //taskGuideline: guidelines
+        $scope.confirmCreateTask = function(task) {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+
+            ref.child("guidelines").child("amount").once('value', function (snapshot) {
+                if(snapshot.val()==null){
+                    $scope.numberOfGuidelines = 0;
+                    console.log("snapshot.val is null");
+                    $scope.lecturerCreateGuidelineModal.show();
+                } else if (snapshot.val()>=0) {
+                    $scope.numberOfGuidelines = snapshot.val();
+                    console.log("snapshot.val is: "+$scope.numberOfGuidelines);
+                    $scope.getGuidelines(task,$scope.numberOfGuidelines);
+                }
+            });
+        }
+
+        $scope.getGuidelines = function (task,guidelineNumber){
+            console.log("snapshot.val is: "+guidelineNumber);
+            var counter = 0;
+            if(guidelineNumber != 0){
+                ref.child("guidelines").orderByChild("keywords").on("child_added", function (snapshot) {
+                    var value = snapshot.val();
+                    value.key = String(snapshot.key());
+                    var keywords = value.keywords.split(",");
+                    if((counter==guidelineNumber)&&(!$scope.gotGuideline)){
+                        $ionicLoading.hide();
+
+                    }
+
+                    for(var i; i<keywords.length;i++){
+                        if(!~task.taskDescription.indexOf(keywords[i].trim())){
+                            break;
+                        }
+                        if(i==keywords.length-1){
+                            $rootScope.guidelines = value.guideline;
+                            $scope.gotGuideline = true;
+                            $ionicLoading.hide();
+
+                        }
+                    }
+                    counter++;
                 });
-            $scope.getTaskCreated();
+            }
+        }
+
+        $scope.createGuideline = function (guidelines){
+            var guidelineRef = ref.child("guidelines").push({
+                keywords: guidelines.keyword,
+                dataStructure: guidelines.dataStructure,
+                dataType: guidelines.dataType,
+                controlStructure: guidelines.controlStructure,
+                arithmeticExpression: guidelines.arithmeticExpression
+            });
+            if(guidelineRef.key()!=null){
+                ref.child("guidelines").child("amount").once('value', function (snapshot) {
+                    $scope.numberOfGuidelines = snapshot.val();
+                    
+                });
+
+                if($scope.numberOfGuidelines==null){
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                        }
+                    };
+                    ref.child("guidelines").child("amount").set({ amount: 0}, onComplete);
+                } else if ($scope.numberOfGuidelines>=0) {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                        }
+                    };
+                    ref.child("guidelines").set({ amount: $scope.numberOfGuidelines+1}, onComplete);
+                }
+
+                //Update task with the ID;
+            }
+            $rootScope.guidelineId = guidelineRef.key();
+        }
+
+        //TODO
+        // ref.child("tasks").push({
+        //         taskName: task.taskName,
+        //         taskDescription: task.taskDescription
+        //         //taskGuideline: guidelines
+        //     });
+        // $scope.getTaskCreated();
+
+        $scope.createTask = function () {
+            console.log("we are in createTask!");
+            $state.go("createTask");
         }
 
         $scope.getTaskCreated = function(){
@@ -861,7 +963,7 @@ angular.module("mapal.controllers", [])
         $scope.editTask = function(){
             $scope.taskItemOptionModal.hide();
             $scope.editTaskModal.show();
-            
+            $scope.taskItem = taskItem;
         }
 
         $scope.updateTaskItem = function(taskItem){
@@ -882,27 +984,14 @@ angular.module("mapal.controllers", [])
             $scope.taskItemOptionModal.hide();
         }
 
-        $scope.getGuidelines = function (task){
-            ref.child("guidelines").orderByChild("dataStructure").on("child_added", function (snapshot){
-                var value = snapshot.val();
-                if(value.dataStructure == task.taskName){
-                    var array = task.taskDescription.split(' ');
-
-                    for(var i = 0; i < array.length; i++){
-                        console.log("array " + i + " = " + array[i]);
-                    }
-                } else {
-                    Console.log("takda takda");
-                }
-            })
-        }
-
         $scope.viewTaskDetails = function (task){
-            $scope.taskDetails = {
+            console.log("task: "+task);
+            $rootScope.taskDetails = {
                 taskName: task.taskName,
                 taskDescription: task.taskDescription,
                 taskGuidelines: task.guidelines
             }
+            $state.go("tasksDetails");
         }
 
         $scope.getTaskCreated();

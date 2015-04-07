@@ -5,8 +5,10 @@
 	<ion-content class="padding">
 		<!-- Sprint Planning -->
 		<div class="item item-divider" align="center" ng-click="showSprintPlanning()" ng-tap="showSprintPlanning()">
+			<i class="icon" ng-class="(showSprintPlanningList||showConfirmedSprintPlanningTime) ? 'ion-minus' : 'ion-plus'"></i>
 	    	Sprint Planning
 	    </div>
+
 	    <div ng-show="showSprintPlanningList" class="item-accordion">
 		    <ion-list>
 			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">

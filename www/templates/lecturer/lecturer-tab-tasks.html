@@ -3,21 +3,11 @@
       <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
 	<ion-content class="padding">
-        <div class="list">
-            <label class="item item-input">
-                <span class="input-label">Task Name</span>
-                <input ng-model="task.taskName" type="text">
-            </label>
-            <label class="item item-input">
-                <span class="input-label">Task Description</span>
-                <input ng-model="task.taskDescription" type="text"></select>
-            </label>
-            <button class="button button-full button-positive" ng-click="confirmCreateTask(task)">Create Task</button>
-        </div>
-
+        <button class="button button-full button-positive" ng-click="createTask()">Create Task</button>
         <div class="item item-divider">
 	    	ALL TASKS
 	    </div>
+	    
 	    <ion-list>
 		    <ion-item ng-repeat="item in taskList" ng-click="viewTaskDetails(item)" ng-tap="viewTaskDetails(item)">
 		    	<span>Task Name: {{ item.taskName }}</span>

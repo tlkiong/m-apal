@@ -8,7 +8,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 // 'mapal.services' is found in services.js
 // 'mapal.controllers' is found in controllers.js
-angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controllers', 'mapal.services'])
+angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepicker', 'mapal.controllers', 'mapal.services'])
 
 .run(function ($ionicPlatform, $rootScope, $location, Auth, $ionicLoading, $state) {
     $ionicPlatform.ready(function () {
@@ -28,6 +28,9 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
 
         $rootScope.showMyAccount = false;
         $rootScope.showLogout = false;
+
+        $rootScope.date = new Date();
+        $rootScope.time = new Date();
 
         Auth.$onAuth(function (authData) {
             if (authData) {
@@ -448,12 +451,20 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
-    // State to represent aboutUs View
+    // State to represent tasksDetails View
     .state("tasksDetails", {
         url: "/lecturer-task-details",
         templateUrl: "./templates/lecturer/lecturer-task-details.html",
         controller: "TaskCtrl"
     })
+
+     // State to represent createTask View
+    .state("createTask", {
+        url: "/lecturer-createTask",
+        templateUrl: "./templates/lecturer/lecturer-createTask.html",
+        controller: "TaskCtrl"
+    })
+
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise("/login");

@@ -8,20 +8,30 @@
         <ion-nav-buttons side="right">
           <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
         </ion-nav-buttons>
-        <button class="button button-block button-royal icon-left ion-plus" ng-click="editTaskCreated(item)" ng-tap="editTaskCreated(item)">
-          Edit Task
-        </button>
-        <div class="list list-inset">
-          <div class="item">
-            
-          </div>
-
+        <div class="list card padding">
+          <ul class="list">
+            <li class="item">
+              <strong>Task Name: </strong>
+                      {{taskDetails.taskName}}
+            </li>
+            <li class="item">
+              <strong>Task Description: </strong><br>
+                    {{taskDetails.taskDescription}}
+            </li>
+            <li class="item" ng-show="showGroupId">
+              <strong>Task Guidelines: </strong><br>
+                <div class="card">
+                  <div class="item item-text-wrap">
+                    {{taskDetails.taskGuidelines}}
+                  </div>
+                </div>
+            </li>
+          </ul>
+              <button ng-click="editTask(taskDetails)" class="button button-block button-positive activated">
+                  Edit Task
+              </button>
         </div>
-<div class="card">
-  <div class="item item-text-wrap">
-    This is a basic Card which contains an item that has wrapping text.
-  </div>
-</div>
+
 
     </ion-content>
 </ion-view>

@@ -1,0 +1,30 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Confirm Create Task</h1>
+        <button class="button button-clear button-primary" ng-click="leacturerConfirmCreateTaskModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label"><strong>Task Name: </strong></span>
+                <input ng-model="taskItem.taskName" type="text" value="task.taskName">
+            </label>
+            <label class="item item-input">
+                <span class="input-label"><strong>Task Description: </strong></span>
+                <input ng-model="taskItem.taskDescription" type="text" value="task.taskDescription">
+            </label>
+            <label class="item item-input">
+                <span><strong><u>Task Guidelines: </u></strong></span>
+                <br>
+                <span><strong>  Data Structure: </strong></span>{{guidelines.dataStructure}}
+                <br>
+                <span><strong>  Data Type: </strong></span>{{guidelines.dataType}}
+                <br>
+                <span><strong>  Control Structure: </strong></span>{{guidelines.controlStructure}}
+                <br>
+                <span><strong>  Arithmetic Expression: </strong></span>{{guidelines.arithmeticExpression}}
+            </label>
+            <button class="button button-full button-positive" ng-click="confirmCreateTask(taskItem)">Confirm Create Task</button>
+        </div>
+    </ion-content>
+</ion-modal-view>
