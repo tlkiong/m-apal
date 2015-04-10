@@ -9,6 +9,9 @@
                 <b>Group Name: </b>{{group.groupName}}
             </ion-item>
             <ion-item>
+                <b>Meeting Venue: </b>{{group.venue}}
+            </ion-item>
+            <ion-item>
                 <b>Task Name: </b>{{group.taskName}}
             </ion-item>
             <ion-item>
@@ -17,7 +20,7 @@
             <ion-item>
                 <b>Task Guideline: </b>{{group.taskGuideline}}
             </ion-item>
-            <ion-item>
+            <!-- <ion-item>
                 <b>Timeframe</b>
             </ion-item>
             <ion-item>
@@ -31,7 +34,7 @@
             </ion-item>
             <ion-item>
                 <b>Sprint Retrospective: </b>{{group.sprintRetrospectiveTimeframe}}
-            </ion-item>
+            </ion-item> -->
         </ion-list>
         <button class="button button-full button-dark" ng-click="editCreateGroup(group)">Edit</button>
         <button class="button button-full button-positive" ng-click="confirmCreateGroup(group)">Confirm</button>

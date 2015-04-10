@@ -11,152 +11,273 @@
 
 	    <div ng-show="showSprintPlanningList" class="item-accordion">
 		    <ion-list>
-			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Monday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTime(item, springPlanningMondayDate)" ng-tap="selectDateTime(item, springPlanningMondayDate)">
+			    	<strong>({{springPlanningMondayDate}})</strong> Monday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintPlanningMondayCount">
+			    		<span class="badge badge-assertive">{{item.sprintPlanningMondayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Tuesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectDateTime(item, springPlanningTuesdayDate)" ng-tap="selectDateTime(item, springPlanningTuesdayDate)">
+			    	<strong>({{springPlanningTuesdayDate}})</strong> Tuesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintPlanningTuesdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintPlanningTuesdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Wednesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectDateTime(item, springPlanningWednesdayDate)" ng-tap="selectDateTime(item, springPlanningWednesdayDate)">
+			    	<strong>({{springPlanningWednesdayDate}})</strong> Wednesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintPlanningWednesdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintPlanningWednesdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Thursday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectDateTime(item, springPlanningThursdayDate)" ng-tap="selectDateTime(item, springPlanningThursdayDate)">
+			    	<strong>({{springPlanningThursdayDate}})</strong> Thursday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintPlanningThursdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintPlanningThursdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Friday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectDateTime(item, springPlanningFridayDate)" ng-tap="selectDateTime(item, springPlanningFridayDate)">
+			    	<strong>({{springPlanningFridayDate}})</strong> Friday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintPlanningFridayCount">
+			    		<span class="badge badge-assertive">{{item.sprintPlanningFridayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 	    </div>
 	    <div ng-show="showConfirmedSprintPlanningTime">
 	    	<ul class="list">
 			    <li class="item">
-			      {{ confirmedSprintPlanningTime }}
+			    	{{ confirmedSprintPlanningDate }}
+			    	<br>
+			    	{{ confirmedVenue }}
+			    	<br>
+			      	{{ confirmedSprintPlanningTime }}
 			    </li>
 			</ul>
 	    </div>
 
 	    <!-- Scrum Planning -->
 	    <div class="item item-divider" align="center" ng-click="showScrumPlanning()" ng-tap="showScrumPlanning()">
+	    	<i class="icon" ng-class="(showScrumPlanningList||showConfirmedScrumPlanningTime) ? 'ion-minus' : 'ion-plus'"></i>
 	    	Scrum Planning
 	    </div>
 	    <div ng-show="showScrumPlanningList" class="item-accordion">
+	    	<!-- Week 1 -->
 		    <ion-list>
-			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Monday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTime(item, scrumPlanningMondayDate1)" ng-tap="selectDateTime(item, scrumPlanningMondayDate1)">
+			    	<strong>({{scrumPlanningMondayDate1}})</strong> Monday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningMonday1Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningMonday1Count}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Tuesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectDateTime(item, scrumPlanningTuesdayDate1)" ng-tap="selectDateTime(item, scrumPlanningTuesdayDate1)">
+			    	<strong>({{scrumPlanningTuesdayDate1}})</strong> Tuesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningTuesday1Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningTuesday1Count}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Wednesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectDateTime(item, scrumPlanningWednesdayDate1)" ng-tap="selectDateTime(item, scrumPlanningWednesdayDate1)">
+			    	<strong>({{scrumPlanningWednesdayDate1}})</strong> Wednesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningWednesday1Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningWednesday1Count}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Thursday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectDateTime(item, scrumPlanningThursdayDate1)" ng-tap="selectDateTime(item, scrumPlanningThursdayDate1)">
+			    	<strong>({{scrumPlanningThursdayDate1}})</strong> Thursday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningThursday1Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningThursday1Count}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Friday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectDateTime(item, scrumPlanningFridayDate1)" ng-tap="selectDateTime(item, scrumPlanningFridayDate1)">
+			    	<strong>({{scrumPlanningFridayDate1}})</strong> Friday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningFriday1Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningFriday1Count}}</span>
+			    	</div>
+			    </ion-item>
+		    </ion-list>
+		    <!-- Week 2 -->
+		    <ion-list>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTime(item, scrumPlanningMondayDate2)" ng-tap="selectDateTime(item, scrumPlanningMondayDate2)">
+			    	<strong>({{scrumPlanningMondayDate2}})</strong> Monday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningMonday2Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningMonday2Count}}</span>
+			    	</div>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectDateTime(item, scrumPlanningTuesdayDate2)" ng-tap="selectDateTime(item, scrumPlanningTuesdayDate2)">
+			    	<strong>({{scrumPlanningTuesdayDate2}})</strong> Tuesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningTuesday2Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningTuesday2Count}}</span>
+			    	</div>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectDateTime(item, scrumPlanningWednesdayDate2)" ng-tap="selectDateTime(item, scrumPlanningWednesdayDate2)">
+			    	<strong>({{scrumPlanningWednesdayDate2}})</strong> Wednesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningWednesday2Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningWednesday2Count}}</span>
+			    	</div>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectDateTime(item, scrumPlanningThursdayDate2)" ng-tap="selectDateTime(item, scrumPlanningThursdayDate2)">
+			    	<strong>({{scrumPlanningThursdayDate2}})</strong> Thursday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningThursday2Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningThursday2Count}}</span>
+			    	</div>
+			    </ion-item>
+		    </ion-list>
+		    <ion-list>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectDateTime(item, scrumPlanningFridayDate2)" ng-tap="selectDateTime(item, scrumPlanningFridayDate2)">
+			    	<strong>({{scrumPlanningFridayDate2}})</strong> Friday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showScrumPlanningFriday2Count">
+			    		<span class="badge badge-assertive">{{item.scrumPlanningFriday2Count}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedScrumPlanningTime">
 	    	<ul class="list">
 			    <li class="item">
-			      {{ confirmedScrumPlanningTime }}
+			    	{{ confirmedScrumPlanningDate }}
+			    	<br>
+			    	{{ confirmedVenue }}
+			    	<br>
+			      	{{ confirmedScrumPlanningTime }}
 			    </li>
 			</ul>
 	    </div>
 
 	    <!-- Sprint Review -->
 	    <div class="item item-divider" align="center" ng-click="showSprintReview()" ng-tap="showSprintReview()">
+	    	<i class="icon" ng-class="(showSprintReviewList||showConfirmedSprintReviewTime) ? 'ion-minus' : 'ion-plus'"></i>
 	    	Sprint Review
 	    </div>
 	    <div ng-show="showSprintReviewList" class="item-accordion">
 		    <ion-list>
-			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Monday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTime(item, sprintReviewMondayDate)" ng-tap="selectDateTime(item, sprintReviewMondayDate)">
+			    	<strong>({{sprintReviewMondayDate}})</strong> Monday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintReviewMondayCount">
+			    		<span class="badge badge-assertive">{{item.sprintReviewMondayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Tuesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectDateTime(item, sprintReviewTuesdayDate)" ng-tap="selectDateTime(item, sprintReviewTuesdayDate)">
+			    	<strong>({{sprintReviewTuesdayDate}})</strong> Tuesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintReviewTuesdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintReviewTuesdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Wednesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectDateTime(item, sprintReviewWednesdayDate)" ng-tap="selectDateTime(item, sprintReviewWednesdayDate)">
+			    	<strong>({{sprintReviewWednesdayDate}})</strong> Wednesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintReviewWednesdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintReviewWednesdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Thursday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectDateTime(item, sprintReviewThursdayDate)" ng-tap="selectDateTime(item, sprintReviewThursdayDate)">
+			    	<strong>({{sprintReviewThursdayDate}})</strong> Thursday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintReviewThursdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintReviewThursdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Friday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectDateTime(item, sprintReviewFridayDate)" ng-tap="selectDateTime(item, sprintReviewFridayDate)">
+			    	<strong>({{sprintReviewFridayDate}})</strong> Friday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintReviewFridayCount">
+			    		<span class="badge badge-assertive">{{item.sprintReviewFridayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedSprintReviewTime">
 	    	<ul class="list">
 			    <li class="item">
-			      {{ confirmedSprintReviewTime }}
+			    	{{ confirmedSprintReviewDate }}
+			    	<br>
+			    	{{ confirmedVenue }}
+			    	<br>
+			      	{{ confirmedSprintReviewTime }}
 			    </li>
 			</ul>
 	    </div>
 
 	    <!-- Sprint Retrospective -->
 	    <div class="item item-divider" align="center" ng-click="showSprintRetrospective()" ng-tap="showSprintRetrospective()">
+	    	<i class="icon" ng-class="(showSprintRetrospectiveList||showConfirmedSprintRetrospectiveTime) ? 'ion-minus' : 'ion-plus'"></i>
 	    	Sprint Retrospective
 	    </div>
 	    <div ng-show="showSprintRetrospectiveList" class="item-accordion">
 		    <ion-list>
-			    <ion-item ng-repeat="item in mondayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Monday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTime(item, sprintRetrospectiveMondayDate)" ng-tap="selectDateTime(item, sprintRetrospectiveMondayDate)">
+			    	<strong>({{sprintRetrospectiveMondayDate}})</strong> Monday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintRetrospectiveMondayCount">
+			    		<span class="badge badge-assertive">{{item.sprintRetrospectiveMondayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Tuesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in tuesdayList" ng-click="selectDateTime(item, sprintRetrospectiveTuesdayDate)" ng-tap="selectDateTime(item, sprintRetrospectiveTuesdayDate)">
+			    	<strong>({{sprintRetrospectiveTuesdayDate}})</strong> Tuesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintRetrospectiveTuesdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintRetrospectiveTuesdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Wednesday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in wednesdayList" ng-click="selectDateTime(item, sprintRetrospectiveWednesdayDate)" ng-tap="selectDateTime(item, sprintRetrospectiveWednesdayDate)"> 
+			    	<strong>({{sprintRetrospectiveWednesdayDate}})</strong> Wednesday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintRetrospectiveWednesdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintRetrospectiveWednesdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in thursdayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Thursday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in thursdayList" ng-click="selectDateTime(item, sprintRetrospectiveThursdayDate)" ng-tap="selectDateTime(item, sprintRetrospectiveThursdayDate)">
+			    	<strong>({{sprintRetrospectiveThursdayDate}})</strong> Thursday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintRetrospectiveThursdayCount">
+			    		<span class="badge badge-assertive">{{item.sprintRetrospectiveThursdayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		    <ion-list>
-			    <ion-item ng-repeat="item in fridayList" ng-click="selectTime(item)" ng-tap="selectTime(item)">
-			    	<span>Friday - {{ item }}00H</span>
+			    <ion-item ng-repeat="item in fridayList" ng-click="selectDateTime(item, sprintRetrospectiveFridayDate)" ng-tap="selectDateTime(item, sprintRetrospectiveFridayDate)">
+			    	<strong>({{sprintRetrospectiveFridayDate}})</strong> Friday - {{ item.time }}00H    <strong> {{item.me}} </strong>
+			    	<div ng-show="showSprintRetrospectiveFridayCount">
+			    		<span class="badge badge-assertive">{{item.sprintRetrospectiveFridayCount}}</span>
+			    	</div>
 			    </ion-item>
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedSprintRetrospectiveTime">
 	    	<ul class="list">
 			    <li class="item">
-			      {{ confirmedSprintRetrospectiveTime }}
+			    	{{ confirmedSprintRetrospectiveDate }}
+			    	<br>
+			    	{{ confirmedVenue }}
+			    	<br>
+			      	{{ confirmedSprintRetrospectiveTime }}
 			    </li>
 			</ul>
 	    </div>

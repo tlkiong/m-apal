@@ -29,8 +29,26 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
         $rootScope.showMyAccount = false;
         $rootScope.showLogout = false;
 
-        $rootScope.date = new Date();
-        $rootScope.time = new Date();
+        // // $rootScope.date = new Date();
+        // $rootScope.date = "-";
+        // // $rootScope.time = new Date();
+        // $rootScope.time = "-";
+
+        $rootScope.dateOptions = {
+          format: 'yyyy-mm-dd', // ISO formatted date
+          onClose: function(e) {
+            // do something when the picker closes 
+            console.log("Date: "+e);
+          }
+        }
+
+        $rootScope.timeOptions = {
+          format: 'HH', // ISO formatted date
+          onClose: function(e) {
+            // do something when the picker closes 
+            console.log("Time: "+e);
+          }
+        }
 
         Auth.$onAuth(function (authData) {
             if (authData) {
@@ -458,10 +476,17 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
         controller: "TaskCtrl"
     })
 
-     // State to represent createTask View
+    // State to represent createTask View
     .state("createTask", {
         url: "/lecturer-createTask",
         templateUrl: "./templates/lecturer/lecturer-createTask.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent confirmCreateTask View
+    .state("confirmCreateTask", {
+        url: "/lecturer-confirmCreateTask",
+        templateUrl: "./templates/lecturer/lecturer-confirmCreateTask.html",
         controller: "TaskCtrl"
     })
 
