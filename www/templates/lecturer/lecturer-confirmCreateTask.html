@@ -4,14 +4,10 @@
     </ion-nav-buttons>
     <ion-content class="padding">
         <div class="list">
-            <label class="item item-input">
-                <span class="input-label"><strong>Task Name: </strong></span>
-                <input ng-model="taskItem.taskName" type="text" value="task.taskName">
-            </label>
-            <label class="item item-input">
-                <span class="input-label"><strong>Task Description: </strong></span>
-                <input ng-model="taskItem.taskDescription" type="text" value="task.taskDescription">
-            </label>
+            <span><strong>Task Name: </strong></span> {{task.taskName}}
+            <br>
+            <span><strong>Task Description: </strong></span> {{task.taskDescription}}
+            <br>
             <span><strong><u>Task Guidelines: </u></strong></span>
             <br>
             <span><strong>  Data Structure: </strong></span>{{guidelines.dataStructure}}
@@ -22,7 +18,7 @@
             <br>
             <span><strong>  Arithmetic Expression: </strong></span>{{guidelines.arithmeticExpression}}
             <!-- <button class="button button-full button-balanced" ng-click="showEditGuidelines(guidelines)">Edit Guidelines</button> -->
-            <button class="button button-full button-positive" ng-click="createTaskConfirmed(taskItem,guidelines)">Confirm Create Task</button>
+            <button class="button button-full button-positive" ng-click="createTaskConfirmed(task,guidelines)">Confirm Create Task</button>
         </div>
     </ion-content>
 </ion-view>

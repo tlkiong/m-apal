@@ -1390,7 +1390,6 @@ angular.module("mapal.controllers", [])
                                 if(i==keywords.length-1){
                                     $rootScope.guidelines = value;
                                     $ionicLoading.hide();
-                                    console.log("all ok but?");
                                     $state.go("confirmCreateTask");
                                 }
                             }
@@ -1407,7 +1406,7 @@ angular.module("mapal.controllers", [])
                     taskDescription: task.taskDescription,
                     taskGuideline: guidelines
                 });
-            $scope.getTaskCreated();
+            $state.go("lecturer-tab.tasks");
         }
 
         $scope.createGuideline = function (guidelines){
