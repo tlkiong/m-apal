@@ -1,8 +1,7 @@
-<ion-modal-view>
-    <ion-header-bar class="bar bar-header bar-positive">
-        <h1 class="title">Create Guideline</h1>
-        <button class="button button-clear button-primary" ng-click="lecturerCreateGuidelineModal.hide()">Cancel</button>
-    </ion-header-bar>
+<ion-view view-title="Create Guideline">
+	<ion-nav-buttons side="right">
+      <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
+    </ion-nav-buttons>
     <ion-content class="padding">
         <div class="list">
             <label class="item item-input">
@@ -32,4 +31,4 @@
             <button class="button button-full button-positive" ng-click="createGuideline(guidelines)">Create Guideline</button>
         </div>
     </ion-content>
-</ion-modal-view>
+</ion-view>

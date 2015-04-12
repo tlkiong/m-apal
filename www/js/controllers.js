@@ -1270,13 +1270,6 @@ angular.module("mapal.controllers", [])
             $scope.taskItemOptionModal = taskItemOptionModal;
         });
 
-        //lecturerCreateGuidelineModal
-        $ionicModal.fromTemplateUrl('templates/lecturer/lecturerCreateGuidelineModal.html', {
-            scope: $scope
-        }).then(function (lecturerCreateGuidelineModal) {
-            $scope.lecturerCreateGuidelineModal = lecturerCreateGuidelineModal;
-        });
-
         //editTaskModal
         $ionicModal.fromTemplateUrl('templates/common/editTaskModal.html', {
             scope: $scope
@@ -1364,7 +1357,8 @@ angular.module("mapal.controllers", [])
 
         $scope.getGuidelines = function (task, guidelineNumber){
             console.log("snapshot.val is: "+guidelineNumber);
-            var counter = 0;
+            var counter = 1;
+            var isExist= false;
             if(guidelineNumber > 0){
                 ref.child("guidelines").orderByChild("keywords").on("child_added", function (snapshot) {
                     var value = snapshot.val();
@@ -1374,26 +1368,24 @@ angular.module("mapal.controllers", [])
                         var keywordInString = String(value.keywords);
                         var keywords = keywordInString.split(",");
                         console.log ("keywords: "+keywords+" : keywordInString: "+keywordInString);
+                        for(i=0; i<keywords.length;i++){
+                            if(!~task.taskDescription.indexOf(keywords[i].trim())){
+                                console.log("don't exist?");
+                                break;
+                            }
 
-                        if(counter==guidelineNumber){
-                            $ionicLoading.hide();
-                            console.log ("here?");
-                            // create guidelines
-                        } else if (counter<guidelineNumber){
-                            for(i=0; i<keywords.length;i++){
-                                //If keyword don't exist in task description, stop checking
-                                if(!~task.taskDescription.indexOf(keywords[i].trim())){
-                                    console.log("don't exist?");
-                                    break;
-                                }
-
-                                if(i==keywords.length-1){
-                                    $rootScope.guidelines = value;
-                                    $ionicLoading.hide();
-                                    $state.go("confirmCreateTask");
-                                }
+                            if(i==keywords.length-1){
+                                $rootScope.guidelines = value;
+                                $ionicLoading.hide();
+                                $state.go("confirmCreateTask");
                             }
                         }
+
+                        if ((counter==guidelineNumber)&&(!isExist)){
+                            $ionicLoading.hide();
+                            $state.go("createGuideline");
+                        }
+
                         counter++;
                     }
                 });
@@ -1420,7 +1412,6 @@ angular.module("mapal.controllers", [])
                 controlStructure: guidelines.controlStructure,
                 arithmeticExpression: guidelines.arithmeticExpression
             });
-
             if(guidelineRef.key()!=null){
                 ref.child("guidelines").child("count").once('value', function (snapshot) {
                     $scope.numberOfGuidelines = snapshot.val();
@@ -1443,8 +1434,8 @@ angular.module("mapal.controllers", [])
                         };
                         ref.child("guidelines").set({ count: $scope.numberOfGuidelines+1}, onComplete);
                     }
-                    $scope.guidelines = guidelines;
-                    $scope.lecturerCreateGuidelineModal.hide();
+                    $rootScope.guidelines = guidelines;
+                    $ionicLoading.hide();
                     $state.go("confirmCreateTask");
                 });
                 
