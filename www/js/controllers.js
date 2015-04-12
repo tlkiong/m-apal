@@ -1263,13 +1263,6 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
 
-        //itemOptionModal
-        $ionicModal.fromTemplateUrl('templates/common/taskItemOptionModal.html', {
-            scope: $scope
-        }).then(function (taskItemOptionModal) {
-            $scope.taskItemOptionModal = taskItemOptionModal;
-        });
-
         //editTaskModal
         $ionicModal.fromTemplateUrl('templates/common/editTaskModal.html', {
             scope: $scope
@@ -1467,41 +1460,128 @@ angular.module("mapal.controllers", [])
             });
         }
 
-        $scope.editTaskCreated = function(taskItem){
-            $scope.taskItemOptionModal.show();
-            $scope.taskItem = taskItem;
-        }
-
-        $scope.editTask = function(){
-            $scope.taskItemOptionModal.hide();
+        $scope.editTask = function(task){
             $scope.editTaskModal.show();
-            $scope.taskItem = taskItem;
+            $scope.taskItem = task;
         }
 
         $scope.updateTaskItem = function(taskItem){
-            //$scope.getGuidelines(taskItem);
-            ref.child("tasks").child($scope.taskItem.key).update({
-                taskName: taskItem.taskName,
-                taskDescription: taskItem.taskDescription
-                //TODO:update guidelines too
+            ref.child("guidelines").child("count").once('value', function (snapshot) {
+                if(snapshot.val()==null){
+                    $scope.numberOfGuidelines = 0;
+                    console.log("snapshot.val is null");
+                    $ionicLoading.hide();
+                    $scope.lecturerCreateGuidelineModal.show();
+                } else if (snapshot.val()>=0) {
+                    $scope.numberOfGuidelines = snapshot.val();
+                    console.log("snapshot.val is: "+$scope.numberOfGuidelines);
+                    $scope.getGuidelinesUpdate(taskItem, $scope.numberOfGuidelines);
+                }
             });
-            $scope.getTaskCreated();
-            $scope.editTaskModal.hide();
         }
 
-        $scope.deleteTaskFromFirebase = function() {
+        $scope.getGuidelinesUpdate = function (task, guidelineNumber){
+            $rootScope.taskItems = task;
+            console.log("snapshot.val is: "+guidelineNumber);
+            var counter = 1;
+            var isExist= false;
+            if(guidelineNumber > 0){
+                ref.child("guidelines").orderByChild("keywords").on("child_added", function (snapshot) {
+                    var value = snapshot.val();
+                    value.key = String(snapshot.key());
+                   
+                    if((value.key != "count")&&(typeof value.keywords !== "undefined")){
+                        var keywordInString = String(value.keywords);
+                        var keywords = keywordInString.split(",");
+                        console.log ("keywords: "+keywords+" : keywordInString: "+keywordInString);
+                        for(i=0; i<keywords.length;i++){
+                            if(!~task.taskDescription.indexOf(keywords[i].trim())){
+                                console.log("don't exist?");
+                                break;
+                            }
+
+                            if(i==keywords.length-1){
+                                $rootScope.guidelines = value;
+                                $ionicLoading.hide();
+                                $state.go("confirmEditTask");
+                            }
+                        }
+
+                        if ((counter==guidelineNumber)&&(!isExist)){
+                            $ionicLoading.hide();
+                            $state.go("createGuidelineUpdate");
+                        }
+                        counter++;
+                    }
+                });
+            }
+        }
+
+        $scope.createGuidelineUpdate = function (guidelines){
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            var guidelineRef = ref.child("guidelines").push({
+                keywords: guidelines.keyword,
+                dataStructure: guidelines.dataStructure,
+                dataType: guidelines.dataType,
+                controlStructure: guidelines.controlStructure,
+                arithmeticExpression: guidelines.arithmeticExpression
+            });
+            if(guidelineRef.key()!=null){
+                ref.child("guidelines").child("count").once('value', function (snapshot) {
+                    $scope.numberOfGuidelines = snapshot.val();
+                    if($scope.numberOfGuidelines==null){
+                        var onComplete = function(error) {
+                            if (error) {
+                                console.log('Synchronization failed');
+                            } else {
+                                console.log('Synchronization succeeded');
+                            }
+                        };
+                        ref.child("guidelines").set({ count: 1}, onComplete);
+                    } else if ($scope.numberOfGuidelines>0) {
+                        var onComplete = function(error) {
+                            if (error) {
+                                console.log('Synchronization failed');
+                            } else {
+                                console.log('Synchronization succeeded');
+                            }
+                        };
+                        ref.child("guidelines").set({ count: $scope.numberOfGuidelines+1}, onComplete);
+                    }
+                    $rootScope.guidelines = guidelines;
+                    $ionicLoading.hide();
+                    $state.go("confirmEditTask");
+                });
+                
+                
+            }
+            $rootScope.guidelineId = guidelineRef.key();
+        }
+
+        $scope.updateTask = function(task,guidelines){
+            ref.child("tasks").child($scope.taskItem.key).update({
+                taskName: taskItem.taskName,
+                taskDescription: taskItem.taskDescription,
+                taskGuideline: guidelines
+            });
+            $state.go("lecturer-tab.tasks");
+        }
+
+        $scope.deleteTaskFromFirebase = function(task) {
             ref.child("tasks").child($scope.taskItem.key).remove();
             console.log($scope.taskItem.Key + " deleted");
-            $scope.getTaskCreated();
-            $scope.taskItemOptionModal.hide();
+            $state.go("lecturer-tab.tasks");
         }
 
         $scope.viewTaskDetails = function (task){
             console.log("task: "+task);
+            console.log("task.guidelines: "+task.taskGuideline.dataStructure);
             $rootScope.taskDetails = {
                 taskName: task.taskName,
                 taskDescription: task.taskDescription,
-                taskGuidelines: task.guidelines
+                taskGuideline: task.taskGuideline
             }
             $state.go("tasksDetails");
         }

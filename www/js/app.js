@@ -490,14 +490,27 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
         controller: "TaskCtrl"
     })
 
-
-    // State to represent confirmCreateTask View
+    // State to represent createGuideline View
     .state("createGuideline", {
         url: "/lecturer-createGuideline",
         templateUrl: "./templates/lecturer/lecturer-createGuideline.html",
         controller: "TaskCtrl"
     })
 
+    // State to represent confirmEditTask View
+    .state("confirmEditTask", {
+        url: "/lecturer-confirmEditTask",
+        templateUrl: "./templates/lecturer/lecturer-confirmEditTask.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent createGuidelineUpdate View
+    .state("createGuidelineUpdate", {
+        url: "/lecturer-createGuidelineUpdate",
+        templateUrl: "./templates/lecturer/lecturer-createGuidelineUpdate.html",
+        controller: "TaskCtrl"
+    })
+    
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise("/login");
 

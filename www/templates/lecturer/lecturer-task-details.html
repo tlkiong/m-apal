@@ -18,20 +18,30 @@
               <strong>Task Description: </strong><br>
                     {{taskDetails.taskDescription}}
             </li>
-            <li class="item" ng-show="showGroupId">
+            <li class="item">
               <strong>Task Guidelines: </strong><br>
                 <div class="card">
                   <div class="item item-text-wrap">
-                    {{taskDetails.taskGuidelines}}
+                    <span><strong>  Data Structure: </strong></span>{{taskDetails.taskGuideline.dataStructure}}
+                    <br>
+                    <span><strong>  Data Type: </strong></span>{{taskDetails.taskGuideline.dataType}}
+                    <br>
+                    <span><strong>  Control Structure: </strong></span>{{taskDetails.taskGuideline.controlStructure}}
+                    <br>
+                    <span><strong>  Arithmetic Expression: </strong></span>{{taskDetails.taskGuideline.arithmeticExpression}}
                   </div>
                 </div>
             </li>
           </ul>
-              <button ng-click="editTask(taskDetails)" class="button button-block button-positive activated">
-                  Edit Task
-              </button>
+            <button ng-click="editGuideline(taskDetails.taskGuideline)" class="button button-block button-positive activated">
+              Edit Guideline
+            </button>
+            <button ng-click="editTask(taskDetails)" class="button button-block button-positive activated">
+              Edit Task
+            </button>
+            <button ng-click="deleteTaskFromFirebase(taskDetails)" class="button button-block button-positive activated">
+              Delete Task
+            </button>
         </div>
-
-
     </ion-content>
 </ion-view>
