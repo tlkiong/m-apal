@@ -1339,7 +1339,7 @@ angular.module("mapal.controllers", [])
                     $scope.numberOfGuidelines = 0;
                     console.log("snapshot.val is null");
                     $ionicLoading.hide();
-                    $scope.lecturerCreateGuidelineModal.show();
+                    $state.go("createGuideline");
                 } else if (snapshot.val()>=0) {
                     $scope.numberOfGuidelines = snapshot.val();
                     console.log("snapshot.val is: "+$scope.numberOfGuidelines);
@@ -1356,7 +1356,7 @@ angular.module("mapal.controllers", [])
                 ref.child("guidelines").orderByChild("keywords").on("child_added", function (snapshot) {
                     var value = snapshot.val();
                     value.key = String(snapshot.key());
-                   
+                   console.log("counter:"+value.keywords);
                     if((value.key != "count")&&(typeof value.keywords !== "undefined")){
                         var keywordInString = String(value.keywords);
                         var keywords = keywordInString.split(",");
@@ -1375,6 +1375,7 @@ angular.module("mapal.controllers", [])
                         }
 
                         if ((counter==guidelineNumber)&&(!isExist)){
+                            console.log("here???");
                             $ionicLoading.hide();
                             $state.go("createGuideline");
                         }
@@ -1398,13 +1399,15 @@ angular.module("mapal.controllers", [])
             $ionicLoading.show({
                 template: 'Loading...'
             });
+
             var guidelineRef = ref.child("guidelines").push({
                 keywords: guidelines.keyword,
                 dataStructure: guidelines.dataStructure,
                 dataType: guidelines.dataType,
                 controlStructure: guidelines.controlStructure,
                 arithmeticExpression: guidelines.arithmeticExpression
-            });
+            })
+
             if(guidelineRef.key()!=null){
                 ref.child("guidelines").child("count").once('value', function (snapshot) {
                     $scope.numberOfGuidelines = snapshot.val();
@@ -1416,7 +1419,7 @@ angular.module("mapal.controllers", [])
                                 console.log('Synchronization succeeded');
                             }
                         };
-                        ref.child("guidelines").set({ count: 1}, onComplete);
+                        ref.child("guidelines").child("count").set(1, onComplete);
                     } else if ($scope.numberOfGuidelines>0) {
                         var onComplete = function(error) {
                             if (error) {
@@ -1425,7 +1428,7 @@ angular.module("mapal.controllers", [])
                                 console.log('Synchronization succeeded');
                             }
                         };
-                        ref.child("guidelines").set({ count: $scope.numberOfGuidelines+1}, onComplete);
+                        ref.child("guidelines").child("count").set($scope.numberOfGuidelines+1, onComplete);
                     }
                     $rootScope.guidelines = guidelines;
                     $ionicLoading.hide();
@@ -1439,9 +1442,9 @@ angular.module("mapal.controllers", [])
 
 
 
-        $scope.showEditGuidelines = function (guidelines) {
-            $scope.guidelines = guidelines;
-
+        $scope.showEditGuidelines = function (task) {
+            $rootScope.task = task;
+            $state.go("createGuideline");
         }
 
         $scope.createTask = function () {
@@ -1466,6 +1469,7 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.updateTaskItem = function(taskItem){
+            $scope.editTaskModal.hide();
             ref.child("guidelines").child("count").once('value', function (snapshot) {
                 if(snapshot.val()==null){
                     $scope.numberOfGuidelines = 0;
@@ -1521,12 +1525,20 @@ angular.module("mapal.controllers", [])
             $ionicLoading.show({
                 template: 'Loading...'
             });
-            var guidelineRef = ref.child("guidelines").push({
+            var refs = ref.child("guidelines");
+
+            var guidelineRef = refs.push({
                 keywords: guidelines.keyword,
                 dataStructure: guidelines.dataStructure,
                 dataType: guidelines.dataType,
                 controlStructure: guidelines.controlStructure,
                 arithmeticExpression: guidelines.arithmeticExpression
+            });
+
+            
+            var newPostRef = postsRef.push({
+              author: "gracehop",
+              title: "Announcing COBOL, a New Programming Language"
             });
             if(guidelineRef.key()!=null){
                 ref.child("guidelines").child("count").once('value', function (snapshot) {
@@ -1567,6 +1579,11 @@ angular.module("mapal.controllers", [])
                 taskGuideline: guidelines
             });
             $state.go("lecturer-tab.tasks");
+        }
+
+        $scope.editGuideline = function(guideline){
+            $rootScope.guidelines=guideline;
+            $state.go("")
         }
 
         $scope.deleteTaskFromFirebase = function(task) {
