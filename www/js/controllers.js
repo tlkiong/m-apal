@@ -1525,21 +1525,15 @@ angular.module("mapal.controllers", [])
             $ionicLoading.show({
                 template: 'Loading...'
             });
-            var refs = ref.child("guidelines");
 
-            var guidelineRef = refs.push({
+            var guidelineRef = ref.child("guidelines").push({
                 keywords: guidelines.keyword,
                 dataStructure: guidelines.dataStructure,
                 dataType: guidelines.dataType,
                 controlStructure: guidelines.controlStructure,
                 arithmeticExpression: guidelines.arithmeticExpression
-            });
+            })
 
-            
-            var newPostRef = postsRef.push({
-              author: "gracehop",
-              title: "Announcing COBOL, a New Programming Language"
-            });
             if(guidelineRef.key()!=null){
                 ref.child("guidelines").child("count").once('value', function (snapshot) {
                     $scope.numberOfGuidelines = snapshot.val();
@@ -1587,20 +1581,27 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.deleteTaskFromFirebase = function(task) {
-            ref.child("tasks").child($scope.taskItem.key).remove();
-            console.log($scope.taskItem.Key + " deleted");
+            ref.child("tasks").child(task.key).remove();
+            console.log(task.Key + " deleted");
+            alert(task.taskName + " deleted~");
             $state.go("lecturer-tab.tasks");
         }
 
         $scope.viewTaskDetails = function (task){
-            console.log("task: "+task);
+            console.log("task: "+task.key);
             console.log("task.guidelines: "+task.taskGuideline.dataStructure);
             $rootScope.taskDetails = {
+                key: task.key,
                 taskName: task.taskName,
                 taskDescription: task.taskDescription,
                 taskGuideline: task.taskGuideline
             }
+
             $state.go("tasksDetails");
+        }
+
+        $scope.goBack = function(){
+            $ionicHistory.goBack()
         }
 
         $scope.getTaskCreated();
