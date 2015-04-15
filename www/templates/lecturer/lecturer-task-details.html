@@ -1,6 +1,6 @@
 <ion-view view-title="TASK DETAILS">
     <ion-nav-buttons side="right">
-      <button class="button" ng-click="back()">
+      <button class="button" ng-click="goBack()">
         Go Back
       </button>
     </ion-nav-buttons>
@@ -33,7 +33,7 @@
                 </div>
             </li>
           </ul>
-            <button ng-click="editGuideline(taskDetails.taskGuideline)" class="button button-block button-positive activated">
+            <button ng-click="editGuideline(taskDetails)" class="button button-block button-positive activated">
               Edit Guideline
             </button>
             <button ng-click="editTask(taskDetails)" class="button button-block button-positive activated">

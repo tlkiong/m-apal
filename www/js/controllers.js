@@ -1248,7 +1248,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("TaskCtrl", function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup, $ionicLoading) {
+.controller("TaskCtrl", function ($scope, $rootScope, $state,  $ionicModal, $ionicPopup, $ionicLoading, $ionicHistory) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -1545,7 +1545,7 @@ angular.module("mapal.controllers", [])
                                 console.log('Synchronization succeeded');
                             }
                         };
-                        ref.child("guidelines").set({ count: 1}, onComplete);
+                        ref.child("guidelines").child("count").set(1, onComplete);
                     } else if ($scope.numberOfGuidelines>0) {
                         var onComplete = function(error) {
                             if (error) {
@@ -1554,14 +1554,12 @@ angular.module("mapal.controllers", [])
                                 console.log('Synchronization succeeded');
                             }
                         };
-                        ref.child("guidelines").set({ count: $scope.numberOfGuidelines+1}, onComplete);
+                        ref.child("guidelines").child("count").set($scope.numberOfGuidelines+1, onComplete);
                     }
                     $rootScope.guidelines = guidelines;
                     $ionicLoading.hide();
                     $state.go("confirmEditTask");
                 });
-                
-                
             }
             $rootScope.guidelineId = guidelineRef.key();
         }
@@ -1601,7 +1599,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.goBack = function(){
-            $ionicHistory.goBack()
+            console.log("goback fired");
+            $ionicHistory.goBack();
         }
 
         $scope.getTaskCreated();
