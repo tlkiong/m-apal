@@ -1565,9 +1565,9 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.updateTask = function(task,guidelines){
-            ref.child("tasks").child($scope.taskItem.key).update({
-                taskName: taskItem.taskName,
-                taskDescription: taskItem.taskDescription,
+            ref.child("tasks").child(task.key).update({
+                taskName: task.taskName,
+                taskDescription: task.taskDescription,
                 taskGuideline: guidelines
             });
             $state.go("lecturer-tab.tasks");
@@ -1760,6 +1760,11 @@ angular.module("mapal.controllers", [])
 
         $scope.initialise = function(){
             $scope.showGroupItems = false;
+            $scope.getTaskList();
+        }
+
+        $scope.getTaskList = function(){
+            
         }
 
         $scope.showGroupItem = function(){
