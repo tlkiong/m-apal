@@ -18,23 +18,20 @@
                 <b>Task Description: </b>{{group.taskDescription}}
             </ion-item>
             <ion-item>
-                <b>Task Guideline: </b>{{group.taskGuideline}}
-            </ion-item>
-            <!-- <ion-item>
-                <b>Timeframe</b>
+                <b>Task Guidelines: ~~</b>
             </ion-item>
             <ion-item>
-                <b>Sprint Planning: </b>{{group.sprintPlanningTimeframe}}
+                <b>     Data Structure: </b>{{group.taskGuideline.dataStructure}}
             </ion-item>
             <ion-item>
-                <b>Scrum Planning: </b>{{group.scrumPlanningTimeframe}}
+                <b>     Data Type: </b>{{group.taskGuideline.dataType}}
             </ion-item>
             <ion-item>
-                <b>Sprint Review: </b>{{group.sprintReviewTimeframe}}
+                <b>     Control Structure: </b>{{group.taskGuideline.controlStructure}}
             </ion-item>
             <ion-item>
-                <b>Sprint Retrospective: </b>{{group.sprintRetrospectiveTimeframe}}
-            </ion-item> -->
+                <b>     Arithmetic Expression: </b>{{group.taskGuideline.arithmeticExpression}}
+            </ion-item>
         </ion-list>
         <button class="button button-full button-dark" ng-click="editCreateGroup(group)">Edit</button>
         <button class="button button-full button-positive" ng-click="confirmCreateGroup(group)">Confirm</button>

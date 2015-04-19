@@ -400,6 +400,7 @@ angular.module("mapal.controllers", [])
                     groupTaskDescription: group.taskDescription,
                     groupTaskGuideline: group.taskGuideline,
                     groupVenue: group.venue,
+                    groupNoOfMembers: 1,
                     groupStatus: "pending"
                 });
                 ref.child("users").child($rootScope.userId).update({
@@ -540,14 +541,17 @@ angular.module("mapal.controllers", [])
                         //Do something?
                     });
                 } else if ((value < 5)&&(value > 0)){
-                    $scope.groupJoin(item);
+                    $scope.groupJoin(item,value);
                 }
             });
         }
 
-        $scope.groupJoin = function(item){
+        $scope.groupJoin = function(item,noOfMembers){
             ref.child("users").child($rootScope.userId).update({
                 groupId: item.key
+            });
+            ref.child("groups").child(item.key).update({
+                groupNoOfMembers: noOfMembers+1,
             });
             $rootScope.groupId = item.key;
             $state.go('student-viewGroupMemberList');
@@ -1570,18 +1574,22 @@ angular.module("mapal.controllers", [])
                 taskDescription: task.taskDescription,
                 taskGuideline: guidelines
             });
+            $scope.taskList.length = 0;
+            $scope.getTaskCreated();
             $state.go("lecturer-tab.tasks");
         }
 
         $scope.editGuideline = function(guideline){
             $rootScope.guidelines=guideline;
-            $state.go("")
+            $state.go("editGuideline");
         }
 
         $scope.deleteTaskFromFirebase = function(task) {
             ref.child("tasks").child(task.key).remove();
             console.log(task.Key + " deleted");
             alert(task.taskName + " deleted~");
+            $scope.taskList.length = 0;
+            $scope.getTaskCreated();
             $state.go("lecturer-tab.tasks");
         }
 

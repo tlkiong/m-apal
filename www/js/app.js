@@ -511,6 +511,13 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
         controller: "TaskCtrl"
     })
     
+    // State to represent editGuideline View
+    .state("editGuideline", {
+        url: "/lecturer-editGuideline",
+        templateUrl: "./templates/lecturer/lecturer-editGuideline.html",
+        controller: "TaskCtrl"
+    })
+    
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise("/login");
 
