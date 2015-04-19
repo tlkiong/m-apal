@@ -231,8 +231,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getClassTimetable = function(userID,classAdded){
-            var classRef = ref.child("users").child(userID).child("classSchedule");
             if(classAdded){
+                var classRef = ref.child("users").child(userID).child("classSchedule");
                     $scope.showDoneBtn = true;
                     $scope.mondayList = [];
                     $scope.tuesdayList = [];
@@ -282,12 +282,19 @@ angular.module("mapal.controllers", [])
                         }
                     });
                 } else {
-                    var alertPopup = $ionicPopup.alert({
-                        title: "Error",
-                        template: "Please fill in at least one class schedule first"
-                    });
-                    alertPopup.then(function(res) {
-                        //Do something?
+                    ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
+                        var value = snapshot.val();
+                        if (value != null){
+                            $scope.getClassTimetable($rootScope.userId,true);
+                        } else {
+                            var alertPopup = $ionicPopup.alert({
+                                title: "Error",
+                                template: "Please fill in at least one class schedule first"
+                            });
+                            alertPopup.then(function(res) {
+                                //Do something?
+                            });
+                        }
                     });
                 }
         }
