@@ -161,7 +161,7 @@ angular.module("mapal.controllers", [])
     } else {
         console.log("We are at AddClassScheduleCtrl");
         console.log("email Address: "+String($rootScope.emailAddress));
-
+        $scope.showDoneBtn = false;
         //For dropdown list day items
         $scope.days = [
             {named:'Monday'},
@@ -232,52 +232,65 @@ angular.module("mapal.controllers", [])
 
         $scope.getClassTimetable = function(userID){
             var classRef = ref.child("users").child(userID).child("classSchedule");
-
-            $scope.mondayList = [];
-            $scope.tuesdayList = [];
-            $scope.wednesdayList = [];
-            $scope.thursdayList = [];
-            $scope.fridayList = [];
-            $scope.saturdayList = [];
-            $scope.sundayList = [];
-
-            classRef.orderByChild("classDay").on("child_added", function (snapshot) {
+            classRef.once('value', function (snapshot) {
                 var value = snapshot.val();
-                var dayOfClass = value.classDay;
-                value.key = String(snapshot.key());
+                if(value != null){
+                    $scope.showDoneBtn = true;
+                    $scope.mondayList = [];
+                    $scope.tuesdayList = [];
+                    $scope.wednesdayList = [];
+                    $scope.thursdayList = [];
+                    $scope.fridayList = [];
+                    $scope.saturdayList = [];
+                    $scope.sundayList = [];
 
-                //will have different list for different days.
-                switch(dayOfClass){
-                    case "Friday":{
-                        $scope.fridayList.push(value);
-                    }
-                    break;
-                    case "Monday":{
-                        $scope.mondayList.push(value);
-                    }
-                    break;
-                    case "Tuesday":{
-                        $scope.tuesdayList.push(value);
-                    }
-                    break;
-                    case "Thursday":{
-                        $scope.thursdayList.push(value);
-                    }
-                    break;
-                    case "Wednesday":{
-                        $scope.wednesdayList.push(value);
-                    }
-                    break;
-                    case "Saturday":{
-                        $scope.saturdayList.push(value);
-                    }
-                    break;
-                    case "Sunday":{
-                        $scope.sundayList.push(value);
-                    }
-                    break;
-                    default: console.log("ERROR!! dayOfClass: "+dayOfClass);
-                    break;
+                    classRef.orderByChild("classDay").on("child_added", function (snapshot) {
+                        var value = snapshot.val();
+                        var dayOfClass = value.classDay;
+                        value.key = String(snapshot.key());
+
+                        //will have different list for different days.
+                        switch(dayOfClass){
+                            case "Friday":{
+                                $scope.fridayList.push(value);
+                            }
+                            break;
+                            case "Monday":{
+                                $scope.mondayList.push(value);
+                            }
+                            break;
+                            case "Tuesday":{
+                                $scope.tuesdayList.push(value);
+                            }
+                            break;
+                            case "Thursday":{
+                                $scope.thursdayList.push(value);
+                            }
+                            break;
+                            case "Wednesday":{
+                                $scope.wednesdayList.push(value);
+                            }
+                            break;
+                            case "Saturday":{
+                                $scope.saturdayList.push(value);
+                            }
+                            break;
+                            case "Sunday":{
+                                $scope.sundayList.push(value);
+                            }
+                            break;
+                            default: console.log("ERROR!! dayOfClass: "+dayOfClass);
+                            break;
+                        }
+                    });
+                } else {
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Error",
+                        template: "Please fill in at least one class schedule first"
+                    });
+                    alertPopup.then(function(res) {
+                        //Do something?
+                    });
                 }
             });
         }
