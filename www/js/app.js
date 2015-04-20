@@ -50,7 +50,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
           }
         }
     
-        $scope.createUser = function (user,Role) {
+        $rootScope.createUser = function (user,Role) {
             console.log("Create User Function called");
 
             if(user.confirmPassword == user.password) {
