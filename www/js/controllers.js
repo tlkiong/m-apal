@@ -17,7 +17,13 @@ angular.module("mapal.controllers", [])
         }).then(function (registerUserModal) {
             $scope.registerUserModal = registerUserModal;
         });
-        
+        //For dropdown list items
+        $scope.roles = [
+            {types:'student'},
+            {types:'leader'},
+            {types:'lecturer'}
+        ];
+        $scope.Role = $scope.roles[0]; // student
     $scope.createUser = function (user,Role) {
             console.log("Create User Function called");
 
