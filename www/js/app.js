@@ -49,44 +49,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
             console.log("Time: "+e);
           }
         }
-    
-        $rootScope.createUser = function (user,Role) {
-            console.log("Create User Function called");
 
-            if(user.confirmPassword == user.password) {
-                if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
-                    $ionicLoading.show({
-                        template: 'Registering User...'
-                    });
-
-                    auth.$createUser({
-                        email: user.emailAddress,
-                        password: user.password
-                    }).then(function (userData) {
-                        alert("User created successfully!");
-
-                        ref.child("users").child(userData.uid).set({
-                            email: user.emailAddress,
-                            fullName: user.fullname,
-                            contactNumber: user.contactnumber,
-                            icNumber: user.icnumber,
-                            role: Role.types
-                        });
-                        
-                        $ionicLoading.hide();
-                        $scope.registerUserModal.hide();
-                    }).catch(function (error) {
-                        alert("Error: " + error);
-                        $ionicLoading.hide();
-                    });
-                } else{
-                    alert("Please fill all details");
-                }
-            } else {
-                alert("Please make sure your password is the same");
-            }
-        }  
-    
         Auth.$onAuth(function (authData) {
             if (authData) {
                 console.log("Logged in as:", authData.email);
