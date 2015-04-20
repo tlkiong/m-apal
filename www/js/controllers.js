@@ -10,7 +10,52 @@ angular.module("mapal.controllers", [])
     }).then(function (forgotPasswordModal) {
         $scope.forgotPasswordModal = forgotPasswordModal;
     });
+    
+    //Register user
+        $ionicModal.fromTemplateUrl("templates/common/registerUserModal.html", {
+            scope: $scope
+        }).then(function (registerUserModal) {
+            $scope.registerUserModal = registerUserModal;
+        });
+        
+    $scope.createUser = function (user,Role) {
+            console.log("Create User Function called");
 
+            if(user.confirmPassword == user.password) {
+                if (user && user.emailAddress && user.password && user.fullname && user.contactnumber && user.icnumber) {
+                    $ionicLoading.show({
+                        template: 'Registering User...'
+                    });
+
+                    auth.$createUser({
+                        email: user.emailAddress,
+                        password: user.password
+                    }).then(function (userData) {
+                        alert("User created successfully!");
+
+                        ref.child("users").child(userData.uid).set({
+                            email: user.emailAddress,
+                            fullName: user.fullname,
+                            contactNumber: user.contactnumber,
+                            icNumber: user.icnumber,
+                            role: Role.types
+                        });
+                        
+                        $ionicLoading.hide();
+                        $scope.registerUserModal.hide();
+                    }).catch(function (error) {
+                        alert("Error: " + error);
+                        $ionicLoading.hide();
+                    });
+                } else{
+                    alert("Please fill all details");
+                }
+            } else {
+                alert("Please make sure your password is the same");
+            }
+        }
+    
+    
     $scope.resetPassword = function (emailAddress) {
         $ionicLoading.show({
             template: 'Sending Email...'
