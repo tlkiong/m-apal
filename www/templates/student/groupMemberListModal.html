@@ -1,0 +1,21 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Members</h1>
+        <button class="button button-clear button-primary" ng-click="groupMemberListModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <div class="item item-divider">
+                {{groupInfo.groupName}}
+            </div>
+
+            <ion-list>
+                <ion-item ng-repeat="item in groupMemberList">
+                    <span>{{ item.fullName }}</span>
+                </ion-item>
+            </ion-list>
+            
+            <button class="button button-full button-positive" ng-click="joinGroup()">Join Group</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

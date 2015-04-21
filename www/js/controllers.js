@@ -282,7 +282,72 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getClassTimetable = function(userID,classAdded){
-            if(classAdded){
+                // if(classAdded){
+                //     var classRef = ref.child("users").child(userID).child("classSchedule");
+                //     $scope.showDoneBtn = true;
+                //     $scope.mondayList = [];
+                //     $scope.tuesdayList = [];
+                //     $scope.wednesdayList = [];
+                //     $scope.thursdayList = [];
+                //     $scope.fridayList = [];
+                //     $scope.saturdayList = [];
+                //     $scope.sundayList = [];
+
+                //     classRef.orderByChild("classDay").on("child_added", function (snapshot) {
+                //         var value = snapshot.val();
+                //         var dayOfClass = value.classDay;
+                //         value.key = String(snapshot.key());
+
+                //         //will have different list for different days.
+                //         switch(dayOfClass){
+                //             case "Friday":{
+                //                 $scope.fridayList.push(value);
+                //             }
+                //             break;
+                //             case "Monday":{
+                //                 $scope.mondayList.push(value);
+                //             }
+                //             break;
+                //             case "Tuesday":{
+                //                 $scope.tuesdayList.push(value);
+                //             }
+                //             break;
+                //             case "Thursday":{
+                //                 $scope.thursdayList.push(value);
+                //             }
+                //             break;
+                //             case "Wednesday":{
+                //                 $scope.wednesdayList.push(value);
+                //             }
+                //             break;
+                //             case "Saturday":{
+                //                 $scope.saturdayList.push(value);
+                //             }
+                //             break;
+                //             case "Sunday":{
+                //                 $scope.sundayList.push(value);
+                //             }
+                //             break;
+                //             default: console.log("ERROR!! dayOfClass: "+dayOfClass);
+                //             break;
+                //         }
+                //     });
+                // } else {
+                //     ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
+                //         var value = snapshot.val();
+                //         if (value != null){
+                //             $scope.getClassTimetable($rootScope.userId,true);
+                //         } else {
+                //             var alertPopup = $ionicPopup.alert({
+                //                 title: "Error",
+                //                 template: "Please fill in at least one class schedule first"
+                //             });
+                //             alertPopup.then(function(res) {
+                //                 //Do something?
+                //             });
+                //         }
+                //     });
+                // }
                 var classRef = ref.child("users").child(userID).child("classSchedule");
                     $scope.showDoneBtn = true;
                     $scope.mondayList = [];
@@ -332,22 +397,6 @@ angular.module("mapal.controllers", [])
                             break;
                         }
                     });
-                } else {
-                    ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
-                        var value = snapshot.val();
-                        if (value != null){
-                            $scope.getClassTimetable($rootScope.userId,true);
-                        } else {
-                            var alertPopup = $ionicPopup.alert({
-                                title: "Error",
-                                template: "Please fill in at least one class schedule first"
-                            });
-                            alertPopup.then(function(res) {
-                                //Do something?
-                            });
-                        }
-                    });
-                }
         }
 
         $scope.goViewGroupList = function(){
@@ -463,7 +512,6 @@ angular.module("mapal.controllers", [])
                 var groupRef = ref.child("groups").push({
                     groupName: group.groupName,
                     leaderName: group.leaderName,
-                    groupStartDate: Firebase.ServerValue.TIMESTAMP,
                     groupTask: group.taskName,
                     groupTaskDescription: group.taskDescription,
                     groupTaskGuideline: group.taskGuideline,
@@ -556,6 +604,7 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child($rootScope.groupId).update({
                 groupStatus: "active",
                 groupNoOfMembers: $scope.members.length,
+                groupStartDate: Firebase.ServerValue.TIMESTAMP,
                 groupMembers: {
                     members: $scope.members
                 }
@@ -567,7 +616,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("ViewGroupListCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("ViewGroupListCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicModal) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -593,11 +642,21 @@ angular.module("mapal.controllers", [])
             }
         });
         
+        //groupMemberListModal
+        $ionicModal.fromTemplateUrl('templates/student/groupMemberListModal.html', {
+            scope: $scope
+        }).then(function (groupMemberListModal) {
+            $scope.groupMemberListModal = groupMemberListModal;
+        });
+
+
         $scope.studentViewClassSchedule = function(){
             $state.go('studentViewClassSchedule')
         }
 
-        $scope.joinGroup = function(item){
+        $scope.joinGroup = function(){
+            $scope.groupMemberListModal.hide();
+            var item = $rootScope.groupInfo;
             ref.child("groups").child(item.key).child("groupNoOfMembers").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value >= 5){
@@ -623,6 +682,20 @@ angular.module("mapal.controllers", [])
             });
             $rootScope.groupId = item.key;
             $state.go('student-viewGroupMemberList');
+        }
+
+        $scope.viewGroupInfo = function (item){
+            $scope.groupMemberList = [];
+            ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
+                var value = snapshot.val();
+                if(value.groupId == item.key){
+                    value.key = String(snapshot.key());
+                    $scope.groupMemberList.push(value);
+                }
+            });
+            $rootScope.groupInfo = item;
+            
+            $scope.groupMemberListModal.show();
         }
     }
 })
@@ -758,6 +831,7 @@ angular.module("mapal.controllers", [])
             var serverTime = estimatedServerTimeMs.toUTCString();
             console.log("server time: "+serverTime);
 
+            // $scope.springPlanningMondayDate = 
 
             $scope.getGroupMembersId($rootScope.groupId);
             $scope.getConfirmedTime($rootScope.groupId);
