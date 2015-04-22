@@ -830,6 +830,10 @@ angular.module("mapal.controllers", [])
             console.log("estimatedServerTimeMs: "+estimatedServerTimeMs);
             var serverTime = estimatedServerTimeMs.toUTCString();
             console.log("server time: "+serverTime);
+            var plusTime = new Date(getServerTime()+604800000); 
+            console.log("plusTime: "+plusTime+"~~"+plusTime.getDate()+"/"+(plusTime.getMonth()+1)+"/"+plusTime.getUTCFullYear());
+            var plusTime1 = new Date(getServerTime()+604800000+(86400000*1));
+            console.log("plusTime1: "+plusTime1+"~~"+plusTime1.getDate()+"/"+(plusTime1.getMonth()+1)+"/"+plusTime1.getUTCFullYear());
 
             // $scope.springPlanningMondayDate = 
 
