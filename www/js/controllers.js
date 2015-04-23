@@ -349,7 +349,7 @@ angular.module("mapal.controllers", [])
                 //     });
                 // }
                 var classRef = ref.child("users").child(userID).child("classSchedule");
-                    $scope.showDoneBtn = true;
+                    $scope.showDoneBtn = classAdded;
                     $scope.mondayList = [];
                     $scope.tuesdayList = [];
                     $scope.wednesdayList = [];
@@ -836,6 +836,8 @@ angular.module("mapal.controllers", [])
             console.log("plusTime1: "+plusTime1+"~~"+plusTime1.getDate()+"/"+(plusTime1.getMonth()+1)+"/"+plusTime1.getUTCFullYear());
 
             // $scope.springPlanningMondayDate = 
+            // issue here is, if 7 days from start date is not monday then how?
+
 
             $scope.getGroupMembersId($rootScope.groupId);
             $scope.getConfirmedTime($rootScope.groupId);
@@ -1053,7 +1055,7 @@ angular.module("mapal.controllers", [])
 
         $scope.getSprintPlanningInfo = function() {
             if($rootScope.votedSprintPlanningDateTimeId != null){
-                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanningDateTime").child($rootScope.votedSprintRetrospectiveDateTimeId).once('value', function (snapshot) {
+                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanningDateTime").child($rootScope.votedSprintPlanningDateTimeId).once('value', function (snapshot) {
                     var value = snapshot.val();
                     if(value != null){
                         var votedDay = new Date(value.voteDate).getDay();
@@ -1091,11 +1093,12 @@ angular.module("mapal.controllers", [])
                 });
             }
 
-            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospectiveDateTime").orderByChild("count").on("child_added", function (snapshot) {
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanningDateTime").orderByChild("voteCount").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 var key = String(snapshot.key());
 
                 if((value != null)&&(key != "voteCount")){
+                    
                     var votedDay = new Date(value.voteDate).getDay();
                     var voteTime = value.voteTime;
 
