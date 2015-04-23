@@ -6,29 +6,29 @@
         <div class="list">
             <label class="item item-input">
                 <span class="input-label"><strong>Keywords (eg: a,b,c,d): </strong></span>
-                <input ng-model="guidelines.keyword" type="text" value="guidelines.keyword">
+                <input ng-model="tguidelines.keyword" type="text">
             </label>
             <label class="item item-input">
                 <span><strong><u>Task Guidelines: </u></strong></span>
             </label>
             <label class="item item-input">
                 <span class="input-label"><strong>Data Structure: </strong></span>
-                <input ng-model="guidelines.dataStructure" type="text">
+                <input ng-model="tguidelines.dataStructure" type="text">
             </label>
             <label class="item item-input">
                 <span class="input-label"><strong>Data Type: </strong></span>
-                <input ng-model="guidelines.dataType" type="text">
+                <input ng-model="tguidelines.dataType" type="text">
             </label>
             <label class="item item-input">
                 <span class="input-label"><strong>Control Structure: </strong></span>
-                <input ng-model="guidelines.controlStructure" type="text">
+                <input ng-model="tguidelines.controlStructure" type="text">
             </label>
             <label class="item item-input">
                 <span class="input-label"><strong>Arithmetic Expression: </strong></span>
-                <textarea ng-model="guidelines.arithmeticExpression" type="text"></textarea>
+                <textarea ng-model="tguidelines.arithmeticExpression" type="text"></textarea>
             </label>
             
-            <button class="button button-full button-positive" ng-click="createGuideline(guidelines)">Create Guideline</button>
+            <button class="button button-full button-positive" ng-click="createGuideline(tguidelines)">Create Guideline</button>
         </div>
     </ion-content>
 </ion-view>
