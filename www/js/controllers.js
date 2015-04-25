@@ -108,10 +108,6 @@ angular.module("mapal.controllers", [])
                         $rootScope.classSchedule = val.classSchedule;
                         $rootScope.groupId = val.groupId;
                         $rootScope.userId = authData.uid;
-                        $rootScope.votedSprintPlanningDateTimeId = val.votedSprintPlanningDateTimeId;
-                        $rootScope.votedScrumPlanningDateTimeId = val.votedScrumPlanningDateTimeId;
-                        $rootScope.votedSprintReviewDateTimeId = val.votedSprintReviewDateTimeId;
-                        $rootScope.votedSprintRetrospectiveDateTimeId = val.votedSprintRetrospectiveDateTimeId;
                         $rootScope.signedIn = true;
                         $rootScope.showMyAccount = true;
                         $rootScope.showLogout = true;
@@ -662,6 +658,7 @@ angular.module("mapal.controllers", [])
             for (var i = 8; i < 19; i++){
                 $scope.mondayList.push({
                     time: i,
+                    day: "Monday",
                     sprintPlanningMondayCount: 0,
                     scrumPlanningMonday1Count: 0,
                     scrumPlanningMonday2Count: 0,
@@ -671,6 +668,7 @@ angular.module("mapal.controllers", [])
                 });
                 $scope.tuesdayList.push({
                     time: i,
+                    day: "Tuesday",
                     sprintPlanningTuesdayCount: 0,
                     scrumPlanningTuesday1Count: 0,
                     scrumPlanningTuesday2Count: 0,
@@ -680,6 +678,7 @@ angular.module("mapal.controllers", [])
                 });
                 $scope.wednesdayList.push({
                     time: i,
+                    day: "Wednesday",
                     sprintPlanningWednesdayCount: 0,
                     scrumPlanningWednesday1Count: 0,
                     scrumPlanningWednesday2Count: 0,
@@ -689,6 +688,7 @@ angular.module("mapal.controllers", [])
                 });
                 $scope.thursdayList.push({
                     time: i,
+                    day: "Thursday",
                     sprintPlanningThursdayCount: 0,
                     scrumPlanningThursday1Count: 0,
                     scrumPlanningThursday2Count: 0,
@@ -698,6 +698,7 @@ angular.module("mapal.controllers", [])
                 });
                 $scope.fridayList.push({
                     time: i,
+                    day: "Friday",
                     sprintPlanningFridayCount: 0,
                     scrumPlanningFriday1Count: 0,
                     scrumPlanningFriday2Count: 0,
@@ -709,9 +710,6 @@ angular.module("mapal.controllers", [])
             
             var userList = [];
             $scope.showSprintPlanningList = false;
-            $scope.showScrumPlanningList = false;
-            $scope.showSprintReviewList = false;
-            $scope.showSprintRetrospectiveList = false;
 
             $scope.showConfirmedSprintPlanningTime = false;
             $scope.showConfirmedScrumPlanningTime = false;
@@ -813,66 +811,21 @@ angular.module("mapal.controllers", [])
                     $scope.confirmedSprintPlanningTime = value.confirmedTime;
                 }
             });
-
-            //Get scrum planning confirmed date time
-            ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime").once('value', function (snapshot) {
-                var value = snapshot.val();
-                if(value == null){
-                    $scope.toShowScrumPlanning = "showScrumPlanningList";
-                    $scope.getScrumPlanningInfo($scope.groupStartDate);
-                } else {
-                    $scope.toShowScrumPlanning = "showConfirmedScrumPlanningTime";
-                    $scope.confirmedScrumPlanningDate = value.confirmedDate;
-                    $scope.confirmedScrumPlanningTime = value.confirmedTime;
-                }
-            });
-
-            //Get sprint review confirmed date time
-            ref.child("groups").child(groupId).child("confirmedSprintReviewDateTime").once('value', function (snapshot) {
-                var value = snapshot.val();
-                if(value == null){
-                    $scope.toShowSprintReview = "showSprintReviewList";
-                    $scope.getSprintReviewInfo();
-                } else {
-                    $scope.toShowSprintReview = "showConfirmedSprintReviewTime";
-                    $scope.confirmedSprintReviewDate = value.confirmedDate;
-                    $scope.confirmedSprintReviewTime = value.confirmedTime;
-                }
-            });
-
-            //Get sprint retrospective confirmed date time
-            ref.child("groups").child(groupId).child("confirmedSprintRetrospectiveDateTime").once('value', function (snapshot) {
-                var value = snapshot.val();
-                if(value == null){
-                    $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
-                    $scope.getSprintRetrospectiveInfo();
-                } else {
-                    $scope.toShowSprintRetrospective = "showConfirmedSprintRetrospectiveTime";
-                    $scope.confirmedSprintRetrospectiveDate = value.confirmedDate;
-                    $scope.confirmedSprintRetrospectiveTime = value.confirmedTime;
-                }
-            });
-
         }
 
         $scope.getUsersTimetable = function (userKey) {
             ref.child("users").child(userKey).child("classSchedule").orderByChild("classDay").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 var dayOfClass = value.classDay;
-                // var classStartTimeHourArray = value.classStartTime.split(":");
-                // var classEndTimeHourArray = value.classEndTime.split(":");
-
-                // var classStartTimeHour = parseInt(classStartTimeHourArray[0]);
-                // var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray[0]));
-
-
+                
                 var classStartTimeHourArray = value.classStartTime.substring(0, 2);
-                 //change the hour from string to number
                 var classStartTimeHour = parseInt(classStartTimeHourArray);
 
-                if(value.classEndTime.substring(2, 4)!="00"){
-                    var classEndTimeHourArray = value.classEndTime.substring(0, 2);
+                var classEndTimeHourArray = value.classEndTime.substring(0, 2);
+                if(classEndTimeHourArray!="00"){
                     var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))+1;
+                } else {
+                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray));
                 }
                  
                 var totalHours = classEndTimeHour - classStartTimeHour;
@@ -1018,330 +971,93 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getSprintPlanningInfo = function() {
-            if($rootScope.votedSprintPlanningDateTimeId != null){
-                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanningDateTime").child($rootScope.votedSprintPlanningDateTimeId).once('value', function (snapshot) {
-                    var value = snapshot.val();
-                    if(value != null){
-                        var votedDay = new Date(value.voteDate).getDay();
-                        var voteTime = value.voteTime;
-
-                        switch(votedDay) {
-                            case 0:
-                                $scope.sundayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 1:
-                                $scope.mondayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 2:
-                                $scope.tuesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 3:
-                                $scope.wednesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 4:
-                                $scope.thursdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 5:
-                                $scope.fridayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 6:
-                                $scope.saturdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            default:
-                                console.log ("err, error?");
-                                break;
-                        }
-                    } else {
-                        console.log ("getSprintPlanningInfo val is null");
-                    }
-                });
-            }
-
-            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanningDateTime").orderByChild("voteCount").on("child_added", function (snapshot) {
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").orderByChild("voteCount").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 var key = String(snapshot.key());
 
                 if((value != null)&&(key != "voteCount")){
-                    
-                    var votedDay = new Date(value.voteDate).getDay();
-                    var voteTime = value.voteTime;
+                    var votedDay = value.day;
+                    var voteTime = parseInt(value.voteTime);
 
-                    switch(votedDay) {
-                        case 0:
-                            $scope.sundayList[voteTime-8].sprintPlanningSundayCount = value.count;
-                            break;
-                        case 1:
-                            $scope.mondayList[voteTime-8].sprintPlanningMondayCount = value.count;
-                            break;
-                        case 2:
-                            $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount = value.count;
-                            break;
-                        case 3:
-                            $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount = value.count;
-                            break;
-                        case 4:
-                            $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount = value.count;
-                            break;
-                        case 5:
-                            $scope.fridayList[voteTime-8].sprintPlanningFridayCount = value.count;
-                            break;
-                        case 6:
-                            $scope.saturdayList[voteTime-8].sprintPlanningSaturdayCount = value.count;
-                            break;
-                        default:
-                            console.log ("err, error?");
-                            break;
+                    if (votedDay == "Monday"){
+                        if($rootScope.userId == value.userId){
+                                $scope.mondayList[voteTime-8].me = "ME";
+                            }
+                            $scope.mondayList[voteTime-8].sprintPlanningMondayCount += 1;
+                            $scope.showSprintPlanningMondayCount = true;
+                    } else if (votedDay.toUpperCase() == "Tuesday".toUpperCase()){
+                        if($rootScope.userId == value.userId){
+                                $scope.tuesdayList[voteTime-8].me = "ME";
+                            }
+                            $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount += 1;
+                            $scope.showSprintPlanningTuesdayCount = true;
+                    } else if (votedDay.toUpperCase() == "Wednesday".toUpperCase()){
+                        if($rootScope.userId == value.userId){
+                                $scope.wednesdayList[voteTime-8].me = "ME";
+                            }
+                            $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount += 1;
+                            $scope.showSprintPlanningWednesdayCount = true;
+                    } else if (votedDay.toUpperCase() == "Thursday".toUpperCase()) {
+                        if($rootScope.userId == value.userId){
+                                $scope.thursdayList[voteTime-8].me = "ME";
+                            }
+                            $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount += 1;
+                            $scope.showSprintPlanningThursdayCount = true;
+                    } else if (votedDay.toUpperCase() == "Friday".toUpperCase()) {
+                        if($rootScope.userId == value.userId){
+                                $scope.fridayList[voteTime-8].me = "ME";
+                            }
+                            $scope.fridayList[voteTime-8].sprintPlanningFridayCount += 1;
+                            $scope.showSprintPlanningFridayCount = true;
+                    } else {
+                        console.log ("err, error?: "+votedDay+ " - " +votedDay.toUpperCase());
                     }
                 } else {
                     console.log ("getSprintPlanningInfo val is null");
                 }
             });
         }
-                    // scrumPlanningThursday1Count: 0,
-                    // scrumPlanningThursday2Count: 0,
-        $scope.getScrumPlanningInfo = function(groupStartDate) {
-            if($rootScope.votedScrumPlanningDateTimeId != null){
-                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanningDateTime").child($rootScope.votedSprintRetrospectiveDateTimeId).once('value', function (snapshot) {
-                    var value = snapshot.val();
-                    if(value != null){
-                        var votedDay = new Date(value.voteDate).getDay();
-                        var voteTime = value.voteTime;
-
-                        switch(votedDay) {
-                            case 0:
-                                $scope.sundayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 1:
-                                $scope.mondayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 2:
-                                $scope.tuesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 3:
-                                $scope.wednesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 4:
-                                $scope.thursdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 5:
-                                $scope.fridayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 6:
-                                $scope.saturdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            default:
-                                console.log ("err, error?");
-                                break;
-                        }
-                        
-                    } else {
-                        console.log ("getScrumPlanningInfo val is null");
-                    }
-                });
-            } 
-            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospectiveDateTime").orderByChild("count").on("child_added", function (snapshot) {
-                var value = snapshot.val();
-                var key = String(snapshot.key());
-
-                if((value != null)&&(key != "voteCount")){
-                    var votedDay = new Date(value.voteDate).getDay();
-                    var voteTime = value.voteTime;
-
-                    switch(votedDay) {
-                        case 0:
-                            $scope.sundayList[voteTime-8].sprintRetrospectiveSundayCount = value.count;
-                            break;
-                        case 1:
-                            $scope.mondayList[voteTime-8].sprintRetrospectiveMondayCount = value.count;
-                            break;
-                        case 2:
-                            $scope.tuesdayList[voteTime-8].sprintRetrospectiveTuesdayCount = value.count;
-                            break;
-                        case 3:
-                            $scope.wednesdayList[voteTime-8].sprintRetrospectiveWednesdayCount = value.count;
-                            break;
-                        case 4:
-                            $scope.thursdayList[voteTime-8].sprintRetrospectiveThursdayCount = value.count;
-                            break;
-                        case 5:
-                            $scope.fridayList[voteTime-8].sprintRetrospectiveFridayCount = value.count;
-                            break;
-                        case 6:
-                            $scope.saturdayList[voteTime-8].sprintRetrospectiveSaturdayCount = value.count;
-                            break;
-                        default:
-                            console.log ("err, error?");
-                            break;
-                    }
-                } else {
-                    console.log ("getScrumPlanningInfo val is null");
-                }
-            });
-        }
-
-        $scope.getSprintReviewInfo = function() {
-            if($rootScope.votedSprintReviewDateTimeId != null){
-                ref.child("groups").child($rootScope.groupId).child("voteSprintReviewDateTime").child($rootScope.votedSprintRetrospectiveDateTimeId).once('value', function (snapshot) {
-                    var value = snapshot.val();
-                    if(value != null){
-                        var votedDay = new Date(value.voteDate).getDay();
-                        var voteTime = value.voteTime;
-
-                        switch(votedDay) {
-                            case 0:
-                                $scope.sundayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 1:
-                                $scope.mondayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 2:
-                                $scope.tuesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 3:
-                                $scope.wednesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 4:
-                                $scope.thursdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 5:
-                                $scope.fridayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 6:
-                                $scope.saturdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            default:
-                                console.log ("err, error?");
-                                break;
-                        }
-                        
-                    } else {
-                        console.log ("getSprintReviewInfo val is null");
-                    }
-                });
-            }
-            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospectiveDateTime").orderByChild("count").on("child_added", function (snapshot) {
-                var value = snapshot.val();
-                var key = String(snapshot.key());
-
-                if((value != null)&&(key != "voteCount")){
-                    var votedDay = new Date(value.voteDate).getDay();
-                    var voteTime = value.voteTime;
-
-                    switch(votedDay) {
-                        case 0:
-                            $scope.sundayList[voteTime-8].sprintReviewSundayCount = value.count;
-                            break;
-                        case 1:
-                            $scope.mondayList[voteTime-8].sprintReviewMondayCount = value.count;
-                            break;
-                        case 2:
-                            $scope.tuesdayList[voteTime-8].sprintReviewTuesdayCount = value.count;
-                            break;
-                        case 3:
-                            $scope.wednesdayList[voteTime-8].sprintReviewWednesdayCount = value.count;
-                            break;
-                        case 4:
-                            $scope.thursdayList[voteTime-8].sprintReviewThursdayCount = value.count;
-                            break;
-                        case 5:
-                            $scope.fridayList[voteTime-8].sprintReviewFridayCount = value.count;
-                            break;
-                        case 6:
-                            $scope.saturdayList[voteTime-8].sprintReviewSaturdayCount = value.count;
-                            break;
-                        default:
-                            console.log ("err, error?");
-                            break;
-                    }
-                } else {
-                    console.log ("getSprintReviewInfo val is null");
-                }
-            });
-        }
-
-        $scope.getSprintRetrospectiveInfo = function() {
-            if($rootScope.votedSprintRetrospectiveDateTimeId != null){
-                ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospectiveDateTime").child($rootScope.votedSprintRetrospectiveDateTimeId).once('value', function (snapshot) {
-                    var value = snapshot.val();
-                    if(value != null){
-                        var votedDay = new Date(value.voteDate).getDay();
-                        var voteTime = value.voteTime;
-
-                        switch(votedDay) {
-                            case 0:
-                                $scope.sundayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 1:
-                                $scope.mondayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 2:
-                                $scope.tuesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 3:
-                                $scope.wednesdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 4:
-                                $scope.thursdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 5:
-                                $scope.fridayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            case 6:
-                                $scope.saturdayList[voteTime-8].me = "MY VOTE";
-                                break;
-                            default:
-                                console.log ("err, error?");
-                                break;
-                        }
-                        
-                    } else {
-                        console.log ("getSprintRetrospectiveInfo val is null");
-                    }
-                });
-            }
-
-            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospectiveDateTime").orderByChild("count").on("child_added", function (snapshot) {
-                var value = snapshot.val();
-                var key = String(snapshot.key());
-
-                if((value != null)&&(key != "voteCount")){
-                    var votedDay = new Date(value.voteDate).getDay();
-                    var voteTime = value.voteTime;
-
-                    switch(votedDay) {
-                        case 0:
-                            $scope.sundayList[voteTime-8].sprintRetrospectiveSundayCount = value.count;
-                            break;
-                        case 1:
-                            $scope.mondayList[voteTime-8].sprintRetrospectiveMondayCount = value.count;
-                            break;
-                        case 2:
-                            $scope.tuesdayList[voteTime-8].sprintRetrospectiveTuesdayCount = value.count;
-                            break;
-                        case 3:
-                            $scope.wednesdayList[voteTime-8].sprintRetrospectiveWednesdayCount = value.count;
-                            break;
-                        case 4:
-                            $scope.thursdayList[voteTime-8].sprintRetrospectiveThursdayCount = value.count;
-                            break;
-                        case 5:
-                            $scope.fridayList[voteTime-8].sprintRetrospectiveFridayCount = value.count;
-                            break;
-                        case 6:
-                            $scope.saturdayList[voteTime-8].sprintRetrospectiveSaturdayCount = value.count;
-                            break;
-                        default:
-                            console.log ("err, error?");
-                            break;
-                    }
-                } else {
-                    console.log ("getSprintRetrospectiveInfo val is null");
-                }
-            });
-        }
         
-        $scope.selectDateTime = function(time, date) {
+        $scope.selectDateTimeSprintPlanning = function(time, day) {
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
+                $scope.numberOfVotes = snapshot.val();
+                if($scope.numberOfVotes==null){
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.sprintPlanningVote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
+                } else if ($scope.numberOfVotes>0) {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.sprintPlanningVote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set($scope.numberOfVotes+1, onComplete);
+                }
+            });
 
+            
+        }
+
+        $scope.sprintPlanningVote = function(time,day){
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+                    day: day,
+                    voteTime: time,
+                    userId : $rootScope.userId
+                }, 
+                function() { 
+                    console.log("wait");
+                    $scope.getSprintPlanningInfo();
+            });
+            console.log("no wait");
         }
 
         $scope.initialise();
