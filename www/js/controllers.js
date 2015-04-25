@@ -659,57 +659,135 @@ angular.module("mapal.controllers", [])
                 $scope.mondayList.push({
                     time: i,
                     day: "Monday",
-                    sprintPlanningMondayCount: 0,
-                    scrumPlanningMonday1Count: 0,
-                    scrumPlanningMonday2Count: 0,
-                    sprintReviewMondayCount: 0,
-                    sprintRetrospectiveMondayCount: 0,
-                    me: ""
+                    showMyself: false,
+                    sprintPlanningMondayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningMonday1Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningMonday2Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintReviewMondayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintRetrospectiveMondayCount: {
+                        counter: 0,
+                        me: ""
+                    }
                 });
                 $scope.tuesdayList.push({
                     time: i,
                     day: "Tuesday",
-                    sprintPlanningTuesdayCount: 0,
-                    scrumPlanningTuesday1Count: 0,
-                    scrumPlanningTuesday2Count: 0,
-                    sprintReviewTuesdayCount: 0,
-                    sprintRetrospectiveTuesdayCount: 0,
-                    me: ""
+                    showMyself: false,
+                    sprintPlanningTuesdayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningTuesday1Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningTuesday2Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintReviewTuesdayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintRetrospectiveTuesdayCount: {
+                        counter: 0,
+                        me: ""
+                    }
                 });
                 $scope.wednesdayList.push({
                     time: i,
                     day: "Wednesday",
-                    sprintPlanningWednesdayCount: 0,
-                    scrumPlanningWednesday1Count: 0,
-                    scrumPlanningWednesday2Count: 0,
-                    sprintReviewWednesdayCount: 0,
-                    sprintRetrospectiveWednesdayCount: 0,
-                    me: ""
+                    showMyself: false,
+                    sprintPlanningWednesdayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningWednesday1Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningWednesday2Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintReviewWednesdayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintRetrospectiveWednesdayCount: {
+                        counter: 0,
+                        me: ""
+                    }
                 });
                 $scope.thursdayList.push({
                     time: i,
                     day: "Thursday",
-                    sprintPlanningThursdayCount: 0,
-                    scrumPlanningThursday1Count: 0,
-                    scrumPlanningThursday2Count: 0,
-                    sprintReviewThursdayCount: 0,
-                    sprintRetrospectiveThursdayCount: 0,
-                    me: ""
+                    showMyself: false,
+                    sprintPlanningThursdayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningThursday1Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningThursday2Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintReviewThursdayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintRetrospectiveThursdayCount: {
+                        counter: 0,
+                        me: ""
+                    }
                 });
                 $scope.fridayList.push({
                     time: i,
                     day: "Friday",
-                    sprintPlanningFridayCount: 0,
-                    scrumPlanningFriday1Count: 0,
-                    scrumPlanningFriday2Count: 0,
-                    sprintReviewFridayCount: 0,
-                    sprintRetrospectiveFridayCount: 0,
-                    me: ""
+                    showMyself: false,
+                    sprintPlanningFridayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningFriday1Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    scrumPlanningFriday2Count: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintReviewFridayCount: {
+                        counter: 0,
+                        me: ""
+                    },
+                    sprintRetrospectiveFridayCount: {
+                        counter: 0,
+                        me: ""
+                    }
                 });
             }
             
             var userList = [];
             $scope.showSprintPlanningList = false;
+            $scope.showScrumPlanningList = false;
+            $scope.showSprintReviewList = false;
+            $scope.showSprintRetrospectiveList = false;
 
             $scope.showConfirmedSprintPlanningTime = false;
             $scope.showConfirmedScrumPlanningTime = false;
@@ -807,6 +885,45 @@ angular.module("mapal.controllers", [])
                     $scope.getSprintPlanningInfo();
                 } else {
                     $scope.toShowSprintPlanning = "showConfirmedSprintPlanningTime";
+                    $scope.confirmedSprintPlanningDate = value.confirmedDate;
+                    $scope.confirmedSprintPlanningTime = value.confirmedTime;
+                }
+            });
+
+            //Get sprint planning confirmed date time
+            ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime").once('value', function (snapshot) {
+                var value = snapshot.val();
+                if(value == null){
+                    $scope.toShowScrumPlanning = "showScrumPlanningList";
+                    $scope.getSprintPlanningInfo();
+                } else {
+                    $scope.toShowScrumPlanning = "showConfirmedScrumPlanningTime";
+                    $scope.confirmedSprintPlanningDate = value.confirmedDate;
+                    $scope.confirmedSprintPlanningTime = value.confirmedTime;
+                }
+            });
+
+            //Get sprint planning confirmed date time
+            ref.child("groups").child(groupId).child("confirmedSprintReviewDateTime").once('value', function (snapshot) {
+                var value = snapshot.val();
+                if(value == null){
+                    $scope.toShowSprintReview = "showSprintReviewList";
+                    $scope.getSprintPlanningInfo();
+                } else {
+                    $scope.toShowSprintReview = "showConfirmedSprintReviewTime";
+                    $scope.confirmedSprintPlanningDate = value.confirmedDate;
+                    $scope.confirmedSprintPlanningTime = value.confirmedTime;
+                }
+            });
+
+            //Get sprint planning confirmed date time
+            ref.child("groups").child(groupId).child("confirmedSprintRetrospectiveDateTime").once('value', function (snapshot) {
+                var value = snapshot.val();
+                if(value == null){
+                    $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
+                    $scope.getSprintPlanningInfo();
+                } else {
+                    $scope.toShowSprintRetrospective = "showConfirmedSprintRetrospectiveTime";
                     $scope.confirmedSprintPlanningDate = value.confirmedDate;
                     $scope.confirmedSprintPlanningTime = value.confirmedTime;
                 }
@@ -970,47 +1087,57 @@ angular.module("mapal.controllers", [])
             }
         }
 
+        var tempKey = "";
+
         $scope.getSprintPlanningInfo = function() {
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").orderByChild("voteCount").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 var key = String(snapshot.key());
 
-                if((value != null)&&(key != "voteCount")){
+                console.log("value day: "+value.day+" - id: "+key);
+                if((value != null)&&(key != "voteCount")&&(key != tempKey)){
+                    tempKey = key;
                     var votedDay = value.day;
                     var voteTime = parseInt(value.voteTime);
 
                     if (votedDay == "Monday"){
                         if($rootScope.userId == value.userId){
-                                $scope.mondayList[voteTime-8].me = "ME";
+                                $scope.mondayList[voteTime-8].sprintPlanningMondayCount.me = "ME";
                             }
-                            $scope.mondayList[voteTime-8].sprintPlanningMondayCount += 1;
-                            $scope.showSprintPlanningMondayCount = true;
-                    } else if (votedDay.toUpperCase() == "Tuesday".toUpperCase()){
+                            $scope.mondayList[voteTime-8].sprintPlanningMondayCount.counter += 1;
+
+                            console.log("number: "+$scope.mondayList[voteTime-8].sprintPlanningMondayCount.counter);
+
+                            $scope.mondayList[voteTime-8].showMyself = true;
+                    } else if (votedDay == "Tuesday"){
                         if($rootScope.userId == value.userId){
-                                $scope.tuesdayList[voteTime-8].me = "ME";
+                                $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount.me = "ME";
                             }
-                            $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount += 1;
+                            $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount.counter += 1;
+
+                            console.log("er: "+$scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount.counter);
+                            
                             $scope.showSprintPlanningTuesdayCount = true;
-                    } else if (votedDay.toUpperCase() == "Wednesday".toUpperCase()){
+                    } else if (votedDay == "Wednesday"){
                         if($rootScope.userId == value.userId){
-                                $scope.wednesdayList[voteTime-8].me = "ME";
+                                $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount.me = "ME";
                             }
-                            $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount += 1;
+                            $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount.counter += 1;
                             $scope.showSprintPlanningWednesdayCount = true;
-                    } else if (votedDay.toUpperCase() == "Thursday".toUpperCase()) {
+                    } else if (votedDay == "Thursday") {
                         if($rootScope.userId == value.userId){
-                                $scope.thursdayList[voteTime-8].me = "ME";
+                                $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount.me = "ME";
                             }
-                            $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount += 1;
+                            $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount.counter += 1;
                             $scope.showSprintPlanningThursdayCount = true;
-                    } else if (votedDay.toUpperCase() == "Friday".toUpperCase()) {
+                    } else if (votedDay == "Friday") {
                         if($rootScope.userId == value.userId){
-                                $scope.fridayList[voteTime-8].me = "ME";
+                                $scope.fridayList[voteTime-8].sprintPlanningFridayCount.me = "ME";
                             }
-                            $scope.fridayList[voteTime-8].sprintPlanningFridayCount += 1;
+                            $scope.fridayList[voteTime-8].sprintPlanningFridayCount.counter += 1;
                             $scope.showSprintPlanningFridayCount = true;
                     } else {
-                        console.log ("err, error?: "+votedDay+ " - " +votedDay.toUpperCase());
+                        console.log ("err, error?: "+votedDay);
                     }
                 } else {
                     console.log ("getSprintPlanningInfo val is null");
@@ -1054,10 +1181,8 @@ angular.module("mapal.controllers", [])
                     userId : $rootScope.userId
                 }, 
                 function() { 
-                    console.log("wait");
                     $scope.getSprintPlanningInfo();
             });
-            console.log("no wait");
         }
 
         $scope.initialise();
