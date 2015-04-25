@@ -275,81 +275,14 @@ angular.module("mapal.controllers", [])
                 
                 $ionicLoading.hide();
                 $scope.newClassModal.hide();
-                $scope.getClassTimetable($rootScope.userId,true);
+                $scope.getClassTimetable($rootScope.userId);
                 
             } else
                 alert("Please fill all details");
         }
 
-        $scope.getClassTimetable = function(userID,classAdded){
-                // if(classAdded){
-                //     var classRef = ref.child("users").child(userID).child("classSchedule");
-                //     $scope.showDoneBtn = true;
-                //     $scope.mondayList = [];
-                //     $scope.tuesdayList = [];
-                //     $scope.wednesdayList = [];
-                //     $scope.thursdayList = [];
-                //     $scope.fridayList = [];
-                //     $scope.saturdayList = [];
-                //     $scope.sundayList = [];
-
-                //     classRef.orderByChild("classDay").on("child_added", function (snapshot) {
-                //         var value = snapshot.val();
-                //         var dayOfClass = value.classDay;
-                //         value.key = String(snapshot.key());
-
-                //         //will have different list for different days.
-                //         switch(dayOfClass){
-                //             case "Friday":{
-                //                 $scope.fridayList.push(value);
-                //             }
-                //             break;
-                //             case "Monday":{
-                //                 $scope.mondayList.push(value);
-                //             }
-                //             break;
-                //             case "Tuesday":{
-                //                 $scope.tuesdayList.push(value);
-                //             }
-                //             break;
-                //             case "Thursday":{
-                //                 $scope.thursdayList.push(value);
-                //             }
-                //             break;
-                //             case "Wednesday":{
-                //                 $scope.wednesdayList.push(value);
-                //             }
-                //             break;
-                //             case "Saturday":{
-                //                 $scope.saturdayList.push(value);
-                //             }
-                //             break;
-                //             case "Sunday":{
-                //                 $scope.sundayList.push(value);
-                //             }
-                //             break;
-                //             default: console.log("ERROR!! dayOfClass: "+dayOfClass);
-                //             break;
-                //         }
-                //     });
-                // } else {
-                //     ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
-                //         var value = snapshot.val();
-                //         if (value != null){
-                //             $scope.getClassTimetable($rootScope.userId,true);
-                //         } else {
-                //             var alertPopup = $ionicPopup.alert({
-                //                 title: "Error",
-                //                 template: "Please fill in at least one class schedule first"
-                //             });
-                //             alertPopup.then(function(res) {
-                //                 //Do something?
-                //             });
-                //         }
-                //     });
-                // }
+        $scope.getClassTimetable = function(userID){
                 var classRef = ref.child("users").child(userID).child("classSchedule");
-                    $scope.showDoneBtn = classAdded;
                     $scope.mondayList = [];
                     $scope.tuesdayList = [];
                     $scope.wednesdayList = [];
@@ -362,6 +295,10 @@ angular.module("mapal.controllers", [])
                         var value = snapshot.val();
                         var dayOfClass = value.classDay;
                         value.key = String(snapshot.key());
+
+                        if(value!=null){
+                            $scope.showDoneBtn =true;
+                        }
 
                         //will have different list for different days.
                         switch(dayOfClass){
@@ -461,7 +398,7 @@ angular.module("mapal.controllers", [])
             $ionicHistory.goBack()
         }
 
-        $scope.getClassTimetable($rootScope.userId,false);
+        $scope.getClassTimetable($rootScope.userId);
     }
 })
 
@@ -922,60 +859,87 @@ angular.module("mapal.controllers", [])
             ref.child("users").child(userKey).child("classSchedule").orderByChild("classDay").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 var dayOfClass = value.classDay;
-                var classStartTimeHourArray = value.classStartTime.split(":");
-                var classEndTimeHourArray = value.classEndTime.split(":");
-                //change the hour from string to number
-                var classStartTimeHour = parseInt(classStartTimeHourArray[0]);
-                var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray[0]));
+                // var classStartTimeHourArray = value.classStartTime.split(":");
+                // var classEndTimeHourArray = value.classEndTime.split(":");
 
+                // var classStartTimeHour = parseInt(classStartTimeHourArray[0]);
+                // var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray[0]));
+
+
+                var classStartTimeHourArray = value.classStartTime.substring(0, 2);
+                 //change the hour from string to number
+                var classStartTimeHour = parseInt(classStartTimeHourArray);
+
+                if(value.classEndTime.substring(2, 4)!="00"){
+                    var classEndTimeHourArray = value.classEndTime.substring(0, 2);
+                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))+1;
+                }
+                 
+                var totalHours = classEndTimeHour - classStartTimeHour;
+                
                 switch(dayOfClass){
                     case "Friday":{
-                        while(classStartTimeHour != (classEndTimeHour)){
-                            var index = $scope.fridayList.indexOf(classStartTimeHour);
-                            if(index > -1){
-                                $scope.fridayList.splice(index,1);
+                        if(totalHours > 0){
+                            var i = 0;
+                            var size = $scope.fridayList.length;
+                            for (i=0;i<size;i++){
+                                if($scope.fridayList[i].time == classStartTimeHour){
+                                    $scope.fridayList.splice(i, totalHours);
+                                    break;
+                                }
                             }
-                            classStartTimeHour++;
                         }
                     }
                     break;
                     case "Monday":{
-                        while(classStartTimeHour != (classEndTimeHour)){
-                            var index = $scope.mondayList.indexOf(classStartTimeHour);
-                            if(index > -1){
-                                $scope.mondayList.splice(index,1);
+                        if(totalHours > 0){
+                            var i = 0;
+                            var size = $scope.mondayList.length;
+                            for (i=0;i<size;i++){
+                                if($scope.mondayList[i].time == classStartTimeHour){
+                                    $scope.mondayList.splice(i, totalHours);
+                                    break;
+                                }
                             }
-                            classStartTimeHour++;
                         }
                     }
                     break;
                     case "Tuesday":{
-                        while(classStartTimeHour != (classEndTimeHour)){
-                            var index = $scope.tuesdayList.indexOf(classStartTimeHour);
-                            if(index > -1){
-                                $scope.tuesdayList.splice(index,1);
+                        if(totalHours > 0){
+                            var i = 0;
+                            var size = $scope.tuesdayList.length;
+                            for (i=0;i<size;i++){
+                                if($scope.tuesdayList[i].time == classStartTimeHour){
+                                    $scope.tuesdayList.splice(i, totalHours);
+                                    break;
+                                }
                             }
-                            classStartTimeHour++;
                         }
                     }
                     break;
                     case "Thursday":{
-                        while(classStartTimeHour != (classEndTimeHour)){
-                            var index = $scope.thursdayList.indexOf(classStartTimeHour);
-                            if(index > -1){
-                                $scope.thursdayList.splice(index,1);
+                        if(totalHours > 0){
+                            var i = 0;
+                            var size = $scope.thursdayList.length;
+                            for (i=0;i<size;i++){
+                                if($scope.thursdayList[i].time == classStartTimeHour){
+                                    $scope.thursdayList.splice(i, totalHours);
+                                    break;
+                                }
                             }
-                            classStartTimeHour++;
                         }
                     }
                     break;
                     case "Wednesday":{
-                        while(classStartTimeHour != (classEndTimeHour)){
-                            var index = $scope.wednesdayList.indexOf(classStartTimeHour);
-                            if(index > -1){
-                                $scope.wednesdayList.splice(index,1);
+                        if(totalHours > 0){
+                            var i = 0;
+                            var size = $scope.wednesdayList.length;
+                            for (i=0;i<size;i++){
+                                if($scope.wednesdayList[i].time == classStartTimeHour){
+                                    $scope.wednesdayList.splice(i, totalHours);
+                                    break;
+                                }
                             }
-                            classStartTimeHour++;
                         }
                     }
                     break;
