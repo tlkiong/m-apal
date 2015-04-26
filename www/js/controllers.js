@@ -633,7 +633,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("TimelineController", function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("TimelineController", function ($scope, $rootScope, $state, $ionicPopup, $ionicLoading) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -648,52 +648,51 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
 
-        $scope.initialise = function (){
-            $scope.mondayList = [];
-            $scope.tuesdayList = [];
-            $scope.wednesdayList = [];
-            $scope.thursdayList = [];
-            $scope.fridayList = [];
+        $scope.initialMondayList = [];
+        $scope.initialTuesdayList = [];
+        $scope.initialWednesdayList = [];
+        $scope.initialThursdayList = [];
+        $scope.initialFridayList = [];
 
-            for (var i = 8; i < 19; i++){
-                $scope.mondayList.push({
-                    time: i,
-                    day: "Monday",
-                    showMyself: false,
-                    sprintPlanningMondayCount: {
-                        counter: 0,
-                        me: ""
-                    },
-                    scrumPlanningMonday1Count: {
-                        counter: 0,
-                        me: ""
-                    },
-                    scrumPlanningMonday2Count: {
-                        counter: 0,
-                        me: ""
-                    },
-                    sprintReviewMondayCount: {
-                        counter: 0,
-                        me: ""
-                    },
-                    sprintRetrospectiveMondayCount: {
-                        counter: 0,
-                        me: ""
-                    }
-                });
-                $scope.tuesdayList.push({
-                    time: i,
-                    day: "Tuesday",
-                    showMyself: false,
-                    sprintPlanningTuesdayCount: {
-                        counter: 0,
-                        me: ""
-                    },
-                    scrumPlanningTuesday1Count: {
-                        counter: 0,
-                        me: ""
-                    },
-                    scrumPlanningTuesday2Count: {
+        for (var i = 8; i < 19; i++){
+            $scope.initialMondayList.push({
+                time: i,
+                day: "Monday",
+                showMyself: false,
+                sprintPlanningMondayCount: {
+                    counter: 0,
+                    me: ""
+                },
+                scrumPlanningMonday1Count: {
+                    counter: 0,
+                    me: ""
+                },
+                scrumPlanningMonday2Count: {
+                    counter: 0,
+                    me: ""
+                },
+                sprintReviewMondayCount: {
+                    counter: 0,
+                    me: ""
+                },
+                sprintRetrospectiveMondayCount: {
+                    counter: 0,
+                    me: ""
+                }
+            });
+            $scope.initialTuesdayList.push({
+                time: i,
+                day: "Tuesday",
+                showMyself: false,
+                sprintPlanningTuesdayCount: {
+                    counter: 0,
+                    me: ""
+                },
+                scrumPlanningTuesday1Count: {
+                    counter: 0,
+                    me: ""
+                },
+                scrumPlanningTuesday2Count: {
                         counter: 0,
                         me: ""
                     },
@@ -706,7 +705,7 @@ angular.module("mapal.controllers", [])
                         me: ""
                     }
                 });
-                $scope.wednesdayList.push({
+                $scope.initialWednesdayList.push({
                     time: i,
                     day: "Wednesday",
                     showMyself: false,
@@ -731,7 +730,7 @@ angular.module("mapal.controllers", [])
                         me: ""
                     }
                 });
-                $scope.thursdayList.push({
+                $scope.initialThursdayList.push({
                     time: i,
                     day: "Thursday",
                     showMyself: false,
@@ -756,7 +755,7 @@ angular.module("mapal.controllers", [])
                         me: ""
                     }
                 });
-                $scope.fridayList.push({
+                $scope.initialFridayList.push({
                     time: i,
                     day: "Friday",
                     showMyself: false,
@@ -782,15 +781,24 @@ angular.module("mapal.controllers", [])
                     }
                 });
             }
+
+        $scope.initialise = function (){
+            $scope.mondayList = angular.copy($scope.initialMondayList);
+            $scope.tuesdayList = angular.copy($scope.initialTuesdayList);
+            $scope.wednesdayList = angular.copy($scope.initialWednesdayList);
+            $scope.thursdayList = angular.copy($scope.initialThursdayList);
+            $scope.fridayList = angular.copy($scope.initialFridayList);
             
             var userList = [];
             $scope.showSprintPlanningList = false;
-            $scope.showScrumPlanningList = false;
+            $scope.showScrumPlanningList1 = false;
+            $scope.showScrumPlanningList2 = false;
             $scope.showSprintReviewList = false;
             $scope.showSprintRetrospectiveList = false;
 
             $scope.showConfirmedSprintPlanningTime = false;
-            $scope.showConfirmedScrumPlanningTime = false;
+            $scope.showConfirmedScrumPlanningTime1 = false;
+            $scope.showConfirmedScrumPlanningTime2 = false;
             $scope.showConfirmedSprintReviewTime = false;
             $scope.showConfirmedSprintRetrospectiveTime = false;
 
@@ -805,6 +813,7 @@ angular.module("mapal.controllers", [])
             $scope.showScrumPlanningWednesday1Count = false;
             $scope.showScrumPlanningThursday1Count = false;
             $scope.showScrumPlanningFriday1Count = false;
+
             $scope.showScrumPlanningMonday2Count = false;
             $scope.showScrumPlanningTuesday2Count = false;
             $scope.showScrumPlanningWednesday2Count = false;
@@ -824,7 +833,8 @@ angular.module("mapal.controllers", [])
             $scope.showSprintRetrospectiveFridayCount = false;
 
             $scope.toShowSprintPlanning = "";
-            $scope.toShowScrumPlanning = "";
+            $scope.toShowScrumPlanning1 = "";
+            $scope.toShowScrumPlanning2 = "";
             $scope.toShowSprintReview = "";
             $scope.toShowSprintRetrospective = "";
 
@@ -873,9 +883,14 @@ angular.module("mapal.controllers", [])
                 if(value == null){
                     $scope.groupStartDate = "group start date not set. is an error!";
                 } else {
-                    $scope.groupStartDate = value;
+                    $scope.groupStartDate = new Date(value);
                 }
             });
+
+            console.log("startDate: "+$scope.groupStartDate);
+            console.log("startDate: "+$scope.groupStartDate);
+            console.log("startDate: "+$scope.groupStartDate);
+            console.log("startDate: "+$scope.groupStartDate);
 
             //Get sprint planning confirmed date time
             ref.child("groups").child(groupId).child("confirmedSprintPlanningDateTime").once('value', function (snapshot) {
@@ -884,22 +899,41 @@ angular.module("mapal.controllers", [])
                     $scope.toShowSprintPlanning = "showSprintPlanningList";
                     $scope.getSprintPlanningInfo();
                 } else {
+                    $ionicLoading.hide();
                     $scope.toShowSprintPlanning = "showConfirmedSprintPlanningTime";
                     $scope.confirmedSprintPlanningDate = value.confirmedDate;
+                    $scope.confirmedSprintPlanningDay = value.confirmedDay;
                     $scope.confirmedSprintPlanningTime = value.confirmedTime;
                 }
             });
 
-            //Get sprint planning confirmed date time
-            ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime").once('value', function (snapshot) {
+            //Get sprint planning confirmed date time week 1
+            ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime1").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value == null){
-                    $scope.toShowScrumPlanning = "showScrumPlanningList";
-                    $scope.getSprintPlanningInfo();
+                    $scope.toShowScrumPlanning1 = "showScrumPlanningList1";
+                    $scope.getScrumPlanningInfo1();
                 } else {
-                    $scope.toShowScrumPlanning = "showConfirmedScrumPlanningTime";
-                    $scope.confirmedSprintPlanningDate = value.confirmedDate;
-                    $scope.confirmedSprintPlanningTime = value.confirmedTime;
+                    $ionicLoading.hide();
+                    $scope.toShowScrumPlanning1 = "showConfirmedScrumPlanningTime1";
+                    $scope.confirmedScrumPlanningDate1 = value.confirmedDate;
+                    $scope.confirmedScrumPlanningDay1 = value.confirmedDay;
+                    $scope.confirmedScrumPlanningTime1 = value.confirmedTime;
+                }
+            });
+
+            //Get sprint planning confirmed date time week 2
+            ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime2").once('value', function (snapshot) {
+                var value = snapshot.val();
+                if(value == null){
+                    $scope.toShowScrumPlanning2 = "showScrumPlanningList2";
+                    $scope.getScrumPlanningInfo2();
+                } else {
+                    $ionicLoading.hide();
+                    $scope.toShowScrumPlanning2 = "showConfirmedScrumPlanningTime2";
+                    $scope.confirmedScrumPlanningDate2 = value.confirmedDate;
+                    $scope.confirmedScrumPlanningDay2 = value.confirmedDay;
+                    $scope.confirmedScrumPlanningTime2 = value.confirmedTime;
                 }
             });
 
@@ -908,11 +942,13 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     $scope.toShowSprintReview = "showSprintReviewList";
-                    $scope.getSprintPlanningInfo();
+                    $scope.getSprintReviewInfo();
                 } else {
+                    $ionicLoading.hide();
                     $scope.toShowSprintReview = "showConfirmedSprintReviewTime";
-                    $scope.confirmedSprintPlanningDate = value.confirmedDate;
-                    $scope.confirmedSprintPlanningTime = value.confirmedTime;
+                    $scope.confirmedSprintReviewDate = value.confirmedDate;
+                    $scope.confirmedSprintReviewDay = value.confirmedDay;
+                    $scope.confirmedSprintReviewTime = value.confirmedTime;
                 }
             });
 
@@ -921,11 +957,13 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
-                    $scope.getSprintPlanningInfo();
+                    $scope.getSprintRetrospectiveInfo();
                 } else {
+                    $ionicLoading.hide();
                     $scope.toShowSprintRetrospective = "showConfirmedSprintRetrospectiveTime";
-                    $scope.confirmedSprintPlanningDate = value.confirmedDate;
-                    $scope.confirmedSprintPlanningTime = value.confirmedTime;
+                    $scope.confirmedSprintRetrospectiveDate = value.confirmedDate;
+                    $scope.confirmedSprintRetrospectiveDay = value.confirmedDay;
+                    $scope.confirmedSprintRetrospectiveTime = value.confirmedTime;
                 }
             });
         }
@@ -1042,17 +1080,32 @@ angular.module("mapal.controllers", [])
             }
         }
 
-        $scope.showScrumPlanning = function () {
-            if ($scope.showScrumPlanningList||$scope.showConfirmedScrumPlanningTime){
-                $scope.showScrumPlanningList=false;
-                $scope.showConfirmedScrumPlanningTime = false;
+        $scope.showScrumPlanning1 = function () {
+            if ($scope.showScrumPlanningList1||$scope.showConfirmedScrumPlanningTime1){
+                $scope.showScrumPlanningList1=false;
+                $scope.showConfirmedScrumPlanningTime1 = false;
             } else {
-                if($scope.toShowScrumPlanning == "showScrumPlanningList"){
-                    $scope.showScrumPlanningList = true;
-                    $scope.showConfirmedScrumPlanningTime = false;
-                } else if ($scope.toShowScrumPlanning == "showConfirmedScrumPlanningTime"){
-                    $scope.showScrumPlanningList=false;
-                    $scope.showConfirmedScrumPlanningTime = true;
+                if($scope.toShowScrumPlanning1 == "showScrumPlanningList1"){
+                    $scope.showScrumPlanningList1 = true;
+                    $scope.showConfirmedScrumPlanningTime1 = false;
+                } else if ($scope.toShowScrumPlanning1 == "showConfirmedScrumPlanningTime1"){
+                    $scope.showScrumPlanningList1=false;
+                    $scope.showConfirmedScrumPlanningTime1 = true;
+                }
+            }
+        }
+
+        $scope.showScrumPlanning2 = function () {
+            if ($scope.showScrumPlanningList2||$scope.showConfirmedScrumPlanningTime2){
+                $scope.showScrumPlanningList2=false;
+                $scope.showConfirmedScrumPlanningTime2 = false;
+            } else {
+                if($scope.toShowScrumPlanning2 == "showScrumPlanningList2"){
+                    $scope.showScrumPlanningList2 = true;
+                    $scope.showConfirmedScrumPlanningTime2 = false;
+                } else if ($scope.toShowScrumPlanning2 == "showConfirmedScrumPlanningTime2"){
+                    $scope.showScrumPlanningList2=false;
+                    $scope.showConfirmedScrumPlanningTime2 = true;
                 }
             }
         }
@@ -1087,68 +1140,507 @@ angular.module("mapal.controllers", [])
             }
         }
 
-        var tempKey = "";
-
+        //Sprint planning info
         $scope.getSprintPlanningInfo = function() {
-            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").orderByChild("voteCount").on("child_added", function (snapshot) {
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
                 var value = snapshot.val();
-                var key = String(snapshot.key());
+                console.log("value: "+value);
 
-                console.log("value day: "+value.day+" - id: "+key);
-                if((value != null)&&(key != "voteCount")&&(key != tempKey)){
-                    tempKey = key;
-                    var votedDay = value.day;
-                    var voteTime = parseInt(value.voteTime);
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                    if (value.hasOwnProperty(key)) {
+                    
+                        if(key!="count"){
+                            var object = value[key];
 
-                    if (votedDay == "Monday"){
-                        if($rootScope.userId == value.userId){
-                                $scope.mondayList[voteTime-8].sprintPlanningMondayCount.me = "ME";
+                            var votedDay = object.day;
+                            var voteTime = parseInt(object.voteTime);
+
+                            if (votedDay == "Monday"){
+                                for (var inList in $scope.mondayList) {
+                                    console.log("\t inList: "+inList);
+                                    if($scope.mondayList[inList].time == voteTime){
+                                        if(object.userId == $rootScope.userId){
+                                            $scope.mondayList[inList].sprintPlanningMondayCount.me = "ME";
+                                            $scope.mySprintPlanningVoteId = key;
+                                        }
+                                        $scope.mondayList[inList].sprintPlanningMondayCount.counter += 1;
+                                        
+                                        $scope.mondayList[inList].showMyself = true;
+                                    }
+                                }
+                            } else if (votedDay == "Tuesday"){
+                                for (var inList in $scope.tuesdayList) {
+                                    console.log("\t inList: "+inList);
+                                    if($scope.tuesdayList[inList].time == voteTime){
+                                        if(object.userId == $rootScope.userId){
+                                            $scope.tuesdayList[inList].sprintPlanningTuesdayCount.me = "ME";
+                                            $scope.mySprintPlanningVoteId = key;
+                                        }
+                                        $scope.tuesdayList[inList].sprintPlanningTuesdayCount.counter += 1;
+                                        
+                                        $scope.tuesdayList[inList].showMyself = true;
+                                    }
+                                }
+                            } else if (votedDay == "Wednesday"){
+                                for (var inList in $scope.wednesdayList) {
+                                    console.log("\t inList: "+inList);
+                                    if($scope.wednesdayList[inList].time == voteTime){
+                                        if(object.userId == $rootScope.userId){
+                                            $scope.wednesdayList[inList].sprintPlanningWednesdayCount.me = "ME";
+                                            $scope.mySprintPlanningVoteId = key;
+                                        }
+                                        $scope.wednesdayList[inList].sprintPlanningWednesdayCount.counter += 1;
+                                        
+                                        $scope.wednesdayList[inList].showMyself = true;
+                                    }
+                                }
+                            } else if (votedDay == "Thursday") {
+                                for (var inList in $scope.thursdayList) {
+                                    console.log("\t inList: "+inList);
+                                    if($scope.thursdayList[inList].time == voteTime){
+                                        if(object.userId == $rootScope.userId){
+                                            $scope.thursdayList[inList].sprintPlanningThursdayCount.me = "ME";
+                                            $scope.mySprintPlanningVoteId = key;
+                                        }
+                                        $scope.thursdayList[inList].sprintPlanningThursdayCount.counter += 1;
+                                        
+                                        $scope.thursdayList[inList].showMyself = true;
+                                    }
+                                }
+                            } else if (votedDay == "Friday") {
+                                for (var inList in $scope.fridayList) {
+                                    console.log("\t inList: "+inList);
+                                    if($scope.fridayList[inList].time == voteTime){
+                                        if(object.userId == $rootScope.userId){
+                                            $scope.fridayList[inList].sprintPlanningFridayCount.me = "ME";
+                                            $scope.mySprintPlanningVoteId = key;
+                                        }
+                                        $scope.fridayList[inList].sprintPlanningFridayCount.counter += 1;
+                                        
+                                        $scope.fridayList[inList].showMyself = true;
+                                    }
+                                }
+                            } else {
+                                console.log ("err, error?: "+votedDay);
                             }
-                            $scope.mondayList[voteTime-8].sprintPlanningMondayCount.counter += 1;
+                        } else {
+                            if(parseInt(value[key])==5){
+                                //Get sprint planning confirmed date time week 1
+                                var onComplete = function(error) {
+                                    if (error) {
+                                        console.log('Synchronization failed');
+                                    } else {
+                                        console.log('Synchronization succeeded');
+                                    }
+                                };
+                                fredNameRef.set({ 
+                                    first: 'Fred', 
+                                    last: 'Flintstone' 
+                                }, onComplete);
 
-                            console.log("number: "+$scope.mondayList[voteTime-8].sprintPlanningMondayCount.counter);
-
-                            $scope.mondayList[voteTime-8].showMyself = true;
-                    } else if (votedDay == "Tuesday"){
-                        if($rootScope.userId == value.userId){
-                                $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount.me = "ME";
+                                ref.child("groups").child(groupId).child("confirmedSprintPlanningDateTime").once('value', function (snapshot) {
+                                    var value = snapshot.val();
+                                    if(value == null){
+                                        $scope.toShowScrumPlanning1 = "showScrumPlanningList1";
+                                        $scope.getScrumPlanningInfo1();
+                                    } else {
+                                        $ionicLoading.hide();
+                                        $scope.toShowScrumPlanning1 = "showConfirmedScrumPlanningTime1";
+                                        $scope.confirmedScrumPlanningDate1 = value.confirmedDate;
+                                        $scope.confirmedScrumPlanningTime1 = value.confirmedTime;
+                                    }
+                                });
                             }
-                            $scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount.counter += 1;
-
-                            console.log("er: "+$scope.tuesdayList[voteTime-8].sprintPlanningTuesdayCount.counter);
                             
-                            $scope.showSprintPlanningTuesdayCount = true;
-                    } else if (votedDay == "Wednesday"){
-                        if($rootScope.userId == value.userId){
-                                $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount.me = "ME";
-                            }
-                            $scope.wednesdayList[voteTime-8].sprintPlanningWednesdayCount.counter += 1;
-                            $scope.showSprintPlanningWednesdayCount = true;
-                    } else if (votedDay == "Thursday") {
-                        if($rootScope.userId == value.userId){
-                                $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount.me = "ME";
-                            }
-                            $scope.thursdayList[voteTime-8].sprintPlanningThursdayCount.counter += 1;
-                            $scope.showSprintPlanningThursdayCount = true;
-                    } else if (votedDay == "Friday") {
-                        if($rootScope.userId == value.userId){
-                                $scope.fridayList[voteTime-8].sprintPlanningFridayCount.me = "ME";
-                            }
-                            $scope.fridayList[voteTime-8].sprintPlanningFridayCount.counter += 1;
-                            $scope.showSprintPlanningFridayCount = true;
-                    } else {
-                        console.log ("err, error?: "+votedDay);
+                        }
                     }
-                } else {
-                    console.log ("getSprintPlanningInfo val is null");
                 }
+                $ionicLoading.hide();
+            });
+        }
+
+        //Scrum Planning 1 info 
+        $scope.getScrumPlanningInfo1 = function() {
+            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").once("value",function(snapshot){
+                var value = snapshot.val();
+                console.log("value: "+value);
+
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                  if (value.hasOwnProperty(key)) {
+                    
+                    if(key!="count"){
+                        var object = value[key];
+
+                        var votedDay = object.day;
+                        var voteTime = parseInt(object.voteTime);
+
+                        if (votedDay == "Monday"){
+                            for (var inList in $scope.mondayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.mondayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.mondayList[inList].scrumPlanningMonday1Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId1 = key;
+                                    }
+                                    $scope.mondayList[inList].scrumPlanningMonday1Count.counter += 1;
+                                    
+                                    $scope.mondayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Tuesday"){
+                            for (var inList in $scope.tuesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.tuesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.tuesdayList[inList].scrumPlanningTuesday1Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId1 = key;
+                                    }
+                                    $scope.tuesdayList[inList].scrumPlanningTuesday1Count.counter += 1;
+                                    
+                                    $scope.tuesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Wednesday"){
+                            for (var inList in $scope.wednesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.wednesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.wednesdayList[inList].scrumPlanningWednesday1Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId1 = key;
+                                    }
+                                    $scope.wednesdayList[inList].scrumPlanningWednesday1Count.counter += 1;
+                                    
+                                    $scope.wednesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Thursday") {
+                            for (var inList in $scope.thursdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.thursdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.thursdayList[inList].scrumPlanningThursday1Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId1 = key;
+                                    }
+                                    $scope.thursdayList[inList].scrumPlanningThursday1Count.counter += 1;
+                                    
+                                    $scope.thursdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Friday") {
+                            for (var inList in $scope.fridayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.fridayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.fridayList[inList].scrumPlanningFriday1Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId1 = key;
+                                    }
+                                    $scope.fridayList[inList].scrumPlanningFriday1Count.counter += 1;
+                                    
+                                    $scope.fridayList[inList].showMyself = true;
+                                }
+                            }
+                        } else {
+                            console.log ("err, error?: "+votedDay);
+                        }
+                    } else {
+                        console.log(key + " (count) -> " + value[key]);
+                    }
+                  }
+                }
+                $ionicLoading.hide();
+            });
+        }
+
+        //Scrum Planning info 2 
+        $scope.getScrumPlanningInfo2 = function() {
+            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").once("value",function(snapshot){
+                var value = snapshot.val();
+                console.log("value: "+value);
+
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                  if (value.hasOwnProperty(key)) {
+                    
+                    if(key!="count"){
+                        var object = value[key];
+
+                        var votedDay = object.day;
+                        var voteTime = parseInt(object.voteTime);
+
+                        if (votedDay == "Monday"){
+                            for (var inList in $scope.mondayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.mondayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.mondayList[inList].scrumPlanningMonday2Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId2 = key;
+                                    }
+                                    $scope.mondayList[inList].scrumPlanningMonday2Count.counter += 1;
+                                    
+                                    $scope.mondayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Tuesday"){
+                            for (var inList in $scope.tuesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.tuesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.tuesdayList[inList].scrumPlanningTuesday2Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId2 = key;
+                                    }
+                                    $scope.tuesdayList[inList].scrumPlanningTuesday2Count.counter += 1;
+                                    
+                                    $scope.tuesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Wednesday"){
+                            for (var inList in $scope.wednesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.wednesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.wednesdayList[inList].scrumPlanningWednesday2Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId2 = key;
+                                    }
+                                    $scope.wednesdayList[inList].scrumPlanningWednesday2Count.counter += 1;
+                                    
+                                    $scope.wednesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Thursday") {
+                            for (var inList in $scope.thursdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.thursdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.thursdayList[inList].scrumPlanningThursday2Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId2 = key;
+                                    }
+                                    $scope.thursdayList[inList].scrumPlanningThursday2Count.counter += 1;
+                                    
+                                    $scope.thursdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Friday") {
+                            for (var inList in $scope.fridayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.fridayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.fridayList[inList].scrumPlanningFriday2Count.me = "ME";
+                                        $scope.myScrumPlanningVoteId2 = key;
+                                    }
+                                    $scope.fridayList[inList].scrumPlanningFriday2Count.counter += 1;
+                                    
+                                    $scope.fridayList[inList].showMyself = true;
+                                }
+                            }
+                        } else {
+                            console.log ("err, error?: "+votedDay);
+                        }
+                    } else {
+                        console.log(key + " (count) -> " + value[key]);
+                    }
+                  }
+                }
+                $ionicLoading.hide();
+            });
+        }
+
+        //Get sprint retrospective info
+        $scope.getSprintRetrospectiveInfo = function() {
+            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").once("value",function(snapshot){
+                var value = snapshot.val();
+                console.log("value: "+value);
+
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                  if (value.hasOwnProperty(key)) {
+                    
+                    if(key!="count"){
+                        var object = value[key];
+
+                        var votedDay = object.day;
+                        var voteTime = parseInt(object.voteTime);
+
+                        if (votedDay == "Monday"){
+                            for (var inList in $scope.mondayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.mondayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.mondayList[inList].sprintRetrospectiveMondayCount.me = "ME";
+                                        $scope.mySprintRetrospectiveVoteId = key;
+                                    }
+                                    $scope.mondayList[inList].sprintRetrospectiveMondayCount.counter += 1;
+                                    
+                                    $scope.mondayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Tuesday"){
+                            for (var inList in $scope.tuesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.tuesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.tuesdayList[inList].sprintRetrospectiveTuesdayCount.me = "ME";
+                                        $scope.mySprintRetrospectiveVoteId = key;
+                                    }
+                                    $scope.tuesdayList[inList].sprintRetrospectiveTuesdayCount.counter += 1;
+                                    
+                                    $scope.tuesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Wednesday"){
+                            for (var inList in $scope.wednesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.wednesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.wednesdayList[inList].sprintRetrospectiveWednesdayCount.me = "ME";
+                                        $scope.mySprintRetrospectiveVoteId = key;
+                                    }
+                                    $scope.wednesdayList[inList].sprintRetrospectiveWednesdayCount.counter += 1;
+                                    
+                                    $scope.wednesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Thursday") {
+                            for (var inList in $scope.thursdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.thursdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.thursdayList[inList].sprintRetrospectiveThursdayCount.me = "ME";
+                                        $scope.mySprintRetrospectiveVoteId = key;
+                                    }
+                                    $scope.thursdayList[inList].sprintRetrospectiveThursdayCount.counter += 1;
+                                    
+                                    $scope.thursdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Friday") {
+                            for (var inList in $scope.fridayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.fridayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.fridayList[inList].sprintRetrospectiveFridayCount.me = "ME";
+                                        $scope.mySprintRetrospectiveVoteId = key;
+                                    }
+                                    $scope.fridayList[inList].sprintRetrospectiveFridayCount.counter += 1;
+                                    
+                                    $scope.fridayList[inList].showMyself = true;
+                                }
+                            }
+                        } else {
+                            console.log ("err, error?: "+votedDay);
+                        }
+                    } else {
+                        console.log(key + " (count) -> " + value[key]);
+                    }
+                  }
+                }
+                $ionicLoading.hide();
+            });
+        }
+
+        //Get sprint review info
+        $scope.getSprintReviewInfo = function() {
+            ref.child("groups").child($rootScope.groupId).child("voteSprintReview").once("value",function(snapshot){
+                var value = snapshot.val();
+                console.log("value: "+value);
+
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                  if (value.hasOwnProperty(key)) {
+                    
+                    if(key!="count"){
+                        var object = value[key];
+
+                        var votedDay = object.day;
+                        var voteTime = parseInt(object.voteTime);
+
+                        if (votedDay == "Monday"){
+                            for (var inList in $scope.mondayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.mondayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.mondayList[inList].sprintReviewMondayCount.me = "ME";
+                                        $scope.mySprintReviewVoteId = key;
+                                    }
+                                    $scope.mondayList[inList].sprintReviewMondayCount.counter += 1;
+                                    
+                                    $scope.mondayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Tuesday"){
+                            for (var inList in $scope.tuesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.tuesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.tuesdayList[inList].sprintReviewTuesdayCount.me = "ME";
+                                        $scope.mySprintReviewVoteId = key;
+                                    }
+                                    $scope.tuesdayList[inList].sprintReviewTuesdayCount.counter += 1;
+                                    
+                                    $scope.tuesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Wednesday"){
+                            for (var inList in $scope.wednesdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.wednesdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.wednesdayList[inList].sprintReviewWednesdayCount.me = "ME";
+                                        $scope.mySprintReviewVoteId = key;
+                                    }
+                                    $scope.wednesdayList[inList].sprintReviewWednesdayCount.counter += 1;
+                                    
+                                    $scope.wednesdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Thursday") {
+                            for (var inList in $scope.thursdayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.thursdayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.thursdayList[inList].sprintReviewThursdayCount.me = "ME";
+                                        $scope.mySprintReviewVoteId = key;
+                                    }
+                                    $scope.thursdayList[inList].sprintReviewThursdayCount.counter += 1;
+                                    
+                                    $scope.thursdayList[inList].showMyself = true;
+                                }
+                            }
+                        } else if (votedDay == "Friday") {
+                            for (var inList in $scope.fridayList) {
+                                console.log("\t inList: "+inList);
+                                if($scope.fridayList[inList].time == voteTime){
+                                    if(object.userId == $rootScope.userId){
+                                        $scope.fridayList[inList].sprintReviewFridayCount.me = "ME";
+                                        $scope.mySprintReviewVoteId = key;
+                                    }
+                                    $scope.fridayList[inList].sprintReviewFridayCount.counter += 1;
+                                    
+                                    $scope.fridayList[inList].showMyself = true;
+                                }
+                            }
+                        } else {
+                            console.log ("err, error?: "+votedDay);
+                        }
+                    } else {
+                        console.log(key + " (count) -> " + value[key]);
+                    }
+                  }
+                }
+                $ionicLoading.hide();
             });
         }
         
-        $scope.selectDateTimeSprintPlanning = function(time, day) {
+        //Sprint Planning selection
+        $scope.selectDateTimeSprintPlanning = function(time, day, date) {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
-                $scope.numberOfVotes = snapshot.val();
-                if($scope.numberOfVotes==null){
+                var numberOfVotes = snapshot.val();
+                if(numberOfVotes==null){
                     var onComplete = function(error) {
                         if (error) {
                             console.log('Synchronization failed');
@@ -1158,7 +1650,9 @@ angular.module("mapal.controllers", [])
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
-                } else if ($scope.numberOfVotes>0) {
+                } else if (numberOfVotes==5) {
+                    $scope.initialise();
+                } else if (numberOfVotes>0&&$scope.numberOfVotes<5) {
                     var onComplete = function(error) {
                         if (error) {
                             console.log('Synchronization failed');
@@ -1167,24 +1661,376 @@ angular.module("mapal.controllers", [])
                             $scope.sprintPlanningVote(time,day);
                         }
                     };
-                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set($scope.numberOfVotes+1, onComplete);
-                }
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes+1, onComplete);
+                } 
             });
 
             
         }
 
         $scope.sprintPlanningVote = function(time,day){
-            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
-                    day: day,
-                    voteTime: time,
-                    userId : $rootScope.userId
-                }, 
-                function() { 
-                    $scope.getSprintPlanningInfo();
-            });
+            if($scope.mySprintPlanningVoteId == "" || $scope.mySprintPlanningVoteId == null){
+                console.log("\t\t mySprintPlanningVoteId: "+$scope.mySprintPlanningVoteId);
+                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+                        day: day,
+                        voteTime: time,
+                        userId : $rootScope.userId
+                    }, 
+                    function() { 
+                        $scope.initialise();
+                });
+            } else {
+                
+                var onComplete = function(error) {
+                    if (error) {
+                        console.log('Synchronization failed');
+                    } else {
+                        ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
+                            var numberOfVotes = snapshot.val();
+                            if (numberOfVotes>0) {
+                                var onComplete = function(error) {
+                                    if (error) {
+                                        console.log('Synchronization failed');
+                                    } else {
+                                        console.log('Synchronization succeeded');
+                                        ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+                                                day: day,
+                                                voteTime: time,
+                                                userId : $rootScope.userId
+                                            }, 
+                                            function() { 
+                                                $scope.initialise();
+                                        });
+                                    }
+                                };
+                                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes-1, onComplete);
+                            }
+                        });
+                    }
+                };
+                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child($scope.mySprintPlanningVoteId).remove(onComplete);
+            }
         }
 
+        //Scrum planning 1 selection
+        $scope.selectDateTimeScrumPlanning1 = function(time, day) {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            
+            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").once('value', function (snapshot) {
+                var numberOfVotes = snapshot.val();
+                if(numberOfVotes==null){
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.scrumPlanning1Vote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(1, onComplete);
+                } else if (numberOfVotes==5) {
+                    $scope.initialise();
+                } else if (numberOfVotes>0&&$scope.numberOfVotes<5) {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.scrumPlanning1Vote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(numberOfVotes+1, onComplete);
+                } 
+            });
+
+            
+        }
+
+        $scope.scrumPlanning1Vote = function(time,day){
+            if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
+                console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
+                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+                        day: day,
+                        voteTime: time,
+                        userId : $rootScope.userId
+                    }, 
+                    function() { 
+                        $scope.initialise();
+                });
+            } else {
+                
+                var onComplete = function(error) {
+                    if (error) {
+                        console.log('Synchronization failed');
+                    } else {
+                        ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").once('value', function (snapshot) {
+                            var numberOfVotes = snapshot.val();
+                            if (numberOfVotes>0) {
+                                var onComplete = function(error) {
+                                    if (error) {
+                                        console.log('Synchronization failed');
+                                    } else {
+                                        console.log('Synchronization succeeded');
+                                        ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+                                                day: day,
+                                                voteTime: time,
+                                                userId : $rootScope.userId
+                                            }, 
+                                            function() { 
+                                                $scope.initialise();
+                                        });
+                                    }
+                                };
+                                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(numberOfVotes-1, onComplete);
+                            }
+                        });
+                    }
+                };
+                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child($scope.myScrumPlanningVoteId1).remove(onComplete);
+            }
+        }
+
+        //Scrum Planning 2 selection
+        $scope.selectDateTimeScrumPlanning2 = function(time, day) {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            
+            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").once('value', function (snapshot) {
+                var numberOfVotes = snapshot.val();
+                if(numberOfVotes==null){
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.scrumPlanning2Vote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(1, onComplete);
+                } else if (numberOfVotes==5) {
+                    $scope.initialise();
+                } else if (numberOfVotes>0 && numberOfVotes<5) {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.scrumPlanning2Vote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(numberOfVotes+1, onComplete);
+                } 
+            });
+
+            
+        }
+
+        $scope.scrumPlanning2Vote = function(time,day){
+            if($scope.myScrumPlanningVoteId2 == "" || $scope.myScrumPlanningVoteId2 == null){
+                console.log("\t\t myScrumPlanningVoteId2: "+$scope.myScrumPlanningVoteId2);
+                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").push({
+                        day: day,
+                        voteTime: time,
+                        userId : $rootScope.userId
+                    }, 
+                    function() { 
+                        $scope.initialise();
+                });
+            } else {
+                
+                var onComplete = function(error) {
+                    if (error) {
+                        console.log('Synchronization failed');
+                    } else {
+                        ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").once('value', function (snapshot) {
+                            var numberOfVotes = snapshot.val();
+                            if (numberOfVotes>0) {
+                                var onComplete = function(error) {
+                                    if (error) {
+                                        console.log('Synchronization failed');
+                                    } else {
+                                        console.log('Synchronization succeeded');
+                                        ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").push({
+                                                day: day,
+                                                voteTime: time,
+                                                userId : $rootScope.userId
+                                            }, 
+                                            function() { 
+                                                $scope.initialise();
+                                        });
+                                    }
+                                };
+                                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(numberOfVotes-1, onComplete);
+                            }
+                        });
+                    }
+                };
+                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child($scope.myScrumPlanningVoteId2).remove(onComplete);
+            }
+        }
+        
+        //Sprint retrospective selection
+        $scope.selectDateTimeSprintRetrospective = function(time, day) {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            
+            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").once('value', function (snapshot) {
+                var numberOfVotes = snapshot.val();
+                if(numberOfVotes==null){
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.sprintRetrospectiveVote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(1, onComplete);
+                } else if (numberOfVotes==5) {
+                    $scope.initialise();
+                } else if (numberOfVotes>0 && numberOfVotes<5) {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.sprintRetrospectiveVote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(numberOfVotes+1, onComplete);
+                } 
+            });
+
+            
+        }
+
+        $scope.sprintRetrospectiveVote = function(time,day){
+            if($scope.mySprintRetrospectiveVoteId == "" || $scope.mySprintRetrospectiveVoteId == null){
+                console.log("\t\t mySprintRetrospectiveVoteId: "+$scope.mySprintRetrospectiveVoteId);
+                ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").push({
+                        day: day,
+                        voteTime: time,
+                        userId : $rootScope.userId
+                    }, 
+                    function() { 
+                        $scope.initialise();
+                });
+            } else {
+                
+                var onComplete = function(error) {
+                    if (error) {
+                        console.log('Synchronization failed');
+                    } else {
+                        ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").once('value', function (snapshot) {
+                            var numberOfVotes = snapshot.val();
+                            if (numberOfVotes>0) {
+                                var onComplete = function(error) {
+                                    if (error) {
+                                        console.log('Synchronization failed');
+                                    } else {
+                                        console.log('Synchronization succeeded');
+                                        ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").push({
+                                                day: day,
+                                                voteTime: time,
+                                                userId : $rootScope.userId
+                                            }, 
+                                            function() { 
+                                                $scope.initialise();
+                                        });
+                                    }
+                                };
+                                ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(numberOfVotes-1, onComplete);
+                            }
+                        });
+                    }
+                };
+                ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child($scope.mySprintRetrospectiveVoteId).remove(onComplete);
+            }
+        }
+
+        //Sprint Review selection
+        $scope.selectDateTimeSprintReview = function(time, day) {
+            $ionicLoading.show({
+                template: 'Loading...'
+            });
+            
+            ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").once('value', function (snapshot) {
+                var numberOfVotes = snapshot.val();
+                if(numberOfVotes==null){
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.sprintReviewVote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(1, onComplete);
+                } else if (numberOfVotes==5) {
+                    $scope.initialise();
+                } else if (numberOfVotes>0 && numberOfVotes<5) {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            console.log('Synchronization succeeded');
+                            $scope.sprintReviewVote(time,day);
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(numberOfVotes+1, onComplete);
+                } 
+            });
+
+            
+        }
+
+        $scope.sprintReviewVote = function(time,day){
+            if($scope.mySprintReviewVoteId == "" || $scope.mySprintReviewVoteId == null){
+                console.log("\t\t mySprintReviewVoteId: "+$scope.mySprintReviewVoteId);
+                ref.child("groups").child($rootScope.groupId).child("voteSprintReview").push({
+                        day: day,
+                        voteTime: time,
+                        userId : $rootScope.userId
+                    }, 
+                    function() { 
+                        $scope.initialise();
+                });
+            } else {
+                
+                var onComplete = function(error) {
+                    if (error) {
+                        console.log('Synchronization failed');
+                    } else {
+                        ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").once('value', function (snapshot) {
+                            var numberOfVotes = snapshot.val();
+                            if (numberOfVotes>0) {
+                                var onComplete = function(error) {
+                                    if (error) {
+                                        console.log('Synchronization failed');
+                                    } else {
+                                        console.log('Synchronization succeeded');
+                                        ref.child("groups").child($rootScope.groupId).child("voteSprintReview").push({
+                                                day: day,
+                                                voteTime: time,
+                                                userId : $rootScope.userId
+                                            }, 
+                                            function() { 
+                                                $scope.initialise();
+                                        });
+                                    }
+                                };
+                                ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(numberOfVotes-1, onComplete);
+                            }
+                        });
+                    }
+                };
+                ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child($scope.mySprintReviewVoteId).remove(onComplete);
+            }
+        }
         $scope.initialise();
     }
 })
