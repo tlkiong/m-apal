@@ -2,4 +2,26 @@
     <ion-nav-buttons side="right">
       <img src="img/role_leader_icon.png" class="nav_bar_icon">
     </ion-nav-buttons>
+    <ion-content class="padding">
+    	<button class="button button-block button-royal" ng-click="loadAllMessage()" ng-tap="loadAllMessage()">
+            LOAD ALL MESSAGE
+        </button>
+	    <ion-list>
+		    <ion-item ng-repeat="item in chatMessageList">
+		    	<span><strong>{{item.fullName}}:</strong> {{ item.message }}</span>
+		    </ion-item>
+	    </ion-list>
+	    <footer>
+	    	<div class="list">
+				<div class="item item-input-inset">
+			    <label class="item-input-wrapper">
+			    	<input type="text" placeholder="Message" ng-model="message">
+			    </label>
+			    <button class="button button-small" ng-click="sendMessage(message)" ng-tap="sendMessage(message)">
+			    	Send Message
+			    </button>
+			  </div>
+			</div>
+	    </footer>
+	</ion-content>
 </ion-view>

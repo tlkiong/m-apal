@@ -1646,7 +1646,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.sprintPlanningVote(time,day);
+                            $scope.sprintPlanningVote(time,day, 1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
@@ -1658,7 +1658,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.sprintPlanningVote(time,day);
+                            $scope.sprintPlanningVote(time,day, numberOfVotes+1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes+1, onComplete);
@@ -1668,52 +1668,91 @@ angular.module("mapal.controllers", [])
             
         }
 
-        $scope.sprintPlanningVote = function(time,day){
-            if($scope.mySprintPlanningVoteId == "" || $scope.mySprintPlanningVoteId == null){
-                console.log("\t\t mySprintPlanningVoteId: "+$scope.mySprintPlanningVoteId);
-                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
-                        day: day,
-                        voteTime: time,
-                        userId : $rootScope.userId
-                    }, 
-                    function() { 
-                        $scope.initialise();
-                });
-            } else {
-                
-                var onComplete = function(error) {
-                    if (error) {
-                        console.log('Synchronization failed');
-                    } else {
-                        ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
-                            var numberOfVotes = snapshot.val();
-                            if (numberOfVotes>0) {
-                                var onComplete = function(error) {
-                                    if (error) {
-                                        console.log('Synchronization failed');
-                                    } else {
-                                        console.log('Synchronization succeeded');
-                                        ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
-                                                day: day,
-                                                voteTime: time,
-                                                userId : $rootScope.userId
-                                            }, 
-                                            function() { 
-                                                $scope.initialise();
-                                        });
+        $scope.sprintPlanningVote = function(time,day, number, date){
+            if(number == 5){
+                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
+                    var value = snapshot.val();
+
+                    var compareData = [];
+                    var counter =0;
+                    //key is the left. value[key] is the right side of the object
+                    for (var key in value) {
+                      if (value.hasOwnProperty(key)) {
+                        
+                        if((key!="count")&&(counter < 5)){
+                            var object = value[key];
+
+                            if(compareData.length == 0){
+                                compareData.push(object);
+                            } else {
+                                for(var data in compareData){
+                                    if((data.day == object.day)&&(data.voteTime==object.voteTime)){
+
                                     }
-                                };
-                                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes-1, onComplete);
+                                }
                             }
-                        });
+                            counter++;
+                            
+                        } else if ((key!="count")&&(counter == 5)) {
+
+                        } else {
+                            console.log(key + " - create confirm (count) -> " + value[key]);
+                        }
+
+                      }
                     }
-                };
-                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child($scope.mySprintPlanningVoteId).remove(onComplete);
+                    $ionicLoading.hide();
+                });
+            } else if (number>0 && number<5){
+                if($scope.mySprintPlanningVoteId == "" || $scope.mySprintPlanningVoteId == null){
+                    console.log("\t\t mySprintPlanningVoteId: "+$scope.mySprintPlanningVoteId);
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+                            date: date,
+                            day: day,
+                            voteTime: time,
+                            userId : $rootScope.userId
+                        }, 
+                        function() { 
+                            $scope.initialise();
+                    });
+                } else {
+                    var onComplete = function(error) {
+                        if (error) {
+                            console.log('Synchronization failed');
+                        } else {
+                            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
+                                var numberOfVotes = snapshot.val();
+                                if (numberOfVotes>0) {
+                                    var onComplete = function(error) {
+                                        if (error) {
+                                            console.log('Synchronization failed');
+                                        } else {
+                                            console.log('Synchronization succeeded');
+                                            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+                                                    date: date,
+                                                    day: day,
+                                                    voteTime: time,
+                                                    userId : $rootScope.userId
+                                                }, 
+                                                function() { 
+                                                    $scope.initialise();
+                                            });
+                                        }
+                                    };
+                                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes-1, onComplete);
+                                }
+                            });
+                        }
+                    };
+                    ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child($scope.mySprintPlanningVoteId).remove(onComplete);
+                }
+            } else {
+                console.log("Number is wrong!");
             }
         }
 
         //Scrum planning 1 selection
-        $scope.selectDateTimeScrumPlanning1 = function(time, day) {
+        $scope.selectDateTimeScrumPlanning1 = function(time, day, date) {
             $ionicLoading.show({
                 template: 'Loading...'
             });
@@ -1726,7 +1765,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.scrumPlanning1Vote(time,day);
+                            $scope.scrumPlanning1Vote(time,day, 1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(1, onComplete);
@@ -1738,7 +1777,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.scrumPlanning1Vote(time,day);
+                            $scope.scrumPlanning1Vote(time,day, numberOfVotes+1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(numberOfVotes+1, onComplete);
@@ -1748,10 +1787,11 @@ angular.module("mapal.controllers", [])
             
         }
 
-        $scope.scrumPlanning1Vote = function(time,day){
+        $scope.scrumPlanning1Vote = function(time,day, number, date){
             if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
                 console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
                 ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+                        date: date,
                         day: day,
                         voteTime: time,
                         userId : $rootScope.userId
@@ -1774,6 +1814,7 @@ angular.module("mapal.controllers", [])
                                     } else {
                                         console.log('Synchronization succeeded');
                                         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+                                                date: date,
                                                 day: day,
                                                 voteTime: time,
                                                 userId : $rootScope.userId
@@ -1793,7 +1834,7 @@ angular.module("mapal.controllers", [])
         }
 
         //Scrum Planning 2 selection
-        $scope.selectDateTimeScrumPlanning2 = function(time, day) {
+        $scope.selectDateTimeScrumPlanning2 = function(time, day, date) {
             $ionicLoading.show({
                 template: 'Loading...'
             });
@@ -1806,7 +1847,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.scrumPlanning2Vote(time,day);
+                            $scope.scrumPlanning2Vote(time,day, 1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(1, onComplete);
@@ -1818,7 +1859,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.scrumPlanning2Vote(time,day);
+                            $scope.scrumPlanning2Vote(time,day, numberOfVotes+1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(numberOfVotes+1, onComplete);
@@ -1828,10 +1869,11 @@ angular.module("mapal.controllers", [])
             
         }
 
-        $scope.scrumPlanning2Vote = function(time,day){
+        $scope.scrumPlanning2Vote = function(time,day,number,date){
             if($scope.myScrumPlanningVoteId2 == "" || $scope.myScrumPlanningVoteId2 == null){
                 console.log("\t\t myScrumPlanningVoteId2: "+$scope.myScrumPlanningVoteId2);
                 ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").push({
+                        date: date,
                         day: day,
                         voteTime: time,
                         userId : $rootScope.userId
@@ -1854,6 +1896,7 @@ angular.module("mapal.controllers", [])
                                     } else {
                                         console.log('Synchronization succeeded');
                                         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").push({
+                                                date: date,
                                                 day: day,
                                                 voteTime: time,
                                                 userId : $rootScope.userId
@@ -1873,7 +1916,7 @@ angular.module("mapal.controllers", [])
         }
         
         //Sprint retrospective selection
-        $scope.selectDateTimeSprintRetrospective = function(time, day) {
+        $scope.selectDateTimeSprintRetrospective = function(time, day, date) {
             $ionicLoading.show({
                 template: 'Loading...'
             });
@@ -1886,7 +1929,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.sprintRetrospectiveVote(time,day);
+                            $scope.sprintRetrospectiveVote(time,day, 1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(1, onComplete);
@@ -1898,7 +1941,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.sprintRetrospectiveVote(time,day);
+                            $scope.sprintRetrospectiveVote(time,day, numberOfVotes+1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(numberOfVotes+1, onComplete);
@@ -1908,10 +1951,11 @@ angular.module("mapal.controllers", [])
             
         }
 
-        $scope.sprintRetrospectiveVote = function(time,day){
+        $scope.sprintRetrospectiveVote = function(time,day, number, date){
             if($scope.mySprintRetrospectiveVoteId == "" || $scope.mySprintRetrospectiveVoteId == null){
                 console.log("\t\t mySprintRetrospectiveVoteId: "+$scope.mySprintRetrospectiveVoteId);
                 ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").push({
+                        date: date,
                         day: day,
                         voteTime: time,
                         userId : $rootScope.userId
@@ -1934,6 +1978,7 @@ angular.module("mapal.controllers", [])
                                     } else {
                                         console.log('Synchronization succeeded');
                                         ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").push({
+                                                date: date,
                                                 day: day,
                                                 voteTime: time,
                                                 userId : $rootScope.userId
@@ -1953,7 +1998,7 @@ angular.module("mapal.controllers", [])
         }
 
         //Sprint Review selection
-        $scope.selectDateTimeSprintReview = function(time, day) {
+        $scope.selectDateTimeSprintReview = function(time, day, date) {
             $ionicLoading.show({
                 template: 'Loading...'
             });
@@ -1966,7 +2011,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.sprintReviewVote(time,day);
+                            $scope.sprintReviewVote(time,day, 1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(1, onComplete);
@@ -1978,7 +2023,7 @@ angular.module("mapal.controllers", [])
                             console.log('Synchronization failed');
                         } else {
                             console.log('Synchronization succeeded');
-                            $scope.sprintReviewVote(time,day);
+                            $scope.sprintReviewVote(time,day, numberOfVotes+1, date);
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(numberOfVotes+1, onComplete);
@@ -1988,10 +2033,11 @@ angular.module("mapal.controllers", [])
             
         }
 
-        $scope.sprintReviewVote = function(time,day){
+        $scope.sprintReviewVote = function(time,day, number, date){
             if($scope.mySprintReviewVoteId == "" || $scope.mySprintReviewVoteId == null){
                 console.log("\t\t mySprintReviewVoteId: "+$scope.mySprintReviewVoteId);
                 ref.child("groups").child($rootScope.groupId).child("voteSprintReview").push({
+                        date: date,
                         day: day,
                         voteTime: time,
                         userId : $rootScope.userId
@@ -2014,6 +2060,7 @@ angular.module("mapal.controllers", [])
                                     } else {
                                         console.log('Synchronization succeeded');
                                         ref.child("groups").child($rootScope.groupId).child("voteSprintReview").push({
+                                                date: date,
                                                 day: day,
                                                 voteTime: time,
                                                 userId : $rootScope.userId
@@ -2035,7 +2082,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("DiscussionCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("DiscussionCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicScrollDelegate) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -2049,6 +2096,49 @@ angular.module("mapal.controllers", [])
         console.log("We are at DiscussionCtrl");
 
         var ref = new Firebase($rootScope.firebaseUrl);
+
+        var chatList = [];
+
+        $scope.initialise = function(){
+            $scope.chatMessageList = angular.copy(chatList);
+            ref.child("chat").child($rootScope.groupId).limitToLast(10).on("child_added", function(snapshot){
+                var value = snapshot.val();
+                if(value.fullName == $rootScope.fullName){
+                    value.fullName = "Me";
+                }
+                $scope.chatMessageList.push(value);
+                $ionicScrollDelegate.scrollBottom();
+            });
+        }
+
+        $scope.sendMessage = function(message){
+            ref.child("chat").child($rootScope.groupId).push({
+                fullName: $rootScope.fullName,
+                message:  message
+            });
+            $scope.message = "";
+        }
+
+        $scope.loadAllMessage = function(){
+            $scope.chatMessageList = angular.copy(chatList);
+            ref.child("chat").child($rootScope.groupId).once("value", function(snapshot){
+                var value = snapshot.val();
+
+                for(var data in value){
+                    if (value.hasOwnProperty(data)) {
+                        var object = value[data];
+                        if(object.fullName == $rootScope.fullName){
+                            object.fullName = "Me";
+                        }
+                        $scope.chatMessageList.push(object);
+                        $ionicScrollDelegate.scrollBottom();
+                    }
+                    
+                }
+            });
+        }
+
+        $scope.initialise();
     }
 })
 
