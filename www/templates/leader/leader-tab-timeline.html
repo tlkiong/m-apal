@@ -10,6 +10,12 @@
 	    </div>
 
 	    <div ng-show="showSprintPlanningList" class="item-accordion">
+	    	<div class="card">
+			  <div class="item item-text-wrap">
+			    PAL Leader and Students meetup to brief and discuss on task assigned.
+			  </div>
+			</div>
+
 		    <ion-list>
 			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTimeSprintPlanning(item.time, item.day, sprintPlanningMondayDate)" ng-tap="selectDateTimeSprintPlanning(item, item.day, sprintPlanningMondayDate)">
 			    	<strong>({{sprintPlanningMondayDate}})</strong> Monday - {{ item.time }}00H    
@@ -57,6 +63,12 @@
 		    </ion-list>
 	    </div>
 	    <div ng-show="showConfirmedSprintPlanningTime">
+	    	<div class="card">
+			  <div class="item item-text-wrap">
+			    PAL Leader and Students meetup to brief and discuss on task assigned.
+			  </div>
+			</div>
+
 	    	<ul class="list">
 			    <li class="item">
 			    	{{ confirmedSprintPlanningDate }} - {{ confirmedSprintPlanningDay }}
@@ -74,6 +86,12 @@
 	    	Scrum Planning Week 1
 	    </div>
 	    <div ng-show="showScrumPlanningList1" class="item-accordion">
+	    	<div class="card">
+			  <div class="item item-text-wrap">
+			    Students working on programming solutions with documentation
+			  </div>
+			</div>
+
 	    	<!-- Week 1 -->
 		    <ion-list>
 			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTimeScrumPlanning1(item.time, item.day, scrumPlanningMondayDate1)" ng-tap="selectDateTimeScrumPlanning1(item.time, item.day, scrumPlanningMondayDate1)">
@@ -122,6 +140,12 @@
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedScrumPlanningTime1">
+			<div class="card">
+			  <div class="item item-text-wrap">
+			    Students working on programming solutions with documentation
+			  </div>
+			</div>
+
 	    	<ul class="list">
 			    <li class="item">
 			    	{{ confirmedScrumPlanningDate1 }} - {{ confirmedScrumPlanningDay1 }}
@@ -139,6 +163,12 @@
 	    	Scrum Planning Week 2
 	    </div>
 	    <div ng-show="showScrumPlanningList2" class="item-accordion">
+	    	<div class="card">
+			  <div class="item item-text-wrap">
+			    Students working on programming solutions with documentation
+			  </div>
+			</div>
+
 		    <!-- Week 2 -->
 		    <ion-list>
 			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTimeScrumPlanning2(item.time, item.day, scrumPlanningMondayDate2)" ng-tap="selectDateTimeScrumPlanning2(item.time, item.day, scrumPlanningMondayDate2)">
@@ -187,6 +217,12 @@
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedScrumPlanningTime2">
+			<div class="card">
+			  <div class="item item-text-wrap">
+			    Students working on programming solutions with documentation
+			  </div>
+			</div>
+
 	    	<ul class="list">
 			    <li class="item">
 			    	{{ confirmedScrumPlanningDate2 }} - {{ confirmedScrumPlanningDay2 }}
@@ -204,6 +240,12 @@
 	    	Sprint Review
 	    </div>
 	    <div ng-show="showSprintReviewList" class="item-accordion">
+			<div class="card">
+			  <div class="item item-text-wrap">
+			    PAL Leader and Students meetup to present the final product and grade it.
+			  </div>
+			</div>
+
 		    <ion-list>
 			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTimeSprintReview(item.time, item.day, sprintReviewMondayDate)" ng-tap="selectDateTimeSprintReview(item.time, item.day, sprintReviewMondayDate)">
 			    	<strong>({{sprintReviewMondayDate}})</strong> Monday - {{ item.time }}00H    
@@ -251,6 +293,12 @@
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedSprintReviewTime">
+			<div class="card">
+			  <div class="item item-text-wrap">
+			    PAL Leader and Students meetup to present the final product and grade it.
+			  </div>
+			</div>
+
 	    	<ul class="list">
 			    <li class="item">
 			    	{{ confirmedSprintReviewDate }} - {{ confirmedSprintReviewDay }}
@@ -268,6 +316,12 @@
 	    	Sprint Retrospective
 	    </div>
 	    <div ng-show="showSprintRetrospectiveList" class="item-accordion">
+	    	<div class="card">
+			  <div class="item item-text-wrap">
+			    Feedback from lecturer on future improvements and lesson learnt.
+			  </div>
+			</div>
+
 		    <ion-list>
 			    <ion-item ng-repeat="item in mondayList" ng-click="selectDateTimeSprintRetrospective(item.time, item.day, sprintRetrospectiveMondayDate)" ng-tap="selectDateTimeSprintRetrospective(item.time, item.day, sprintRetrospectiveMondayDate)">
 			    	<strong>({{sprintRetrospectiveMondayDate}})</strong> Monday - {{ item.time }}00H    
@@ -315,6 +369,12 @@
 		    </ion-list>
 		</div>
 		<div ng-show="showConfirmedSprintRetrospectiveTime">
+			<div class="card">
+			  <div class="item item-text-wrap">
+			    Feedback from lecturer on future improvements and lesson learnt.
+			  </div>
+			</div>
+
 	    	<ul class="list">
 			    <li class="item">
 			    	{{ confirmedSprintRetrospectiveDate }} - {{ confirmedSprintRetrospectiveDay }}
@@ -325,6 +385,5 @@
 			    </li>
 			</ul>
 	    </div>
-
 	</ion-content>
 </ion-view>
