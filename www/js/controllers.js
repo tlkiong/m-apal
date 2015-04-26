@@ -2082,7 +2082,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("DiscussionCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicScrollDelegate) {
+.controller("DiscussionCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicScrollDelegate, $ionicLoading) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -2099,7 +2099,14 @@ angular.module("mapal.controllers", [])
 
         var chatList = [];
 
+        $scope.chat = {
+            message: ""
+        };
+
         $scope.initialise = function(){
+            $ionicLoading.show({
+                template: "Getting Messages . . ."
+            });
             $scope.chatMessageList = angular.copy(chatList);
             ref.child("chat").child($rootScope.groupId).limitToLast(10).on("child_added", function(snapshot){
                 var value = snapshot.val();
@@ -2108,18 +2115,22 @@ angular.module("mapal.controllers", [])
                 }
                 $scope.chatMessageList.push(value);
                 $ionicScrollDelegate.scrollBottom();
+                $ionicLoading.hide();
             });
         }
 
-        $scope.sendMessage = function(message){
+        $scope.sendMessage = function(chat){
+            console.log("chat: "+chat+" wtf: ");
+            var chatMessage = chat.message;
             ref.child("chat").child($rootScope.groupId).push({
                 fullName: $rootScope.fullName,
-                message:  message
+                message:  chatMessage
             });
-            $scope.message = "";
+            $scope.chat = null;
         }
 
         $scope.loadAllMessage = function(){
+            console.log("load all message");
             $scope.chatMessageList = angular.copy(chatList);
             ref.child("chat").child($rootScope.groupId).once("value", function(snapshot){
                 var value = snapshot.val();
