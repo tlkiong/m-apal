@@ -2196,6 +2196,7 @@ angular.module("mapal.controllers", [])
                     }
                     $scope.chatMessageList.push(value);
                     $ionicScrollDelegate.scrollBottom();
+                    $ionicLoading.hide();
                 } else {
                     $ionicLoading.hide();
                 }
@@ -2203,13 +2204,14 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.sendMessage = function(chat){
-            console.log("chat: "+chat+" wtf: ");
             var chatMessage = chat.message;
             ref.child("chat").child($rootScope.groupId).push({
                 fullName: $rootScope.fullName,
                 message:  chatMessage
             });
-            $scope.chat = null;
+            $scope.chat = {
+                message: ""
+            };
         }
 
         $scope.loadAllMessage = function(){
