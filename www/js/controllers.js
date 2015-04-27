@@ -2190,12 +2190,15 @@ angular.module("mapal.controllers", [])
             $scope.chatMessageList = angular.copy(chatList);
             ref.child("chat").child($rootScope.groupId).limitToLast(10).on("child_added", function(snapshot){
                 var value = snapshot.val();
-                if(value.fullName == $rootScope.fullName){
-                    value.fullName = "Me";
+                if(value != null) {
+                    if(value.fullName == $rootScope.fullName){
+                        value.fullName = "Me";
+                    }
+                    $scope.chatMessageList.push(value);
+                    $ionicScrollDelegate.scrollBottom();
+                } else {
+                    $ionicLoading.hide();
                 }
-                $scope.chatMessageList.push(value);
-                $ionicScrollDelegate.scrollBottom();
-                $ionicLoading.hide();
             });
         }
 
