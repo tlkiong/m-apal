@@ -2320,22 +2320,30 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.confirmCreateTask = function(task) {
-            $ionicLoading.show({
-                template: 'Loading...'
-            });
-            $rootScope.task = task;
-            ref.child("guidelines").child("count").once('value', function (snapshot) {
-                if(snapshot.val()==null){
-                    $scope.numberOfGuidelines = 0;
-                    console.log("snapshot.val is null");
-                    $ionicLoading.hide();
-                    $state.go("createGuideline");
-                } else if (snapshot.val()>=0) {
-                    $scope.numberOfGuidelines = snapshot.val();
-                    console.log("snapshot.val is: "+$scope.numberOfGuidelines);
-                    $scope.getGuidelines(task, $scope.numberOfGuidelines);
-                }
-            });
+            if(task.taskName&&task.taskDescription){
+                $ionicLoading.show({
+                    template: 'Loading...'
+                });
+                $rootScope.task = task;
+                ref.child("guidelines").child("count").once('value', function (snapshot) {
+                    if(snapshot.val()==null){
+                        $scope.numberOfGuidelines = 0;
+                        console.log("snapshot.val is null");
+                        $ionicLoading.hide();
+                        $state.go("createGuideline");
+                    } else if (snapshot.val()>=0) {
+                        $scope.numberOfGuidelines = snapshot.val();
+                        console.log("snapshot.val is: "+$scope.numberOfGuidelines);
+                        $scope.getGuidelines(task, $scope.numberOfGuidelines);
+                    }
+                });
+            } else {
+                // An alert dialog
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: 'You are not logged in, please log in first'
+                });
+            }
         }
 
         $scope.getGuidelines = function (task, guidelineNumber){
