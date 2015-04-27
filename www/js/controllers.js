@@ -848,22 +848,88 @@ angular.module("mapal.controllers", [])
                    return Date.now() + offset;
                 }
             })(ref);
-            //getServerTime() returns time in ms. toUTCString() change it to eg: Tue, 31 Mar 2015 14:57:47 GMT
-            var estimatedServerTimeMs = new Date(getServerTime()); 
-            console.log("estimatedServerTimeMs: "+estimatedServerTimeMs);
-            var serverTime = estimatedServerTimeMs.toUTCString();
-            console.log("server time: "+serverTime);
-            var plusTime = new Date(getServerTime()+604800000); 
-            console.log("plusTime: "+plusTime+"~~"+plusTime.getDate()+"/"+(plusTime.getMonth()+1)+"/"+plusTime.getUTCFullYear());
-            var plusTime1 = new Date(getServerTime()+604800000+(86400000*1));
-            console.log("plusTime1: "+plusTime1+"~~"+plusTime1.getDate()+"/"+(plusTime1.getMonth()+1)+"/"+plusTime1.getUTCFullYear());
+            var serverTime = new Date(getServerTime()); 
+            console.log("servertime: "+getServerTime());
 
-            // $scope.springPlanningMondayDate = 
-            // issue here is, if 7 days from start date is not monday then how?
+            ref.child("groups").child($rootScope.groupId).child("groupStartDate").once("value", function(snapshot) {
+                //value = group start date
+                var value = snapshot.val();
 
+                console.log("ori date: "+new Date(value));
+
+                //plus 7 dayy = 604800000, plus 1 day = 86400000
+                var sDate = new Date(value+604800000+(86400000*0));
+                
+                var counter = 0;
+                while(sDate.getDay()!=1){
+                    counter++;
+                    sDate = new Date(value+604800000+(86400000*counter));
+                }
+                console.log("counter: "+counter+" - sure? "+new Date(value+604800000+(86400000*counter)));
+                $scope.setDates(value,counter);
+            });
 
             $scope.getGroupMembersId($rootScope.groupId);
             $scope.getConfirmedTime($rootScope.groupId);
+        }
+
+        $scope.setDates = function(initialDateInUtc,counter) {
+            // console.log("Sprint Planning first date: "+Date(initialDateInUtc).getDate()+"/"+(Date(initialDateInUtc).getMonth()+1)+"/"+Date(initialDateInUtc).getUTCFullYear()+" == Day: "+Date(initialDateInUtc).getDay());
+            
+            var initialDate = new Date(initialDateInUtc+604800000+(86400000*counter));
+            $scope.sprintPlanningMondayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+1)));
+            $scope.sprintPlanningTuesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+2)));
+            $scope.sprintPlanningWednesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+3)));
+            $scope.sprintPlanningThursdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+4)));
+            $scope.sprintPlanningFridayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+7)));
+            $scope.scrumPlanningMondayDate1 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+8)));
+            $scope.scrumPlanningTuesdayDate1 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+9)));
+            $scope.scrumPlanningWednesdayDate1 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+10)));
+            $scope.scrumPlanningThursdayDate1 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+11)));
+            $scope.scrumPlanningFridayDate1 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+14)));
+            $scope.scrumPlanningMondayDate2 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+15)));
+            $scope.scrumPlanningTuesdayDate2 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+16)));
+            $scope.scrumPlanningWednesdayDate2 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+17)));
+            $scope.scrumPlanningThursdayDate2 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+18)));
+            $scope.scrumPlanningFridayDate2 = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+21)));
+            $scope.sprintReviewMondayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+22)));
+            $scope.sprintReviewTuesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+23)));
+            $scope.sprintReviewWednesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+24)));
+            $scope.sprintReviewThursdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+25)));
+            $scope.sprintReviewFridayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+28)));
+            $scope.sprintRetrospectiveMondayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+29)));
+            $scope.sprintRetrospectiveTuesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+30)));
+            $scope.sprintRetrospectiveWednesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+31)));
+            $scope.sprintRetrospectiveThursdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
+            initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+32)));
+            $scope.sprintRetrospectiveFridayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
         }
 
         $scope.getConfirmedTime = function (groupId){
@@ -1142,6 +1208,13 @@ angular.module("mapal.controllers", [])
 
         //Sprint planning info
         $scope.getSprintPlanningInfo = function() {
+            // Get the data on a post that has changed
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
+                var changedPost = snapshot.val();
+                console.log("The updated post title is " + changedPost.title);
+            });
+
+
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1638,9 +1711,14 @@ angular.module("mapal.controllers", [])
                 template: 'Loading...'
             });
             
+            console.log("wtf?");
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
+                console.log("wtf here?");
+
                 if(numberOfVotes==null){
+                    console.log("wtf? null");
+
                     var onComplete = function(error) {
                         if (error) {
                             console.log('Synchronization failed');
@@ -1651,8 +1729,10 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
                 } else if (numberOfVotes==5) {
+                    console.log("wtf? = 5");
                     $scope.initialise();
-                } else if (numberOfVotes>0&&$scope.numberOfVotes<5) {
+                } else if (numberOfVotes>0 && numberOfVotes<5) {
+                    console.log("wtf? 0...5");
                     var onComplete = function(error) {
                         if (error) {
                             console.log('Synchronization failed');
@@ -1662,10 +1742,10 @@ angular.module("mapal.controllers", [])
                         }
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes+1, onComplete);
-                } 
+                }  else {
+                    console.log("wtf? seriously?");
+                }
             });
-
-            
         }
 
         $scope.sprintPlanningVote = function(time,day, number, date){
@@ -1771,7 +1851,7 @@ angular.module("mapal.controllers", [])
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(1, onComplete);
                 } else if (numberOfVotes==5) {
                     $scope.initialise();
-                } else if (numberOfVotes>0&&$scope.numberOfVotes<5) {
+                } else if (numberOfVotes>0 && numberOfVotes<5) {
                     var onComplete = function(error) {
                         if (error) {
                             console.log('Synchronization failed');
