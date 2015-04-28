@@ -2188,8 +2188,24 @@ angular.module("mapal.controllers", [])
                 template: "Getting Messages . . ."
             });
             $scope.chatMessageList = angular.copy(chatList);
+
+            ref.child("chat").child($rootScope.groupId).once("value",function(snapshot){
+                var value = snapshot.val();
+                console.log("value: "+value);
+                if(value != null){
+                    $scope.getChatMessages();
+                } else {
+                    $ionicLoading.hide();
+                    $scope.getChatMessages();
+                }
+            })
+            
+        }
+
+        $scope.getChatMessages = function(){
             ref.child("chat").child($rootScope.groupId).limitToLast(10).on("child_added", function(snapshot){
                 var value = snapshot.val();
+                console.log("Value: "+value);
                 if(value != null) {
                     if(value.fullName == $rootScope.fullName){
                         value.fullName = "Me";
