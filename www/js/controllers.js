@@ -1210,11 +1210,14 @@ angular.module("mapal.controllers", [])
         $scope.getSprintPlanningInfo = function() {
             // Get the data on a post that has changed
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
-                var changedPost = snapshot.val();
-                console.log("The updated post title is " + changedPost.title);
+                var value = snapshot.val();
+                console.log("The vote count for sprintplanning is " + value.count);
+                if(value.count==5){
+                    $scope.initialise();
+                }
             });
 
-
+            $scope.setConfirmedDateTime("voteSprintPlanning");
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1712,6 +1715,7 @@ angular.module("mapal.controllers", [])
             });
             
             console.log("wtf?");
+            
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
                 console.log("wtf here?");
@@ -1774,7 +1778,7 @@ angular.module("mapal.controllers", [])
                             counter++;
                             
                         } else if ((key!="count")&&(counter == 5)) {
-
+                            $scope.setConfirmedDateTime("voteSprintPlanning");
                         } else {
                             console.log(key + " - create confirm (count) -> " + value[key]);
                         }
@@ -1829,6 +1833,62 @@ angular.module("mapal.controllers", [])
             } else {
                 console.log("Number is wrong!");
             }
+        }
+
+        $scope.setConfirmedDateTime = function (voteName){
+            ref.child("groups").child($rootScope.groupId).child(voteName).once("value", function(snapshot){
+                var value = snapshot.val();
+
+                var objectToCount = {};
+                var objectArray = [];
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                    if (value.hasOwnProperty(key)) {
+                    
+                        if(key!="count"){
+                            var object = value[key];
+
+                            var newObject = {
+                                votedDate: object.date,
+                                votedDay: object.day,
+                                votedTime: object.voteTime
+                            }
+
+                            var arrayLength = objectArray.length;
+
+                            if(arrayLength==0){
+                                objectArray.push(newObject);
+                                objectToCount[0] = objectToCount[0] ? objectToCount[0]+1 : 1;
+                            } else if (arrayLength >0){
+                                for(var i=1; i<arrayLength; i++){
+                                    var objectAtIndex = objectArray[i];
+                                    if(objectAtIndex.votedDate==newObject.votedDate &&
+                                       objectAtIndex.votedDay==newObject.votedDay &&
+                                       objectAtIndex.voteTime == newObject.voteTime){
+                                        objectToCount[i] = objectToCount[i] ? objectToCount[i]+1 : 1;
+                                    } else {
+                                        if(i==arrayLength-1){
+                                            objectArray.push(newObject);
+                                            objectToCount[i] = objectToCount[i] ? objectToCount[i]+1 : 1;
+                                        }
+                                    }
+                                }
+                            }
+
+                        } 
+
+                    }
+                }
+                console.log("~~~~~~~~~~~~~~~~~~~~ objectToCount: "+objectToCount);
+                for(var keys in objectToCount){
+                    if(objectToCount.hasOwnProperty(keys)){
+                        console.log("~~~~~~~~~~~~~~~~~~~~ objectToCount: "+objectToCount[keys]+" key: "+keys);
+                    }
+                }
+                
+            });
+
+                            
         }
 
         //Scrum planning 1 selection
