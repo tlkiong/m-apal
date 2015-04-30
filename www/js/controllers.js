@@ -1217,7 +1217,6 @@ angular.module("mapal.controllers", [])
                 }
             });
 
-            $scope.setConfirmedDateTime("voteSprintPlanning");
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1302,33 +1301,8 @@ angular.module("mapal.controllers", [])
                             }
                         } else {
                             if(parseInt(value[key])==5){
-                                //Get sprint planning confirmed date time week 1
-                                var onComplete = function(error) {
-                                    if (error) {
-                                        console.log('Synchronization failed');
-                                    } else {
-                                        console.log('Synchronization succeeded');
-                                    }
-                                };
-                                fredNameRef.set({ 
-                                    first: 'Fred', 
-                                    last: 'Flintstone' 
-                                }, onComplete);
-
-                                ref.child("groups").child(groupId).child("confirmedSprintPlanningDateTime").once('value', function (snapshot) {
-                                    var value = snapshot.val();
-                                    if(value == null){
-                                        $scope.toShowScrumPlanning1 = "showScrumPlanningList1";
-                                        $scope.getScrumPlanningInfo1();
-                                    } else {
-                                        $ionicLoading.hide();
-                                        $scope.toShowScrumPlanning1 = "showConfirmedScrumPlanningTime1";
-                                        $scope.confirmedScrumPlanningDate1 = value.confirmedDate;
-                                        $scope.confirmedScrumPlanningTime1 = value.confirmedTime;
-                                    }
-                                });
+                                $scope.setConfirmedDateTime("voteSprintPlanning");
                             }
-                            
                         }
                     }
                 }
@@ -1338,6 +1312,15 @@ angular.module("mapal.controllers", [])
 
         //Scrum Planning 1 info 
         $scope.getScrumPlanningInfo1 = function() {
+            // Get the data on a post that has changed
+            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").on("child_changed", function(snapshot) {
+                var value = snapshot.val();
+                console.log("The vote count for voteScrumPlanning1 is " + value.count);
+                if(value.count==5){
+                    $scope.initialise();
+                }
+            });
+
             ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1421,7 +1404,9 @@ angular.module("mapal.controllers", [])
                             console.log ("err, error?: "+votedDay);
                         }
                     } else {
-                        console.log(key + " (count) -> " + value[key]);
+                        if(parseInt(value[key])==5){
+                            $scope.setConfirmedDateTime("voteScrumPlanning1");
+                        }
                     }
                   }
                 }
@@ -1431,6 +1416,15 @@ angular.module("mapal.controllers", [])
 
         //Scrum Planning info 2 
         $scope.getScrumPlanningInfo2 = function() {
+            // Get the data on a post that has changed
+            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").on("child_changed", function(snapshot) {
+                var value = snapshot.val();
+                console.log("The vote count for voteScrumPlanning2 is " + value.count);
+                if(value.count==5){
+                    $scope.initialise();
+                }
+            });
+
             ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1514,7 +1508,9 @@ angular.module("mapal.controllers", [])
                             console.log ("err, error?: "+votedDay);
                         }
                     } else {
-                        console.log(key + " (count) -> " + value[key]);
+                        if(parseInt(value[key])==5){
+                            $scope.setConfirmedDateTime("voteScrumPlanning2");
+                        }
                     }
                   }
                 }
@@ -1524,6 +1520,15 @@ angular.module("mapal.controllers", [])
 
         //Get sprint retrospective info
         $scope.getSprintRetrospectiveInfo = function() {
+            // Get the data on a post that has changed
+            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").on("child_changed", function(snapshot) {
+                var value = snapshot.val();
+                console.log("The vote count for voteSprintRetrospective is " + value.count);
+                if(value.count==5){
+                    $scope.initialise();
+                }
+            });
+
             ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1607,7 +1612,9 @@ angular.module("mapal.controllers", [])
                             console.log ("err, error?: "+votedDay);
                         }
                     } else {
-                        console.log(key + " (count) -> " + value[key]);
+                        if(parseInt(value[key])==5){
+                            $scope.setConfirmedDateTime("voteSprintRetrospective");
+                        }
                     }
                   }
                 }
@@ -1617,6 +1624,15 @@ angular.module("mapal.controllers", [])
 
         //Get sprint review info
         $scope.getSprintReviewInfo = function() {
+            // Get the data on a post that has changed
+            ref.child("groups").child($rootScope.groupId).child("voteSprintReview").on("child_changed", function(snapshot) {
+                var value = snapshot.val();
+                console.log("The vote count for voteSprintReview is " + value.count);
+                if(value.count==5){
+                    $scope.initialise();
+                }
+            });
+
             ref.child("groups").child($rootScope.groupId).child("voteSprintReview").once("value",function(snapshot){
                 var value = snapshot.val();
                 console.log("value: "+value);
@@ -1700,7 +1716,9 @@ angular.module("mapal.controllers", [])
                             console.log ("err, error?: "+votedDay);
                         }
                     } else {
-                        console.log(key + " (count) -> " + value[key]);
+                        if(parseInt(value[key])==5){
+                            $scope.setConfirmedDateTime("voteSprintReview");
+                        }
                     }
                   }
                 }
@@ -1733,7 +1751,6 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
                 } else if (numberOfVotes==5) {
-                    console.log("wtf? = 5");
                     $scope.initialise();
                 } else if (numberOfVotes>0 && numberOfVotes<5) {
                     console.log("wtf? 0...5");
@@ -1754,39 +1771,19 @@ angular.module("mapal.controllers", [])
 
         $scope.sprintPlanningVote = function(time,day, number, date){
             if(number == 5){
-                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
-                    var value = snapshot.val();
+                var done = function(){
+                    $scope.setConfirmedDateTime("voteSprintPlanning");
+                };
 
-                    var compareData = [];
-                    var counter =0;
-                    //key is the left. value[key] is the right side of the object
-                    for (var key in value) {
-                      if (value.hasOwnProperty(key)) {
-                        
-                        if((key!="count")&&(counter < 5)){
-                            var object = value[key];
-
-                            if(compareData.length == 0){
-                                compareData.push(object);
-                            } else {
-                                for(var data in compareData){
-                                    if((data.day == object.day)&&(data.voteTime==object.voteTime)){
-
-                                    }
-                                }
-                            }
-                            counter++;
-                            
-                        } else if ((key!="count")&&(counter == 5)) {
-                            $scope.setConfirmedDateTime("voteSprintPlanning");
-                        } else {
-                            console.log(key + " - create confirm (count) -> " + value[key]);
-                        }
-
-                      }
-                    }
-                    $ionicLoading.hide();
-                });
+                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+                        date: date,
+                        day: day,
+                        voteTime: time,
+                        userId : $rootScope.userId
+                    }, 
+                    function() { 
+                        $scope.initialise();
+                },done);
             } else if (number>0 && number<5){
                 if($scope.mySprintPlanningVoteId == "" || $scope.mySprintPlanningVoteId == null){
                     console.log("\t\t mySprintPlanningVoteId: "+$scope.mySprintPlanningVoteId);
@@ -1839,12 +1836,14 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child($rootScope.groupId).child(voteName).once("value", function(snapshot){
                 var value = snapshot.val();
 
-                var objectToCount = {};
+                var objectCounterArray = [];
                 var objectArray = [];
+                var moreThanOne = false;
                 //key is the left. value[key] is the right side of the object
                 for (var key in value) {
                     if (value.hasOwnProperty(key)) {
-                    
+                        // console.log("~~~ Looping here: "+value[key]);
+                        // console.log("~~~ Looping here 1: "+key);
                         if(key!="count"){
                             var object = value[key];
 
@@ -1854,22 +1853,39 @@ angular.module("mapal.controllers", [])
                                 votedTime: object.voteTime
                             }
 
+                            // console.log("~~~ Looping here 2: "+object.date);
+                            // console.log("~~~ Looping here 3: "+object.day);
+                            // console.log("~~~ Looping here 4: "+object.voteTime);
+
+                            // console.log("~~~ Looping here 2 newObject votedDate: "+newObject.votedDate);
+                            // console.log("~~~ Looping here 3 newObject votedDay: "+newObject.votedDay);
+                            // console.log("~~~ Looping here 4 newObject votedTime: "+newObject.votedTime);
+
                             var arrayLength = objectArray.length;
 
                             if(arrayLength==0){
                                 objectArray.push(newObject);
-                                objectToCount[0] = objectToCount[0] ? objectToCount[0]+1 : 1;
+                                objectCounterArray.push(1);
                             } else if (arrayLength >0){
-                                for(var i=1; i<arrayLength; i++){
+                                for(var i=0; i<arrayLength; i++){
                                     var objectAtIndex = objectArray[i];
+
+                                    // console.log("objectAtIndex: "+objectAtIndex);
+                                    // console.log("objectAtIndex.votedDate: "+objectAtIndex.votedDate);
+                                    // console.log("objectAtIndex.votedDay: "+objectAtIndex.votedDay);
+                                    // console.log("objectAtIndex.votedTime: "+objectAtIndex.votedTime);
+
                                     if(objectAtIndex.votedDate==newObject.votedDate &&
                                        objectAtIndex.votedDay==newObject.votedDay &&
-                                       objectAtIndex.voteTime == newObject.voteTime){
-                                        objectToCount[i] = objectToCount[i] ? objectToCount[i]+1 : 1;
+                                       objectAtIndex.votedTime == newObject.votedTime) {
+                                        // console.log("came in?");
+                                        objectCounterArray[i]+=1;
+                                        break;
                                     } else {
                                         if(i==arrayLength-1){
+                                            // console.log("nahhhhhhhhhhh");
                                             objectArray.push(newObject);
-                                            objectToCount[i] = objectToCount[i] ? objectToCount[i]+1 : 1;
+                                            objectCounterArray.push(1);
                                         }
                                     }
                                 }
@@ -1879,16 +1895,140 @@ angular.module("mapal.controllers", [])
 
                     }
                 }
-                console.log("~~~~~~~~~~~~~~~~~~~~ objectToCount: "+objectToCount);
-                for(var keys in objectToCount){
-                    if(objectToCount.hasOwnProperty(keys)){
-                        console.log("~~~~~~~~~~~~~~~~~~~~ objectToCount: "+objectToCount[keys]+" key: "+keys);
+
+
+                console.log("~~~~~~~~~~~~~~~~~~~~ objectCounterArray: "+objectCounterArray);
+                var highestVoted = {
+                    voteCount:0,
+                    indexed:-1
+                };
+
+                for(var i=0, l=objectCounterArray.length; i<l; i++) {
+                    if(highestVoted.voteCount==0){
+                        highestVoted.voteCount = objectCounterArray[i];
+                        highestVoted.indexed = i;
+                    } else if (highestVoted.voteCount == objectCounterArray[i]) {
+                        moreThanOne = true;
+                        highestVoted.voteCount = objectCounterArray[i];
+                        highestVoted.indexed = i;
+                        break;
+                    } else {
+                        if(objectCounterArray[i] > highestVoted){
+                            highestVoted.voteCount = objectCounterArray[i];
+                            highestVoted.indexed = i;
+                        }
                     }
                 }
-                
-            });
 
-                            
+                var indexOfArrayWithMoreThanOne = [];
+                if(moreThanOne) {
+                    var highestVotedObjects = {
+                        votedDate:"",
+                        votedDay:"",
+                        votedTime:0
+                    };
+                    for(var m=0, n=objectCounterArray.length; m<n; m++){
+                        if(objectCounterArray[m] == highestVoted.voteCount){
+                            indexOfArrayWithMoreThanOne.push(m);
+                        }
+                    }
+
+                    for(var indexes in indexOfArrayWithMoreThanOne){
+                        if(highestVotedObjects.votedTime==0){
+                            highestVotedObjects.votedDate = objectArray[i].votedDate;
+                            highestVotedObjects.votedDay = objectArray[i].votedDay;
+                            highestVotedObjects.votedTime = objectArray[i].votedTime;
+                        } else {
+                            if(objectArray[i].votedDate != highestVotedObjects.votedDate){
+                                var splitObjectDate = objectArray[i].votedDate.splt("/");
+                                var splitHighDate = highestVotedObjects.votedDate.splt("/");
+
+                                //[1] is month
+                                if(Number(splitObjectDate[1].trim())>Number(highestVotedObjects[1].trim())){
+                                    highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                    highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                    highestVotedObjects.votedTime = objectArray[i].votedTime;
+                                } else if(Number(splitObjectDate[1].trim())==Number(highestVotedObjects[1].trim())){
+                                    //[0] is day
+                                    if(Number(splitObjectDate[0].trim())>Number(highestVotedObjects[0].trim())) {
+                                        highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                        highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                        highestVotedObjects.votedTime = objectArray[i].votedTime;
+                                    } else if (Number(splitObjectDate[0].trim())==Number(highestVotedObjects[0].trim())) {
+                                        //Take the earliest voted time
+                                        if(objectArray[i].votedTime < highestVotedObjects.votedTime) {
+                                            highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                            highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                            highestVotedObjects.votedTime = objectArray[i].votedTime;
+                                        } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
+                                            console.log("ERROR! Not suppose have same time! (Not equal date)");
+                                        } // If time lower, ignore
+                                    } //If date lower, ignore
+                                } //If month lower, ignore
+                            } else { //Date is equals
+                                //Take the earliest voted time
+                                if(objectArray[i].votedTime < highestVotedObjects.votedTime) {
+                                    highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                    highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                    highestVotedObjects.votedTime = objectArray[i].votedTime;
+                                } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
+                                    console.log("ERROR! Not suppose have same time! (Equal date)");
+                                } // If time lower, ignore
+                            }
+                        }
+                    }
+
+                    $scope.storeConfirmedDateTime(highestVotedObjects, voteName);
+                    
+                } else {
+                    $scope.storeConfirmedDateTime(objectArray[highestVoted.indexed], voteName);
+                }
+            });
+        }
+
+        $scope.storeConfirmedDateTime = function(highestVotedObject, voteName){
+            var onComplete = function(error) {
+                if (error) {
+                    console.log('Synchronization failed for storeConfirmedDateTime');
+                } else {
+                    console.log('Synchronization succeeded for storeConfirmedDateTime');
+                    $scope.initialise();
+                }
+            };
+
+            if(voteName == "voteSprintPlanning"){
+                        ref.child("groups").child($rootScope.groupId).child("confirmedSprintPlanningDateTime").set({
+                            confirmedDate: highestVotedObject.votedDate,
+                            confirmedDay: highestVotedObject.votedDay,
+                            confirmedTime: highestVotedObject.votedTime
+                        },onComplete);
+                    } else if (voteName == "voteScrumPlanning1") {
+                        ref.child("groups").child($rootScope.groupId).child("confirmedScrumPlanningDateTime1").set({
+                            confirmedDate: highestVotedObject.votedDate,
+                            confirmedDay: highestVotedObject.votedDay,
+                            confirmedTime: highestVotedObject.votedTime
+                        },onComplete);
+                    } else if (voteName == "voteScrumPlanning2") {
+                        ref.child("groups").child($rootScope.groupId).child("confirmedScrumPlanningDateTime2").set({
+                            confirmedDate: highestVotedObject.votedDate,
+                            confirmedDay: highestVotedObject.votedDay,
+                            confirmedTime: highestVotedObject.votedTime
+                        },onComplete);
+                    } else if (voteName == "voteSprintRetrospective") {
+                        ref.child("groups").child($rootScope.groupId).child("confirmedSprintReviewDateTime").set({
+                            confirmedDate: highestVotedObject.votedDate,
+                            confirmedDay: highestVotedObject.votedDay,
+                            confirmedTime: highestVotedObject.votedTime
+                        },onComplete);
+                    } else if (voteName == "voteSprintReview") {
+                        ref.child("groups").child($rootScope.groupId).child("confirmedSprintRetrospectiveDateTime").set({
+                            confirmedDate: highestVotedObject.votedDate,
+                            confirmedDay: highestVotedObject.votedDay,
+                            confirmedTime: highestVotedObject.votedTime
+                        },onComplete);
+                    } else {
+                        console.log("Problem!");
+                    }  
         }
 
         //Scrum planning 1 selection
