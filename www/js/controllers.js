@@ -2747,17 +2747,6 @@ angular.module("mapal.controllers", [])
             $scope.closeGroupModal = closeGroupModal;
         });
 
-        if($rootScope.role != 'lecturer'){
-            $ionicLoading.show({
-                template: 'Getting Tasks...'
-            });
-            ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
-                var val = snapshot.val();
-                $scope.myTask = val;
-                $ionicLoading.hide();
-            });
-        }
-
         $scope.closeGroup = function(grade){
 
             ref.child("groups").child($rootScope.groupId).update({
@@ -2925,12 +2914,30 @@ angular.module("mapal.controllers", [])
             $state.go("createTask");
         }
 
-        $scope.getTaskCreated = function(){
-            $scope.taskList = [];
+        var initialTaskList = [];
 
+        $scope.initialise = function(){
+            if($rootScope.role != 'lecturer'){
+                $ionicLoading.show({
+                    template: 'Getting Tasks...'
+                });
+                ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
+                    var val = snapshot.val();
+                    $scope.myTask = val;
+                    $ionicLoading.hide();
+                });
+            }
+
+            $scope.taskList = angular.copy(initialTaskList);
+            $scope.getTaskCreated();
+        }
+
+
+        $scope.getTaskCreated = function(){
             var taskRef = ref.child("tasks");
             taskRef.orderByChild("taskName").on("child_added", function (snapshot) {
                 var value = snapshot.val();
+                console.log("value: "+value.taskName);
                 value.key = String(snapshot.key());
                 $scope.taskList.push(value);
                 $scope.$apply();
@@ -3056,10 +3063,10 @@ angular.module("mapal.controllers", [])
 
         $scope.deleteTaskFromFirebase = function(task) {
             ref.child("tasks").child(task.key).remove();
+            $scope.taskList = angular.copy(initialTaskList);
             console.log(task.Key + " deleted");
             alert(task.taskName + " deleted~");
-            $scope.taskList.length = 0;
-            $scope.getTaskCreated();
+            $scope.initialise();
             $state.go("lecturer-tab.tasks");
         }
 
@@ -3081,7 +3088,7 @@ angular.module("mapal.controllers", [])
             $ionicHistory.goBack();
         }
 
-        $scope.getTaskCreated();
+        $scope.initialise();
 
     }
 })
@@ -3238,7 +3245,7 @@ angular.module("mapal.controllers", [])
     }
 })
 
-.controller("ReportCtrl", function ($scope, $rootScope, $state, $ionicPopup) {
+.controller("ReportCtrl", function ($scope, $rootScope, $state, $ionicPopup, $ionicHistory) {
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -3294,7 +3301,7 @@ angular.module("mapal.controllers", [])
             $state.go("groupList");
         }
 
-        $scope.back = function () {
+        $scope.goBack = function () {
             $ionicHistory.goBack();
         }  
 

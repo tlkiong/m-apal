@@ -85,6 +85,7 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
             $rootScope.showGroupId = null;
             $rootScope.groupList = null;
             $rootScope.taskName = null;
+            $rootScope.taskList = null;
 
             $rootScope.showMyAccount = false;
             $rootScope.showLogout = false;
