@@ -2736,13 +2736,10 @@ angular.module("mapal.controllers", [])
                         for(i=0; i<keywords.length;i++){
                             console.log("\t ~task.taskDescription.indexOf(keywords[i].trim()): "+~task.taskDescription.indexOf(keywords[i].trim()));
                             if(~task.taskDescription.indexOf(keywords[i].trim())==0){
-                                console.log("\t~~task.taskDescription: "+task.taskDescription+" :keywords[i].trim() "+keywords[i].trim());
                                 console.log("don't exist?");
                                 break;
-                            } else {
-                                console.log("\t~~task.taskDescription: "+task.taskDescription+" :keywords[i].trim() "+keywords[i].trim());
-                            }
-
+                            } 
+                            
                             if(i==keywords.length-1){
                                 isExist = true;
                                 $rootScope.guidelines = value;
@@ -2876,7 +2873,7 @@ angular.module("mapal.controllers", [])
                         var keywords = keywordInString.split(",");
                         console.log ("keywords: "+keywords+" : keywordInString: "+keywordInString);
                         for(i=0; i<keywords.length;i++){
-                            if(!~task.taskDescription.indexOf(keywords[i].trim())){
+                            if(~task.taskDescription.indexOf(keywords[i].trim())==0){
                                 console.log("don't exist?");
                                 break;
                             }
