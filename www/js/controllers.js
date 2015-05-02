@@ -3333,13 +3333,24 @@ angular.module("mapal.controllers", [])
             console.log ("userInfo.userFullName: "+userInfo.userFullName);
             console.log ("userInfo.userIcNumber: "+userInfo.userIcNumber);
             console.log ("userInfo.userContactNumber: "+userInfo.userContactNumber);
-
-            ref.child("users").child($rootScope.userId).update({
-                fullName: userInfo.userFullName,
-                icNumber: userInfo.userIcNumber,
-                contactNumber: userInfo.userContactNumber
-            });
-            $scope.editAccountSettingsModal.hide();
+            if(userInfo.userFullName>0 && userInfo.userIcNumber>0 && userInfo.userContactNumber>0){
+                 ref.child("users").child($rootScope.userId).update({
+                    fullName: userInfo.userFullName,
+                    icNumber: userInfo.userIcNumber,
+                    contactNumber: userInfo.userContactNumber
+                });
+                $scope.editAccountSettingsModal.hide();
+            } else {
+                // An alert dialog
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: "Full Name AND IC number AND Contact Number cannot be empty"
+                });
+                alertPopup.then(function(res) {
+                    
+                });
+            }
+           
             //$scope.userInformation();
         }
 
