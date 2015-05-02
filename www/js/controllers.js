@@ -395,8 +395,6 @@ angular.module("mapal.controllers", [])
                     }
                 }
 
-
-
                 if(counter > 1 ) {
                     ref.child("users").child($rootScope.userId).child("classSchedule").child($scope.classItem.key).remove();
                     console.log($scope.classItem.Key + " deleted");
@@ -987,9 +985,6 @@ angular.module("mapal.controllers", [])
             });
 
             console.log("startDate: "+$scope.groupStartDate);
-            console.log("startDate: "+$scope.groupStartDate);
-            console.log("startDate: "+$scope.groupStartDate);
-            console.log("startDate: "+$scope.groupStartDate);
 
             //Get sprint planning confirmed date time
             ref.child("groups").child(groupId).child("confirmedSprintPlanningDateTime").once('value', function (snapshot) {
@@ -1079,7 +1074,7 @@ angular.module("mapal.controllers", [])
                 if(classEndTimeHourArray!="00"){
                     var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))+1;
                 } else {
-                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray));
+                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))-1;
                 }
                  
                 var totalHours = classEndTimeHour - classStartTimeHour;
