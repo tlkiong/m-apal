@@ -3,18 +3,10 @@
       <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
 	<ion-content class="padding">
-        <!-- Leaders -->
 		
 	    <ion-list>
-		    <ion-item ng-repeat="item in groupTaskList">
-		    	<div class="item item-divider" align="center" ng-click="showGroupItem()" ng-tap="showGroupItem()">
-			    	<strong>{{item.taskName}}</strong>
-			    </div>
-			    <ion-item ng-repeat="groupItem in item.groupList" ng-show="showGroupItems" >
-			    	<span>{{ groupItem.groupName }}</span>
-		    		<span class="badge badge-assertive">{{ item.groupGrade }}</span>
-				</ion-item>
-		    	
+		    <ion-item ng-repeat="item in groupTaskList" ng-click="getGroupList(item)" ng-tap="getGroupList(item)">
+		    	<span>{{item.taskName}}</span>
 		    </ion-item>
 	    </ion-list>
 

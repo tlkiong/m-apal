@@ -6,14 +6,14 @@
         <div class="list card padding">
             <label class="item item-input">
                 <span class="input-label">Email</span>
-                <input type="email" ng-model="user.emailAddress">
+                <input type="email" ng-model="userLogin.emailAddress">
             </label>
             <label class="item item-input">
                 <span class="input-label">Password</span>
-                <input type="password" ng-model="user.pwdForLogin">
+                <input type="password" ng-model="userLogin.pwdForLogin">
             </label>
 
-            <button ng-click="signIn(user)" class="button button-block button-positive activated">
+            <button ng-click="signIn(userLogin)" ng-tap="signIn(userLogin)" class="button button-block button-positive activated">
                 Sign In
             </button>
         </div>

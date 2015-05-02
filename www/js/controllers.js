@@ -24,6 +24,37 @@ angular.module("mapal.controllers", [])
             {types:'lecturer'}
         ];
         $scope.Role = $scope.roles[0]; // student
+
+    $scope.initialise = function(){
+        // $rootScope.fullName = null;
+        // $rootScope.emailAddress = null;
+        // $rootScope.contactNumber = null;
+        // $rootScope.icNumber = null;
+        // $rootScope.role = null;
+        // $rootScope.classSchedule = null;
+        // $rootScope.groupId = null;
+        // $rootScope.userId = null;
+        // $rootScope.signedIn = null;
+        // $rootScope.showMyAccount = null;
+        // $rootScope.showLogout = null;
+        // $rootScope.group = null;
+        // $rootScope.groupInfo = null;
+        // $rootScope.task = null;
+        // $rootScope.guidelines = null;
+        // $rootScope.guidelineId = null;
+        // $rootScope.taskItems = null;
+        // $rootScope.taskDetails = null;
+        // $rootScope.showGroupId = null;
+    }
+    $scope.user = {
+        emailAddress: "",
+        password: "",
+        confirmPassword: "",
+        fullname:"",
+        contactnumber:"",
+        icnumber:""
+    };
+
     $scope.createUser = function (user,Role) {
             console.log("Create User Function called");
 
@@ -47,6 +78,15 @@ angular.module("mapal.controllers", [])
                             role: Role.types
                         });
                         
+                        $scope.user = {
+                            emailAddress: "",
+                            password: "",
+                            confirmPassword: "",
+                            fullname:"",
+                            contactnumber:"",
+                            icnumber:""
+                        };
+
                         $ionicLoading.hide();
                         $scope.registerUserModal.hide();
                     }).catch(function (error) {
@@ -85,7 +125,17 @@ angular.module("mapal.controllers", [])
         });
     }
 
+    $scope.userLogin = {
+        emailAddress: "",
+        pwdForLogin: ""
+    };
+
     $scope.signIn = function (user) {
+        $scope.userLogin = {
+            emailAddress: "",
+            pwdForLogin: "",
+        };
+
         if (user && user.emailAddress && user.pwdForLogin) {
             $ionicLoading.show({
                 template: 'Signing In...'
@@ -193,6 +243,8 @@ angular.module("mapal.controllers", [])
             alert("Please enter email and password both");
         }
     }
+
+    $scope.initialise();
 })
 
 .controller("ClassScheduleCtrl", function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicHistory) {
@@ -265,6 +317,7 @@ angular.module("mapal.controllers", [])
                         classStartTime: userClass.startTime,
                         classEndTime: userClass.endTime
                     })
+                    $scope.$apply();
                 }catch(error) {
                     console.log("HAHAHAHA Error! classSchedule");
                 };
@@ -300,30 +353,37 @@ angular.module("mapal.controllers", [])
                         switch(dayOfClass){
                             case "Friday":{
                                 $scope.fridayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             case "Monday":{
                                 $scope.mondayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             case "Tuesday":{
                                 $scope.tuesdayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             case "Thursday":{
                                 $scope.thursdayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             case "Wednesday":{
                                 $scope.wednesdayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             case "Saturday":{
                                 $scope.saturdayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             case "Sunday":{
                                 $scope.sundayList.push(value);
+                                $scope.$apply();
                             }
                             break;
                             default: console.log("ERROR!! dayOfClass: "+dayOfClass);
@@ -445,6 +505,7 @@ angular.module("mapal.controllers", [])
             var value = snapshot.val();
             value.key = String(snapshot.key());
             $scope.taskList.push(value);
+            $scope.$apply();
             $scope.Task = $scope.taskList[0];
         });
 
@@ -478,6 +539,7 @@ angular.module("mapal.controllers", [])
                     groupNoOfMembers: 1,
                     groupStatus: "pending"
                 });
+                $scope.$apply();
                 ref.child("users").child($rootScope.userId).update({
                     groupId: groupRef.key()
                 });
@@ -554,6 +616,7 @@ angular.module("mapal.controllers", [])
                     value.key = String(snapshot.key());
                     console.log("all here");
                     $scope.userList.push(value);
+                    $scope.$apply();
                 }
             });
 
@@ -564,6 +627,7 @@ angular.module("mapal.controllers", [])
                     value.key = String(snapshot.key());
                     console.log("\t in, value.groupId: "+value.groupId+" :fullname: "+value.fullName);
                     $scope.userList.push(value);
+                    $scope.$apply();
                 }
             });
         }
@@ -580,6 +644,7 @@ angular.module("mapal.controllers", [])
             $scope.members = [];
             groupMemberInfo.forEach(function(element,index){
                 $scope.members.push(element.key);
+                $scope.$apply();
             });
 
 
@@ -621,6 +686,7 @@ angular.module("mapal.controllers", [])
             if(value.groupStatus == 'pending'){
                 value.key = String(snapshot.key());
                 $scope.groupList.push(value);
+                $scope.$apply();
             }
         });
         
@@ -673,6 +739,7 @@ angular.module("mapal.controllers", [])
                 if(value.groupId == item.key){
                     value.key = String(snapshot.key());
                     $scope.groupMemberList.push(value);
+                    $scope.$apply();
                 }
             });
 
@@ -698,14 +765,14 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
 
-        $scope.initialMondayList = [];
-        $scope.initialTuesdayList = [];
-        $scope.initialWednesdayList = [];
-        $scope.initialThursdayList = [];
-        $scope.initialFridayList = [];
+        var initialMondayList = [];
+        var initialTuesdayList = [];
+        var initialWednesdayList = [];
+        var initialThursdayList = [];
+        var initialFridayList = [];
 
         for (var i = 8; i < 19; i++){
-            $scope.initialMondayList.push({
+            initialMondayList.push({
                 time: i,
                 day: "Monday",
                 showMyself: false,
@@ -730,7 +797,7 @@ angular.module("mapal.controllers", [])
                     me: ""
                 }
             });
-            $scope.initialTuesdayList.push({
+            initialTuesdayList.push({
                 time: i,
                 day: "Tuesday",
                 showMyself: false,
@@ -755,7 +822,7 @@ angular.module("mapal.controllers", [])
                         me: ""
                     }
                 });
-                $scope.initialWednesdayList.push({
+                initialWednesdayList.push({
                     time: i,
                     day: "Wednesday",
                     showMyself: false,
@@ -780,7 +847,7 @@ angular.module("mapal.controllers", [])
                         me: ""
                     }
                 });
-                $scope.initialThursdayList.push({
+                initialThursdayList.push({
                     time: i,
                     day: "Thursday",
                     showMyself: false,
@@ -805,7 +872,7 @@ angular.module("mapal.controllers", [])
                         me: ""
                     }
                 });
-                $scope.initialFridayList.push({
+                initialFridayList.push({
                     time: i,
                     day: "Friday",
                     showMyself: false,
@@ -833,11 +900,11 @@ angular.module("mapal.controllers", [])
             }
 
         $scope.initialise = function (){
-            $scope.mondayList = angular.copy($scope.initialMondayList);
-            $scope.tuesdayList = angular.copy($scope.initialTuesdayList);
-            $scope.wednesdayList = angular.copy($scope.initialWednesdayList);
-            $scope.thursdayList = angular.copy($scope.initialThursdayList);
-            $scope.fridayList = angular.copy($scope.initialFridayList);
+            $scope.mondayList = angular.copy(initialMondayList);
+            $scope.tuesdayList = angular.copy(initialTuesdayList);
+            $scope.wednesdayList = angular.copy(initialWednesdayList);
+            $scope.thursdayList = angular.copy(initialThursdayList);
+            $scope.fridayList = angular.copy(initialFridayList);
             
             var userList = [];
             $scope.showSprintPlanningList = false;
@@ -2575,6 +2642,7 @@ angular.module("mapal.controllers", [])
                         value.fullName = "Me";
                     }
                     $scope.chatMessageList.push(value);
+                    $scope.$apply();
                     $ionicScrollDelegate.scrollBottom();
                     $ionicLoading.hide();
                 } else {
@@ -2607,6 +2675,7 @@ angular.module("mapal.controllers", [])
                             object.fullName = "Me";
                         }
                         $scope.chatMessageList.push(object);
+                        $scope.$apply();
                         $ionicScrollDelegate.scrollBottom();
                     }
                     
@@ -2840,6 +2909,7 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 value.key = String(snapshot.key());
                 $scope.taskList.push(value);
+                $scope.$apply();
             });
         }
 
@@ -3040,10 +3110,12 @@ angular.module("mapal.controllers", [])
                 switch(role){
                     case "leader":{
                         $scope.leaderList.push(value);
+                        $scope.$apply();
                     }
                     break;
                     case "student":{
                        $scope.studentList.push(value);
+                       $scope.$apply();
                     }
                     break;
                     case "lecturer":{
@@ -3139,18 +3211,42 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
 
-        var groupTaskList = [];
-        var groupList = [];
+        var initialGroupTaskList = [];
+        var initialGroupList = [];
 
         $scope.initialise = function(){
+            $scope.groupTaskList = angular.copy(initialGroupTaskList);
+            $scope.groupList = angular.copy(initialGroupList);
+
             $scope.getTaskList();
         }
 
         $scope.getTaskList = function(){
-            
+            ref.child("tasks").once("value",function(snapshot){
+                var value = snapshot.val();
+                for (var key in value) {
+                    if (value.hasOwnProperty(key)) {
+                        console.log("value: "+value[key]);
+                        $scope.groupTaskList.push(value[key]);
+                    }
+                }
+                $scope.$apply();
+            });
         }
 
-        $scope.showGroupItem = function(){
+        $scope.getGroupList = function (taskName){
+            ref.child("groups").once("value",function(snapshot){
+                var value = snapshot.val();
+                
+                for (var key in value) {
+                    if (value.hasOwnProperty(key)) {
+                        if(value.groupTask == taskName){
+                            $scope.groupTaskList.push(value);
+                        }
+                    }
+                }
+                $scope.$apply();
+            });
         }
 
         $scope.initialise();
@@ -3252,7 +3348,7 @@ angular.module("mapal.controllers", [])
 })
 
 .controller("AboutUsCtrl", function ($scope, $rootScope, $state, $ionicHistory) {
-    console.log("We are at ReportCtrl");
+    console.log("We are at AboutUsCtrl");
 
     $scope.back = function () {
         $ionicHistory.goBack();

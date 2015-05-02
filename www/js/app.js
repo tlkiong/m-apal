@@ -66,6 +66,24 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
                 template: 'Logging Out...'
             });
             Auth.$unauth();
+            $rootScope.fullName = null;
+            $rootScope.emailAddress = null;
+            $rootScope.contactNumber = null;
+            $rootScope.icNumber = null;
+            $rootScope.role = null;
+            $rootScope.classSchedule = null;
+            $rootScope.groupId = null;
+            $rootScope.userId = null;
+            $rootScope.signedIn = null;
+            $rootScope.group = null;
+            $rootScope.groupInfo = null;
+            $rootScope.task = null;
+            $rootScope.guidelines = null;
+            $rootScope.guidelineId = null;
+            $rootScope.taskItems = null;
+            $rootScope.taskDetails = null;
+            $rootScope.showGroupId = null;
+            
             $rootScope.showMyAccount = false;
             $rootScope.showLogout = false;
         }
@@ -444,6 +462,17 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
         views: {
             "lecturer-tab-report": {
                 templateUrl: "./templates/lecturer/lecturer-tab-report.html",
+                controller: "ReportCtrl"
+            }
+        }
+    }) 
+
+    // Each tab has its own nav history stack:
+    .state("lecturer-groupList", {
+        url: "/lecturer/lecturer-groupList",
+        views: {
+            "lecturer-tab-report": {
+                templateUrl: "./templates/lecturer/lecturer-groupList.html",
                 controller: "ReportCtrl"
             }
         }
