@@ -3134,6 +3134,15 @@ angular.module("mapal.controllers", [])
             });
         }
 
+        $scope.user = {
+            emailAddress: "",
+            password: "",
+            confirmPassword: "",
+            fullname:"",
+            contactnumber:"",
+            icnumber:""
+        };
+
         $scope.createUser = function (user,Role) {
             console.log("Create User Function called");
 
@@ -3157,6 +3166,15 @@ angular.module("mapal.controllers", [])
                             role: Role.types
                         });
                         
+                        $scope.user = {
+                            emailAddress: "",
+                            password: "",
+                            confirmPassword: "",
+                            fullname:"",
+                            contactnumber:"",
+                            icnumber:""
+                        };
+
                         $ionicLoading.hide();
                         $scope.registerUserModal.hide();
                     }).catch(function (error) {
@@ -3214,9 +3232,10 @@ angular.module("mapal.controllers", [])
         var initialGroupTaskList = [];
         var initialGroupList = [];
 
+        $rootScope.groupList = [];
+
         $scope.initialise = function(){
             $scope.groupTaskList = angular.copy(initialGroupTaskList);
-            $scope.groupList = angular.copy(initialGroupList);
 
             $scope.getTaskList();
         }
@@ -3226,7 +3245,6 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 for (var key in value) {
                     if (value.hasOwnProperty(key)) {
-                        console.log("value: "+value[key]);
                         $scope.groupTaskList.push(value[key]);
                     }
                 }
@@ -3235,19 +3253,26 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getGroupList = function (taskName){
+            console.log("taskname: "+taskName);
+            $rootScope.taskName = taskName;
             ref.child("groups").once("value",function(snapshot){
                 var value = snapshot.val();
                 
                 for (var key in value) {
                     if (value.hasOwnProperty(key)) {
-                        if(value.groupTask == taskName){
-                            $scope.groupTaskList.push(value);
+                        if(value[key].groupTask == taskName){
+                            $rootScope.groupList.push(value[key]);
                         }
                     }
                 }
                 $scope.$apply();
             });
+            $state.go("groupList");
         }
+
+        $scope.back = function () {
+            $ionicHistory.goBack();
+        }  
 
         $scope.initialise();
     }

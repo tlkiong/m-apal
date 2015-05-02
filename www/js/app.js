@@ -83,7 +83,9 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
             $rootScope.taskItems = null;
             $rootScope.taskDetails = null;
             $rootScope.showGroupId = null;
-            
+            $rootScope.groupList = null;
+            $rootScope.taskName = null;
+
             $rootScope.showMyAccount = false;
             $rootScope.showLogout = false;
         }
@@ -467,15 +469,11 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
         }
     }) 
 
-    // Each tab has its own nav history stack:
-    .state("lecturer-groupList", {
-        url: "/lecturer/lecturer-groupList",
-        views: {
-            "lecturer-tab-report": {
-                templateUrl: "./templates/lecturer/lecturer-groupList.html",
-                controller: "ReportCtrl"
-            }
-        }
+    // State to represent tasksDetails View
+    .state("groupList", {
+        url: "/lecturer-groupList",
+        templateUrl: "./templates/lecturer/lecturer-groupList.html",
+        controller: "ReportCtrl"
     })
 
     .state("lecturer-tab.students", {

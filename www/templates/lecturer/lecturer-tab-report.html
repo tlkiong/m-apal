@@ -3,9 +3,11 @@
       <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
 	<ion-content class="padding">
-		
+		<div class="item item-divider">
+	    	ALL TASKS
+	    </div>
 	    <ion-list>
-		    <ion-item ng-repeat="item in groupTaskList" ng-click="getGroupList(item)" ng-tap="getGroupList(item)">
+		    <ion-item ng-repeat="item in groupTaskList" ng-click="getGroupList(item.taskName)" ng-tap="getGroupList(item.taskName)">
 		    	<span>{{item.taskName}}</span>
 		    </ion-item>
 	    </ion-list>
