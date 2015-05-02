@@ -555,8 +555,10 @@ angular.module("mapal.controllers", [])
 
             ref.child("users").on("child_changed", function (snapshot) {
                 var value = snapshot.val();
+                console.log("\t out, value.groupId: "+value.groupId+" :fullname: "+value.fullName);
                 if(value.groupId == $rootScope.groupId){
                     value.key = String(snapshot.key());
+                    console.log("\t in, value.groupId: "+value.groupId+" :fullname: "+value.fullName);
                     $scope.userList.push(value);
                 }
             });
@@ -3137,7 +3139,6 @@ angular.module("mapal.controllers", [])
         var groupList = [];
 
         $scope.initialise = function(){
-            $scope.showGroupItems = false;
             $scope.getTaskList();
         }
 
@@ -3146,7 +3147,6 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.showGroupItem = function(){
-            $scope.showGroupItems = true;
         }
 
         $scope.initialise();
