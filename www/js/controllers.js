@@ -555,7 +555,7 @@ angular.module("mapal.controllers", [])
 
             ref.child("users").on("child_changed", function (snapshot) {
                 var value = snapshot.val();
-                if(value.groupId == item.key){
+                if(value.groupId == $rootScope.groupId){
                     value.key = String(snapshot.key());
                     $scope.groupMemberList.push(value);
                 }
@@ -2734,7 +2734,8 @@ angular.module("mapal.controllers", [])
                         var keywords = keywordInString.split(",");
                         console.log ("keywords: "+keywords+" : keywordInString: "+keywordInString);
                         for(i=0; i<keywords.length;i++){
-                            if(!task.taskDescription.indexOf(keywords[i].trim())){
+                            console.log("\t ~task.taskDescription.indexOf(keywords[i].trim()): "+~task.taskDescription.indexOf(keywords[i].trim()));
+                            if(~task.taskDescription.indexOf(keywords[i].trim())==0){
                                 console.log("\t~~task.taskDescription: "+task.taskDescription+" :keywords[i].trim() "+keywords[i].trim());
                                 console.log("don't exist?");
                                 break;
@@ -2743,6 +2744,7 @@ angular.module("mapal.controllers", [])
                             }
 
                             if(i==keywords.length-1){
+                                isExist = true;
                                 $rootScope.guidelines = value;
                                 $ionicLoading.hide();
                                 $state.go("confirmCreateTask");
