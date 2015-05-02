@@ -557,7 +557,7 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value.groupId == $rootScope.groupId){
                     value.key = String(snapshot.key());
-                    $scope.groupMemberList.push(value);
+                    $scope.userList.push(value);
                 }
             });
         }
@@ -2739,7 +2739,7 @@ angular.module("mapal.controllers", [])
                                 console.log("don't exist?");
                                 break;
                             } 
-                            
+
                             if(i==keywords.length-1){
                                 isExist = true;
                                 $rootScope.guidelines = value;
