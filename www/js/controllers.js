@@ -999,6 +999,9 @@ angular.module("mapal.controllers", [])
             // console.log("Sprint Planning first date: "+Date(initialDateInUtc).getDate()+"/"+(Date(initialDateInUtc).getMonth()+1)+"/"+Date(initialDateInUtc).getUTCFullYear()+" == Day: "+Date(initialDateInUtc).getDay());
             
             var initialDate = new Date(initialDateInUtc+604800000+(86400000*counter));
+
+            $scope.initialDates = initialDate;
+
             $scope.sprintPlanningMondayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
             initialDate = new Date(initialDateInUtc+604800000+(86400000*(counter+1)));
             $scope.sprintPlanningTuesdayDate = initialDate.getDate()+" / "+(initialDate.getMonth()+1)+" / "+initialDate.getUTCFullYear();
@@ -1081,8 +1084,12 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child(groupId).child("confirmedSprintPlanningDateTime").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value == null){
-                    $scope.toShowSprintPlanning = "showSprintPlanningList";
-                    $scope.getSprintPlanningInfo();
+                    if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.toShowSprintPlanning = "showSprintPlanningList";
+                        $scope.getSprintPlanningInfo();
+                    } else {
+                        $scope.setConfirmedDateTime("voteSprintPlanning");
+                    }
                 } else {
                     $ionicLoading.hide();
                     $scope.toShowSprintPlanning = "showConfirmedSprintPlanningTime";
@@ -1096,8 +1103,12 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime1").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value == null){
-                    $scope.toShowScrumPlanning1 = "showScrumPlanningList1";
-                    $scope.getScrumPlanningInfo1();
+                    if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.toShowScrumPlanning1 = "showScrumPlanningList1";
+                        $scope.getScrumPlanningInfo1();
+                    } else {
+                        $scope.setConfirmedDateTime("voteScrumPlanning1");
+                    }
                 } else {
                     $ionicLoading.hide();
                     $scope.toShowScrumPlanning1 = "showConfirmedScrumPlanningTime1";
@@ -1111,8 +1122,12 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child(groupId).child("confirmedScrumPlanningDateTime2").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value == null){
-                    $scope.toShowScrumPlanning2 = "showScrumPlanningList2";
-                    $scope.getScrumPlanningInfo2();
+                    if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.toShowScrumPlanning2 = "showScrumPlanningList2";
+                        $scope.getScrumPlanningInfo2();
+                    } else {
+                        $scope.setConfirmedDateTime("voteScrumPlanning2");
+                    }
                 } else {
                     $ionicLoading.hide();
                     $scope.toShowScrumPlanning2 = "showConfirmedScrumPlanningTime2";
@@ -1126,8 +1141,12 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child(groupId).child("confirmedSprintReviewDateTime").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value == null){
-                    $scope.toShowSprintReview = "showSprintReviewList";
-                    $scope.getSprintReviewInfo();
+                    if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.toShowSprintReview = "showSprintReviewList";
+                        $scope.getSprintReviewInfo();
+                    } else {
+                        $scope.setConfirmedDateTime("voteSprintReview");
+                    }
                 } else {
                     $ionicLoading.hide();
                     $scope.toShowSprintReview = "showConfirmedSprintReviewTime";
@@ -1141,8 +1160,13 @@ angular.module("mapal.controllers", [])
             ref.child("groups").child(groupId).child("confirmedSprintRetrospectiveDateTime").once('value', function (snapshot) {
                 var value = snapshot.val();
                 if(value == null){
-                    $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
+                    if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
                     $scope.getSprintRetrospectiveInfo();
+                    } else {
+                        $scope.setConfirmedDateTime("voteSprintRetrospective");
+                    }
+                    
                 } else {
                     $ionicLoading.hide();
                     $scope.toShowSprintRetrospective = "showConfirmedSprintRetrospectiveTime";
