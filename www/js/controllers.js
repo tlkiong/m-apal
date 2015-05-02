@@ -553,6 +553,13 @@ angular.module("mapal.controllers", [])
                 }
             });
 
+            ref.child("users").on("child_changed", function (snapshot) {
+                var value = snapshot.val();
+                if(value.groupId == item.key){
+                    value.key = String(snapshot.key());
+                    $scope.groupMemberList.push(value);
+                }
+            });
         }
 
         $scope.studentViewClassSchedule = function(){
@@ -656,14 +663,6 @@ angular.module("mapal.controllers", [])
         $scope.viewGroupInfo = function (item){
             $scope.groupMemberList = [];
             ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
-                var value = snapshot.val();
-                if(value.groupId == item.key){
-                    value.key = String(snapshot.key());
-                    $scope.groupMemberList.push(value);
-                }
-            });
-
-            ref.child("users").on("child_changed", function (snapshot) {
                 var value = snapshot.val();
                 if(value.groupId == item.key){
                     value.key = String(snapshot.key());
@@ -2722,7 +2721,7 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getGuidelines = function (task, guidelineNumber){
-            console.log("snapshot.val is: "+guidelineNumber);
+            console.log("(getGuidelines)snapshot.val is: "+guidelineNumber);
             var counter = 1;
             var isExist= false;
             if(guidelineNumber > 0){
@@ -2739,6 +2738,8 @@ angular.module("mapal.controllers", [])
                                 console.log("\t~~task.taskDescription: "+task.taskDescription+" :keywords[i].trim() "+keywords[i].trim());
                                 console.log("don't exist?");
                                 break;
+                            } else {
+                                console.log("\t~~task.taskDescription: "+task.taskDescription+" :keywords[i].trim() "+keywords[i].trim());
                             }
 
                             if(i==keywords.length-1){
@@ -2860,7 +2861,7 @@ angular.module("mapal.controllers", [])
 
         $scope.getGuidelinesUpdate = function (task, guidelineNumber){
             $rootScope.taskItems = task;
-            console.log("snapshot.val is: "+guidelineNumber);
+            console.log("(getGuidelinesUpdate) snapshot.val is: "+guidelineNumber);
             var counter = 1;
             var isExist= false;
             if(guidelineNumber > 0){
