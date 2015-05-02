@@ -529,6 +529,16 @@ angular.module("mapal.controllers", [])
         $scope.userList = [];
 
         $scope.initialise = function (){
+            ref.child("groups").child($rootScope.groupId).on("child_changed", function(snapshot){
+                var value = snapshot.val()
+                if(value.groupStatus == "active"){
+                    if($rootScope.role == "student") {
+                        $state.go('student-tab.timeline');
+                    } else if ($rootScope.role == "leader") {
+                        $state.go('leader-tab.timeline');
+                    }
+                }
+            });
 
             ref.child("groups").child($rootScope.groupId).once('value', function (snapshot) {
                 var value = snapshot.val();
