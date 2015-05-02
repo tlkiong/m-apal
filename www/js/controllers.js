@@ -655,13 +655,22 @@ angular.module("mapal.controllers", [])
 
         $scope.viewGroupInfo = function (item){
             $scope.groupMemberList = [];
-            ref.child("users").orderByChild("groupId").on("child_changed", function (snapshot) {
+            ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 if(value.groupId == item.key){
                     value.key = String(snapshot.key());
                     $scope.groupMemberList.push(value);
                 }
             });
+
+            ref.child("users").on("child_changed", function (snapshot) {
+                var value = snapshot.val();
+                if(value.groupId == item.key){
+                    value.key = String(snapshot.key());
+                    $scope.groupMemberList.push(value);
+                }
+            });
+
             $rootScope.groupInfo = item;
             
             $scope.groupMemberListModal.show();
