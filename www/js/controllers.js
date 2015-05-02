@@ -655,7 +655,7 @@ angular.module("mapal.controllers", [])
 
         $scope.viewGroupInfo = function (item){
             $scope.groupMemberList = [];
-            ref.child("users").orderByChild("groupId").on("child_added", function (snapshot) {
+            ref.child("users").orderByChild("groupId").on("child_changed", function (snapshot) {
                 var value = snapshot.val();
                 if(value.groupId == item.key){
                     value.key = String(snapshot.key());
@@ -2726,7 +2726,8 @@ angular.module("mapal.controllers", [])
                         var keywords = keywordInString.split(",");
                         console.log ("keywords: "+keywords+" : keywordInString: "+keywordInString);
                         for(i=0; i<keywords.length;i++){
-                            if(!~task.taskDescription.indexOf(keywords[i].trim())){
+                            if(!task.taskDescription.indexOf(keywords[i].trim())){
+                                console.log("\t~~task.taskDescription: "+task.taskDescription+" :keywords[i].trim() "+keywords[i].trim());
                                 console.log("don't exist?");
                                 break;
                             }
