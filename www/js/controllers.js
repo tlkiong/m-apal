@@ -384,10 +384,38 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.deleteClassFromFirebase = function() {
-            ref.child("users").child($rootScope.userId).child("classSchedule").child($scope.classItem.key).remove();
-            console.log($scope.classItem.Key + " deleted");
-            $scope.getClassTimetable($rootScope.userId);
-            $scope.classItemOptionModal.hide();
+            ref.child("users").child($rootScope.userId).child("classSchedule").once("value", function(snapshot){
+                var value = snapshot.val();
+
+                var counter = 0;
+                //key is the left. value[key] is the right side of the object
+                for (var key in value) {
+                    if (value.hasOwnProperty(key)) {
+                        counter++;
+                    }
+                }
+
+
+
+                if(counter > 1 ) {
+                    ref.child("users").child($rootScope.userId).child("classSchedule").child($scope.classItem.key).remove();
+                    console.log($scope.classItem.Key + " deleted");
+                } else if (counter <= 1) {
+                    // An alert dialog
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: 'You have to have at least 1 class schedule'
+                    });
+                    alertPopup.then(function(res) {
+                        
+                    });
+                    console.log("\t counter: "+counter);
+                }
+                
+                $scope.getClassTimetable($rootScope.userId);
+                $scope.classItemOptionModal.hide();
+            });
+            
         }
 
         $scope.goBack = function(){
