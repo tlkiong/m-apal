@@ -530,8 +530,11 @@ angular.module("mapal.controllers", [])
 
         $scope.initialise = function (){
             ref.child("groups").child($rootScope.groupId).on("child_changed", function(snapshot){
-                var value = snapshot.val()
-                if(value.groupStatus == "active"){
+                var value = snapshot.val();
+                console.log(" value: "+value);
+                console.log(" value.groupStatus: "+value.groupStatus);
+                console.log(" String(snapshot.key()): "+String(snapshot.key()));
+                if(String(snapshot.key()) == "groupStatus" && value == "active"){
                     if($rootScope.role == "student") {
                         $state.go('student-tab.timeline');
                     } else if ($rootScope.role == "leader") {
@@ -549,6 +552,7 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value.groupId == $rootScope.groupId){
                     value.key = String(snapshot.key());
+                    console.log("all here");
                     $scope.userList.push(value);
                 }
             });
