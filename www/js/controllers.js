@@ -1093,10 +1093,10 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.setConfirmedDateTime("voteSprintPlanning");
+                    } else {
                         $scope.toShowSprintPlanning = "showSprintPlanningList";
                         $scope.getSprintPlanningInfo();
-                    } else {
-                        $scope.setConfirmedDateTime("voteSprintPlanning");
                     }
                 } else {
                     $ionicLoading.hide();
@@ -1112,10 +1112,10 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.setConfirmedDateTime("voteScrumPlanning1");
+                    } else {
                         $scope.toShowScrumPlanning1 = "showScrumPlanningList1";
                         $scope.getScrumPlanningInfo1();
-                    } else {
-                        $scope.setConfirmedDateTime("voteScrumPlanning1");
                     }
                 } else {
                     $ionicLoading.hide();
@@ -1131,10 +1131,10 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.setConfirmedDateTime("voteScrumPlanning2");
+                    } else {
                         $scope.toShowScrumPlanning2 = "showScrumPlanningList2";
                         $scope.getScrumPlanningInfo2();
-                    } else {
-                        $scope.setConfirmedDateTime("voteScrumPlanning2");
                     }
                 } else {
                     $ionicLoading.hide();
@@ -1150,10 +1150,10 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     if($scope.initialDates > ($scope.groupStartDate+604800000)) {
+                        $scope.setConfirmedDateTime("voteSprintReview");
+                    } else {
                         $scope.toShowSprintReview = "showSprintReviewList";
                         $scope.getSprintReviewInfo();
-                    } else {
-                        $scope.setConfirmedDateTime("voteSprintReview");
                     }
                 } else {
                     $ionicLoading.hide();
@@ -1169,12 +1169,11 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value == null){
                     if($scope.initialDates > ($scope.groupStartDate+604800000)) {
-                        $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
-                    $scope.getSprintRetrospectiveInfo();
-                    } else {
                         $scope.setConfirmedDateTime("voteSprintRetrospective");
+                    } else {
+                        $scope.toShowSprintRetrospective = "showSprintRetrospectiveList";
+                        $scope.getSprintRetrospectiveInfo();
                     }
-                    
                 } else {
                     $ionicLoading.hide();
                     $scope.toShowSprintRetrospective = "showConfirmedSprintRetrospectiveTime";
@@ -1984,160 +1983,179 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.setConfirmedDateTime = function (voteName){
+            console.log("came here???? setConfirmedDateTime");
             ref.child("groups").child($rootScope.groupId).child(voteName).once("value", function(snapshot){
                 var value = snapshot.val();
 
-                var objectCounterArray = [];
-                var objectArray = [];
-                var moreThanOne = false;
-                //key is the left. value[key] is the right side of the object
-                for (var key in value) {
-                    if (value.hasOwnProperty(key)) {
-                        // console.log("~~~ Looping here: "+value[key]);
-                        // console.log("~~~ Looping here 1: "+key);
-                        if(key!="count"){
-                            var object = value[key];
+                if(value == null){
+                     if(voteName == "voteSprintPlanning"){
 
-                            var newObject = {
-                                votedDate: object.date,
-                                votedDay: object.day,
-                                votedTime: object.voteTime
-                            }
+                     } else if (voteName == "voteScrumPlanning1"){
 
-                            // console.log("~~~ Looping here 2: "+object.date);
-                            // console.log("~~~ Looping here 3: "+object.day);
-                            // console.log("~~~ Looping here 4: "+object.voteTime);
+                     } else if (voteName == "voteScrumPlanning2"){
 
-                            // console.log("~~~ Looping here 2 newObject votedDate: "+newObject.votedDate);
-                            // console.log("~~~ Looping here 3 newObject votedDay: "+newObject.votedDay);
-                            // console.log("~~~ Looping here 4 newObject votedTime: "+newObject.votedTime);
+                     } else if (voteName == "voteSprintReview") {
 
-                            var arrayLength = objectArray.length;
+                     } else if (voteName == "voteSprintRetrospective"){
 
-                            if(arrayLength==0){
-                                objectArray.push(newObject);
-                                objectCounterArray.push(1);
-                            } else if (arrayLength >0){
-                                for(var i=0; i<arrayLength; i++){
-                                    var objectAtIndex = objectArray[i];
+                     } else {
+                        console.log("shouldnt come here at all");
+                     }
+                } else {
+                    var objectCounterArray = [];
+                    var objectArray = [];
+                    var moreThanOne = false;
+                    //key is the left. value[key] is the right side of the object
+                    for (var key in value) {
+                        if (value.hasOwnProperty(key)) {
+                            // console.log("~~~ Looping here: "+value[key]);
+                            // console.log("~~~ Looping here 1: "+key);
+                            if(key!="count"){
+                                var object = value[key];
 
-                                    // console.log("objectAtIndex: "+objectAtIndex);
-                                    // console.log("objectAtIndex.votedDate: "+objectAtIndex.votedDate);
-                                    // console.log("objectAtIndex.votedDay: "+objectAtIndex.votedDay);
-                                    // console.log("objectAtIndex.votedTime: "+objectAtIndex.votedTime);
+                                var newObject = {
+                                    votedDate: object.date,
+                                    votedDay: object.day,
+                                    votedTime: object.voteTime
+                                }
 
-                                    if(objectAtIndex.votedDate==newObject.votedDate &&
-                                       objectAtIndex.votedDay==newObject.votedDay &&
-                                       objectAtIndex.votedTime == newObject.votedTime) {
-                                        // console.log("came in?");
-                                        objectCounterArray[i]+=1;
-                                        break;
-                                    } else {
-                                        if(i==arrayLength-1){
-                                            // console.log("nahhhhhhhhhhh");
-                                            objectArray.push(newObject);
-                                            objectCounterArray.push(1);
+                                // console.log("~~~ Looping here 2: "+object.date);
+                                // console.log("~~~ Looping here 3: "+object.day);
+                                // console.log("~~~ Looping here 4: "+object.voteTime);
+
+                                // console.log("~~~ Looping here 2 newObject votedDate: "+newObject.votedDate);
+                                // console.log("~~~ Looping here 3 newObject votedDay: "+newObject.votedDay);
+                                // console.log("~~~ Looping here 4 newObject votedTime: "+newObject.votedTime);
+
+                                var arrayLength = objectArray.length;
+
+                                if(arrayLength==0){
+                                    objectArray.push(newObject);
+                                    objectCounterArray.push(1);
+                                } else if (arrayLength >0){
+                                    for(var i=0; i<arrayLength; i++){
+                                        var objectAtIndex = objectArray[i];
+
+                                        // console.log("objectAtIndex: "+objectAtIndex);
+                                        // console.log("objectAtIndex.votedDate: "+objectAtIndex.votedDate);
+                                        // console.log("objectAtIndex.votedDay: "+objectAtIndex.votedDay);
+                                        // console.log("objectAtIndex.votedTime: "+objectAtIndex.votedTime);
+
+                                        if(objectAtIndex.votedDate==newObject.votedDate &&
+                                           objectAtIndex.votedDay==newObject.votedDay &&
+                                           objectAtIndex.votedTime == newObject.votedTime) {
+                                            // console.log("came in?");
+                                            objectCounterArray[i]+=1;
+                                            break;
+                                        } else {
+                                            if(i==arrayLength-1){
+                                                // console.log("nahhhhhhhhhhh");
+                                                objectArray.push(newObject);
+                                                objectCounterArray.push(1);
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                        } 
+                            } 
 
+                        }
                     }
-                }
 
 
-                console.log("~~~~~~~~~~~~~~~~~~~~ objectCounterArray: "+objectCounterArray);
-                var highestVoted = {
-                    voteCount:0,
-                    indexed:-1
-                };
+                    console.log("~~~~~~~~~~~~~~~~~~~~ objectCounterArray: "+objectCounterArray);
+                    var highestVoted = {
+                        voteCount:0,
+                        indexed:-1
+                    };
 
-                for(var i=0, l=objectCounterArray.length; i<l; i++) {
-                    if(highestVoted.voteCount==0){
-                        highestVoted.voteCount = objectCounterArray[i];
-                        highestVoted.indexed = i;
-                    } else if (highestVoted.voteCount == objectCounterArray[i]) {
-                        moreThanOne = true;
-                        highestVoted.voteCount = objectCounterArray[i];
-                        highestVoted.indexed = i;
-                        break;
-                    } else {
-                        if(objectCounterArray[i] > highestVoted){
+                    for(var i=0, l=objectCounterArray.length; i<l; i++) {
+                        if(highestVoted.voteCount==0){
                             highestVoted.voteCount = objectCounterArray[i];
                             highestVoted.indexed = i;
-                        }
-                    }
-                }
-
-                var indexOfArrayWithMoreThanOne = [];
-                if(moreThanOne) {
-                    var highestVotedObjects = {
-                        votedDate:"",
-                        votedDay:"",
-                        votedTime:0
-                    };
-                    for(var m=0, n=objectCounterArray.length; m<n; m++){
-                        if(objectCounterArray[m] == highestVoted.voteCount){
-                            indexOfArrayWithMoreThanOne.push(m);
-                        }
-                    }
-
-                    for(var indexes in indexOfArrayWithMoreThanOne){
-                        if(highestVotedObjects.votedTime==0){
-                            highestVotedObjects.votedDate = objectArray[i].votedDate;
-                            highestVotedObjects.votedDay = objectArray[i].votedDay;
-                            highestVotedObjects.votedTime = objectArray[i].votedTime;
+                        } else if (highestVoted.voteCount == objectCounterArray[i]) {
+                            moreThanOne = true;
+                            highestVoted.voteCount = objectCounterArray[i];
+                            highestVoted.indexed = i;
+                            break;
                         } else {
-                            if(objectArray[i].votedDate != highestVotedObjects.votedDate){
-                                var splitObjectDate = objectArray[i].votedDate.splt("/");
-                                var splitHighDate = highestVotedObjects.votedDate.splt("/");
+                            if(objectCounterArray[i] > highestVoted){
+                                highestVoted.voteCount = objectCounterArray[i];
+                                highestVoted.indexed = i;
+                            }
+                        }
+                    }
 
-                                //[1] is month
-                                if(Number(splitObjectDate[1].trim())>Number(highestVotedObjects[1].trim())){
-                                    highestVotedObjects.votedDate = objectArray[i].votedDate;
-                                    highestVotedObjects.votedDay = objectArray[i].votedDay;
-                                    highestVotedObjects.votedTime = objectArray[i].votedTime;
-                                } else if(Number(splitObjectDate[1].trim())==Number(highestVotedObjects[1].trim())){
-                                    //[0] is day
-                                    if(Number(splitObjectDate[0].trim())>Number(highestVotedObjects[0].trim())) {
+                    var indexOfArrayWithMoreThanOne = [];
+                    if(moreThanOne) {
+                        var highestVotedObjects = {
+                            votedDate:"",
+                            votedDay:"",
+                            votedTime:0
+                        };
+                        for(var m=0, n=objectCounterArray.length; m<n; m++){
+                            if(objectCounterArray[m] == highestVoted.voteCount){
+                                indexOfArrayWithMoreThanOne.push(m);
+                            }
+                        }
+
+                        for(var indexes in indexOfArrayWithMoreThanOne){
+                            if(highestVotedObjects.votedTime==0){
+                                highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                highestVotedObjects.votedTime = objectArray[i].votedTime;
+                            } else {
+                                if(objectArray[i].votedDate != highestVotedObjects.votedDate){
+                                    var splitObjectDate = objectArray[i].votedDate.splt("/");
+                                    var splitHighDate = highestVotedObjects.votedDate.splt("/");
+
+                                    //[1] is month
+                                    if(Number(splitObjectDate[1].trim())>Number(highestVotedObjects[1].trim())){
                                         highestVotedObjects.votedDate = objectArray[i].votedDate;
                                         highestVotedObjects.votedDay = objectArray[i].votedDay;
                                         highestVotedObjects.votedTime = objectArray[i].votedTime;
-                                    } else if (Number(splitObjectDate[0].trim())==Number(highestVotedObjects[0].trim())) {
-                                        //Take the earliest voted time
-                                        if(objectArray[i].votedTime < highestVotedObjects.votedTime) {
+                                    } else if(Number(splitObjectDate[1].trim())==Number(highestVotedObjects[1].trim())){
+                                        //[0] is day
+                                        if(Number(splitObjectDate[0].trim())>Number(highestVotedObjects[0].trim())) {
                                             highestVotedObjects.votedDate = objectArray[i].votedDate;
                                             highestVotedObjects.votedDay = objectArray[i].votedDay;
                                             highestVotedObjects.votedTime = objectArray[i].votedTime;
-                                        } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
-                                            console.log("ERROR! Not suppose have same time! (Not equal date)");
-                                        } // If time lower, ignore
-                                    } //If date lower, ignore
-                                } //If month lower, ignore
-                            } else { //Date is equals
-                                //Take the earliest voted time
-                                if(objectArray[i].votedTime < highestVotedObjects.votedTime) {
-                                    highestVotedObjects.votedDate = objectArray[i].votedDate;
-                                    highestVotedObjects.votedDay = objectArray[i].votedDay;
-                                    highestVotedObjects.votedTime = objectArray[i].votedTime;
-                                } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
-                                    console.log("ERROR! Not suppose have same time! (Equal date)");
-                                } // If time lower, ignore
+                                        } else if (Number(splitObjectDate[0].trim())==Number(highestVotedObjects[0].trim())) {
+                                            //Take the earliest voted time
+                                            if(objectArray[i].votedTime < highestVotedObjects.votedTime) {
+                                                highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                                highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                                highestVotedObjects.votedTime = objectArray[i].votedTime;
+                                            } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
+                                                console.log("ERROR! Not suppose have same time! (Not equal date)");
+                                            } // If time lower, ignore
+                                        } //If date lower, ignore
+                                    } //If month lower, ignore
+                                } else { //Date is equals
+                                    //Take the earliest voted time
+                                    if(objectArray[i].votedTime < highestVotedObjects.votedTime) {
+                                        highestVotedObjects.votedDate = objectArray[i].votedDate;
+                                        highestVotedObjects.votedDay = objectArray[i].votedDay;
+                                        highestVotedObjects.votedTime = objectArray[i].votedTime;
+                                    } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
+                                        console.log("ERROR! Not suppose have same time! (Equal date)");
+                                    } // If time lower, ignore
+                                }
                             }
                         }
-                    }
 
-                    $scope.storeConfirmedDateTime(highestVotedObjects, voteName);
-                    
-                } else {
-                    $scope.storeConfirmedDateTime(objectArray[highestVoted.indexed], voteName);
+                        $scope.storeConfirmedDateTime(highestVotedObjects, voteName);
+                        
+                    } else {
+                        $scope.storeConfirmedDateTime(objectArray[highestVoted.indexed], voteName);
+                    }
                 }
+                
             });
         }
 
         $scope.storeConfirmedDateTime = function(highestVotedObject, voteName){
+            console.log("came here???? storeConfirmedDateTime");
             var onComplete = function(error) {
                 if (error) {
                     console.log('Synchronization failed for storeConfirmedDateTime');
