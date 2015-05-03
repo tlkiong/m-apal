@@ -26,25 +26,7 @@ angular.module("mapal.controllers", [])
         $scope.Role = $scope.roles[0]; // student
 
     $scope.initialise = function(){
-        // $rootScope.fullName = null;
-        // $rootScope.emailAddress = null;
-        // $rootScope.contactNumber = null;
-        // $rootScope.icNumber = null;
-        // $rootScope.role = null;
-        // $rootScope.classSchedule = null;
-        // $rootScope.groupId = null;
-        // $rootScope.userId = null;
-        // $rootScope.signedIn = null;
-        // $rootScope.showMyAccount = null;
-        // $rootScope.showLogout = null;
-        // $rootScope.group = null;
-        // $rootScope.groupInfo = null;
-        // $rootScope.task = null;
-        // $rootScope.guidelines = null;
-        // $rootScope.guidelineId = null;
-        // $rootScope.taskItems = null;
-        // $rootScope.taskDetails = null;
-        // $rootScope.showGroupId = null;
+        
     }
     $scope.user = {
         emailAddress: "",
@@ -954,6 +936,32 @@ angular.module("mapal.controllers", [])
             $scope.toShowScrumPlanning2 = "";
             $scope.toShowSprintReview = "";
             $scope.toShowSprintRetrospective = "";
+
+            ref.child("groups").child($rootScope.groupId).on("child_changed", function (snapshot) {
+                var value = snapshot.val();
+                if(value.groupStatus == "disabled") {
+                    // An alert dialog
+                    var alertPopup = $ionicPopup.alert({
+                        title: "Group Has Been Closed",
+                        template: "Group is closed. You will now be redirect to the add class schedule page"
+                    });
+                    alertPopup.then(function(res) {
+                        if($rootScope.role == "leader"){
+                            $state.go('leaderAddClassSchedule');
+                        } else if ($rootScope.role == "student") {
+                            $state.go('studentAddClassSchedule');
+                        }
+                    });
+                }
+            });
+
+            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
+                var value = snapshot.val();
+                console.log("The vote count for sprintplanning is " + value.count);
+                if(value.count == $scope.numberOfGroupMembers){
+                    $scope.initialise();
+                }
+            });
 
             var getServerTime = (function(ref) {
                 var offset = 0;
