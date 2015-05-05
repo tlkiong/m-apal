@@ -3518,7 +3518,7 @@ angular.module("mapal.controllers", [])
             $scope.initialise();
             $scope.$broadcast('scroll.refreshComplete');
         }
-        
+
         $scope.getTaskList = function(){
             ref.child("tasks").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -3587,27 +3587,29 @@ angular.module("mapal.controllers", [])
             template: 'Getting Account Information...'
         });
 
-        ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
-            var val = snapshot.val();
+        $scope.initialise = function(){
+            ref.child("users").child($rootScope.userId).once('value', function (snapshot) {
+                var val = snapshot.val();
 
-            if($rootScope.role == "lecturer"){
-                $rootScope.showGroupId = false;
-            }
+                if($rootScope.role == "lecturer"){
+                    $rootScope.showGroupId = false;
+                }
 
-            console.log("email: "+val.email);
-            console.log("fullName: "+val.fullName);
-            console.log("groupId: "+val.groupId);
-            console.log("icNumber: "+val.icNumber);
-            console.log("contactNumber: "+val.contactNumber);
-            $scope.userInfo = {
-                userEmail : val.email,
-                userFullName: val.fullName,
-                userGroupID: val.groupId,
-                userIcNumber: val.icNumber,
-                userContactNumber: val.contactNumber
-            }
-            $ionicLoading.hide();
-        });
+                console.log("email: "+val.email);
+                console.log("fullName: "+val.fullName);
+                console.log("groupId: "+val.groupId);
+                console.log("icNumber: "+val.icNumber);
+                console.log("contactNumber: "+val.contactNumber);
+                $scope.userInfo = {
+                    userEmail : val.email,
+                    userFullName: val.fullName,
+                    userGroupID: val.groupId,
+                    userIcNumber: val.icNumber,
+                    userContactNumber: val.contactNumber
+                }
+                $ionicLoading.hide();
+            });
+        }
 
         $scope.showEditInformationModal = function () {
             $scope.editAccountSettingsModal.show();
@@ -3617,7 +3619,7 @@ angular.module("mapal.controllers", [])
             console.log ("userInfo.userFullName: "+userInfo.userFullName);
             console.log ("userInfo.userIcNumber: "+userInfo.userIcNumber);
             console.log ("userInfo.userContactNumber: "+userInfo.userContactNumber);
-            if(userInfo.userFullName>0 && userInfo.userIcNumber>0 && userInfo.userContactNumber>0){
+            if(userInfo.userFullName.length>0 && userInfo.userIcNumber.length>0 && userInfo.userContactNumber.length>0){
                  ref.child("users").child($rootScope.userId).update({
                     fullName: userInfo.userFullName,
                     icNumber: userInfo.userIcNumber,
@@ -3663,7 +3665,8 @@ angular.module("mapal.controllers", [])
 
         $scope.back = function () {
             $ionicHistory.goBack();
-        }  
+        } 
+        $scope.initialise(); 
     }
 })
 
