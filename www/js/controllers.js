@@ -130,9 +130,22 @@ angular.module("mapal.controllers", [])
                 ref.child("users").child(authData.uid).once('value', function (snapshot) {
                     var val = snapshot.val();
                     
-                    // To Update AngularJS $scope either use $apply or $timeout
-                    $scope.$apply(function () {
-                        $rootScope.fullName = val.fullName;
+                    // // To Update AngularJS $scope either use $apply or $timeout
+                    // $scope.$apply(function () {
+                    //     $rootScope.fullName = val.fullName;
+                    //     $rootScope.emailAddress = user.emailAddress;
+                    //     $rootScope.contactNumber = val.contactNumber;
+                    //     $rootScope.icNumber = val.icNumber;
+                    //     $rootScope.role = val.role;
+                    //     $rootScope.classSchedule = val.classSchedule;
+                    //     $rootScope.groupId = val.groupId;
+                    //     $rootScope.userId = authData.uid;
+                    //     $rootScope.signedIn = true;
+                    //     $rootScope.showMyAccount = true;
+                    //     $rootScope.showLogout = true;
+                    // });
+                    
+                    $rootScope.fullName = val.fullName;
                         $rootScope.emailAddress = user.emailAddress;
                         $rootScope.contactNumber = val.contactNumber;
                         $rootScope.icNumber = val.icNumber;
@@ -143,8 +156,7 @@ angular.module("mapal.controllers", [])
                         $rootScope.signedIn = true;
                         $rootScope.showMyAccount = true;
                         $rootScope.showLogout = true;
-                    });
-                    
+
                     console.log("Signed in Logged in as: " + String($rootScope.fullName));
                     console.log("Signed in ID: " + String($rootScope.userId));
                     console.log("Email Address: " + String($rootScope.emailAddress));
@@ -462,6 +474,11 @@ angular.module("mapal.controllers", [])
             $ionicHistory.goBack()
         }
 
+        $scope.refreshTab = function(){
+            $scope.getClassTimetable($rootScope.userId);
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+
         $scope.getClassTimetable($rootScope.userId);
     }
 })
@@ -596,7 +613,7 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
                 if(value.groupId == $rootScope.groupId){
                     value.key = String(snapshot.key());
-                    console.log("all here");
+                    // console.log("all here");
                     $scope.userList.push(value);
                     $scope.$apply();
                 }
@@ -887,7 +904,7 @@ angular.module("mapal.controllers", [])
             $scope.wednesdayList = angular.copy(initialWednesdayList);
             $scope.thursdayList = angular.copy(initialThursdayList);
             $scope.fridayList = angular.copy(initialFridayList);
-            
+
             var userList = [];
             $scope.showSprintPlanningList = false;
             $scope.showScrumPlanningList1 = false;
@@ -1001,6 +1018,11 @@ angular.module("mapal.controllers", [])
 
             $scope.getGroupMembersId($rootScope.groupId);
             $scope.getConfirmedTime($rootScope.groupId);
+        }
+
+        $scope.refreshTab = function(){
+            $scope.initialise();
+            $scope.$broadcast('scroll.refreshComplete');
         }
 
         $scope.setDates = function(initialDateInUtc,counter) {
@@ -1193,10 +1215,12 @@ angular.module("mapal.controllers", [])
                 var classStartTimeHour = parseInt(classStartTimeHourArray);
 
                 var classEndTimeHourArray = value.classEndTime.substring(0, 2);
-                if(classEndTimeHourArray!="00"){
-                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))+1;
+                var classEndTimeMinuteArray = value.classEndTime.substring(2, 4);
+
+                if(classEndTimeMinuteArray=="00"){
+                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray));
                 } else {
-                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))-1;
+                    var classEndTimeHour = Math.ceil(parseInt(classEndTimeHourArray))+1;
                 }
                  
                 var totalHours = classEndTimeHour - classStartTimeHour;
@@ -1274,11 +1298,31 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getGroupMembersId = function(groupId){
-            ref.child("groups").child(groupId).child("groupMembers").child("members").on("child_added", function (snapshot) {
+            var groupMemberId = [];
+
+            ref.child("groups").child(groupId).child("groupMembers").child("members").once("value", function (snapshot) {
                 var value = snapshot.val();
-                console.log("value here: "+ value);
-                $scope.getUsersTimetable(value);
+                
+
+                for(var keys in value){
+                    if(value.hasOwnProperty(keys)){
+                        console.log("value here: "+ value[keys]);
+                        groupMemberId.push(value[keys]);
+                        $scope.getUsersTimetable(value[keys]);
+                    }
+                }
+
+                // for(var i = 0, j=groupMemberId.length; i<j; i++){
+                //     ref.child("users").child(groupMemberId[i]).child("classSchedule").on("child_changed", function(snapshot){
+                //         var value = snapshot.val();
+                //         console.log("class schedule changed??");
+                //         $scope.initialise();
+                //     });
+                // }
             });
+
+            
+
         }
 
         $scope.showSprintPlanning = function () {
@@ -1359,13 +1403,13 @@ angular.module("mapal.controllers", [])
         //Sprint planning info
         $scope.getSprintPlanningInfo = function() {
             // Get the data on a post that has changed
-            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
-                var value = snapshot.val();
-                console.log("The vote count for sprintplanning is " + value.count);
-                if(value.count == $scope.numberOfGroupMembers){
-                    $scope.initialise();
-                }
-            });
+            // ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
+            //     var value = snapshot.val();
+            //     console.log("The vote count for sprintplanning is " + value.count);
+            //     if(value.count == $scope.numberOfGroupMembers){
+            //         $scope.initialise();
+            //     }
+            // });
 
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -1389,6 +1433,7 @@ angular.module("mapal.controllers", [])
                                             $scope.mondayList[inList].sprintPlanningMondayCount.me = "ME";
                                             $scope.mySprintPlanningVoteId = key;
                                         }
+
                                         $scope.mondayList[inList].sprintPlanningMondayCount.counter += 1;
                                         
                                         $scope.mondayList[inList].showMyself = true;
@@ -1456,6 +1501,7 @@ angular.module("mapal.controllers", [])
                         }
                     }
                 }
+                $scope.$apply();
                 $ionicLoading.hide();
             });
         }
@@ -1463,13 +1509,13 @@ angular.module("mapal.controllers", [])
         //Scrum Planning 1 info 
         $scope.getScrumPlanningInfo1 = function() {
             // Get the data on a post that has changed
-            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").on("child_changed", function(snapshot) {
-                var value = snapshot.val();
-                console.log("The vote count for voteScrumPlanning1 is " + value.count);
-                if(value.count==$scope.numberOfGroupMembers){
-                    $scope.initialise();
-                }
-            });
+            // ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").on("child_changed", function(snapshot) {
+            //     var value = snapshot.val();
+            //     console.log("The vote count for voteScrumPlanning1 is " + value.count);
+            //     if(value.count==$scope.numberOfGroupMembers){
+            //         $scope.initialise();
+            //     }
+            // });
 
             ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -1567,13 +1613,13 @@ angular.module("mapal.controllers", [])
         //Scrum Planning info 2 
         $scope.getScrumPlanningInfo2 = function() {
             // Get the data on a post that has changed
-            ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").on("child_changed", function(snapshot) {
-                var value = snapshot.val();
-                console.log("The vote count for voteScrumPlanning2 is " + value.count);
-                if(value.count==$scope.numberOfGroupMembers){
-                    $scope.initialise();
-                }
-            });
+            // ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").on("child_changed", function(snapshot) {
+            //     var value = snapshot.val();
+            //     console.log("The vote count for voteScrumPlanning2 is " + value.count);
+            //     if(value.count==$scope.numberOfGroupMembers){
+            //         $scope.initialise();
+            //     }
+            // });
 
             ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -1671,13 +1717,13 @@ angular.module("mapal.controllers", [])
         //Get sprint retrospective info
         $scope.getSprintRetrospectiveInfo = function() {
             // Get the data on a post that has changed
-            ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").on("child_changed", function(snapshot) {
-                var value = snapshot.val();
-                console.log("The vote count for voteSprintRetrospective is " + value.count);
-                if(value.count==$scope.numberOfGroupMembers){
-                    $scope.initialise();
-                }
-            });
+            // ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").on("child_changed", function(snapshot) {
+            //     var value = snapshot.val();
+            //     console.log("The vote count for voteSprintRetrospective is " + value.count);
+            //     if(value.count==$scope.numberOfGroupMembers){
+            //         $scope.initialise();
+            //     }
+            // });
 
             ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -1775,13 +1821,13 @@ angular.module("mapal.controllers", [])
         //Get sprint review info
         $scope.getSprintReviewInfo = function() {
             // Get the data on a post that has changed
-            ref.child("groups").child($rootScope.groupId).child("voteSprintReview").on("child_changed", function(snapshot) {
-                var value = snapshot.val();
-                console.log("The vote count for voteSprintReview is " + value.count);
-                if(value.count==$scope.numberOfGroupMembers){
-                    $scope.initialise();
-                }
-            });
+            // ref.child("groups").child($rootScope.groupId).child("voteSprintReview").on("child_changed", function(snapshot) {
+            //     var value = snapshot.val();
+            //     console.log("The vote count for voteSprintReview is " + value.count);
+            //     if(value.count==$scope.numberOfGroupMembers){
+            //         $scope.initialise();
+            //     }
+            // });
 
             ref.child("groups").child($rootScope.groupId).child("voteSprintReview").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -1886,8 +1932,34 @@ angular.module("mapal.controllers", [])
             
             ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
-                console.log("wtf here?");
+                // if(numberOfVotes==null){
+                //     console.log("wtf? null");
 
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.sprintPlanningVote(time,day, 1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
+                // } else if (numberOfVotes==$scope.numberOfGroupMembers) {
+                //     $scope.initialise();
+                // } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
+                //     console.log("wtf? 0..."+$scope.numberOfGroupMembers);
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.sprintPlanningVote(time,day, numberOfVotes+1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes+1, onComplete);
+                // }  else {
+                //     console.log("wtf? seriously?");
+                // }
                 if(numberOfVotes==null){
                     console.log("wtf? null");
 
@@ -1901,7 +1973,7 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(1, onComplete);
                 } else if (numberOfVotes==$scope.numberOfGroupMembers) {
-                    $scope.initialise();
+                    $scope.sprintPlanningVote(time,day, numberOfVotes, date);
                 } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
                     console.log("wtf? 0..."+$scope.numberOfGroupMembers);
                     var onComplete = function(error) {
@@ -1920,21 +1992,67 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.sprintPlanningVote = function(time,day, number, date){
-            if(number == $scope.numberOfGroupMembers){
-                var done = function(){
-                    $scope.setConfirmedDateTime("voteSprintPlanning");
-                };
+            // if(number == $scope.numberOfGroupMembers){
+            //     var done = function(){
+            //         $scope.setConfirmedDateTime("voteSprintPlanning");
+            //     };
 
-                ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
-                        date: date,
-                        day: day,
-                        voteTime: time,
-                        userId : $rootScope.userId
-                    }, 
-                    function() { 
-                        $scope.initialise();
-                },done);
-            } else if (number>0 && number<$scope.numberOfGroupMembers){
+            //     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+            //             date: date,
+            //             day: day,
+            //             voteTime: time,
+            //             userId : $rootScope.userId
+            //         }, 
+            //         function() { 
+            //             $scope.initialise();
+            //     },done);
+            // } else if (number>0 && number<$scope.numberOfGroupMembers){
+            //     if($scope.mySprintPlanningVoteId == "" || $scope.mySprintPlanningVoteId == null){
+            //         console.log("\t\t mySprintPlanningVoteId: "+$scope.mySprintPlanningVoteId);
+            //         ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+            //                 date: date,
+            //                 day: day,
+            //                 voteTime: time,
+            //                 userId : $rootScope.userId
+            //             }, 
+            //             function() { 
+            //                 $scope.initialise();
+            //         });
+            //     } else {
+            //         var onComplete = function(error) {
+            //             if (error) {
+            //                 console.log('Synchronization failed');
+            //             } else {
+            //                 ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").once('value', function (snapshot) {
+            //                     var numberOfVotes = snapshot.val();
+            //                     if (numberOfVotes>0) {
+            //                         var onComplete = function(error) {
+            //                             if (error) {
+            //                                 console.log('Synchronization failed');
+            //                             } else {
+            //                                 console.log('Synchronization succeeded');
+            //                                 ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
+            //                                         date: date,
+            //                                         day: day,
+            //                                         voteTime: time,
+            //                                         userId : $rootScope.userId
+            //                                     }, 
+            //                                     function() { 
+            //                                         $scope.initialise();
+            //                                 });
+            //                             }
+            //                         };
+            //                         ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child("count").set(numberOfVotes-1, onComplete);
+            //                     }
+            //                 });
+            //             }
+            //         };
+            //         ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").child($scope.mySprintPlanningVoteId).remove(onComplete);
+            //     }
+            // } else {
+            //     console.log("Number is wrong!");
+            // }
+            if (number>0 && number<=$scope.numberOfGroupMembers){
                 if($scope.mySprintPlanningVoteId == "" || $scope.mySprintPlanningVoteId == null){
                     console.log("\t\t mySprintPlanningVoteId: "+$scope.mySprintPlanningVoteId);
                     ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").push({
@@ -1988,19 +2106,44 @@ angular.module("mapal.controllers", [])
                 var value = snapshot.val();
 
                 if(value == null){
-                     if(voteName == "voteSprintPlanning"){
 
-                     } else if (voteName == "voteScrumPlanning1"){
+                    alert("Please ensure that at least each phase has 1 vote to close it");
 
-                     } else if (voteName == "voteScrumPlanning2"){
-
-                     } else if (voteName == "voteSprintReview") {
-
-                     } else if (voteName == "voteSprintRetrospective"){
-
-                     } else {
-                        console.log("shouldnt come here at all");
-                     }
+                    // var sprintPlanningPopup = $ionicPopup.alert({
+                    //     title: "Error",
+                    //     template: "Please ensure that at least each phase has 1 vote to close it"
+                    // });
+                    // sprintPlanningPopup.then(function(res) {
+                    //     sprintPlanningPopup.close();
+                    // });
+                    // if(voteName == "voteSprintPlanning"){
+                    //     $scope.sprintPlanningPopup = $ionicPopup.alert({
+                    //         title: "Error",
+                    //         template: "You must have at least one vote first on 'Sprint Planning' before closing vote"
+                    //     });
+                    // } else if (voteName == "voteScrumPlanning1"){
+                    //     $scope.scrumPlanningPopup = $ionicPopup.alert({
+                    //         title: "Error",
+                    //         template: "You must have at least one vote first on 'Scrum Execution Week 1' before closing vote"
+                    //     });
+                    // } else if (voteName == "voteScrumPlanning2"){
+                    //     $scope.alertPopup = $ionicPopup.alert({
+                    //         title: "Error",
+                    //         template: "You must have at least one vote first on 'Scrum Execution Week 2' before closing vote"
+                    //     });
+                    // } else if (voteName == "voteSprintReview") {
+                    //     $scope.alertPopup = $ionicPopup.alert({
+                    //         title: "Error",
+                    //         template: "You must have at least one vote first on 'Sprint Review' before closing vote"
+                    //     });
+                    // } else if (voteName == "voteSprintRetrospective"){
+                    //     $scope.alertPopup = $ionicPopup.alert({
+                    //         title: "Error",
+                    //         template: "You must have at least one vote first on 'Sprint Retrospective' before closing vote"
+                    //     });
+                    // } else {
+                    //     console.log("shouldnt come here at all");
+                    // }
                 } else {
                     var objectCounterArray = [];
                     var objectArray = [];
@@ -2208,6 +2351,29 @@ angular.module("mapal.controllers", [])
             
             ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
+                // if(numberOfVotes==null){
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.scrumPlanning1Vote(time,day, 1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(1, onComplete);
+                // } else if (numberOfVotes==$scope.numberOfGroupMembers) {
+                //     $scope.initialise();
+                // } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.scrumPlanning1Vote(time,day, numberOfVotes+1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(numberOfVotes+1, onComplete);
+                // } 
                 if(numberOfVotes==null){
                     var onComplete = function(error) {
                         if (error) {
@@ -2219,7 +2385,7 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(1, onComplete);
                 } else if (numberOfVotes==$scope.numberOfGroupMembers) {
-                    $scope.initialise();
+                    $scope.scrumPlanning1Vote(time,day, numberOfVotes, date);
                 } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
                     var onComplete = function(error) {
                         if (error) {
@@ -2237,21 +2403,67 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.scrumPlanning1Vote = function(time,day, number, date){
-            if(number == $scope.numberOfGroupMembers){
-                var done = function(){
-                    $scope.setConfirmedDateTime("voteScrumPlanning1");
-                };
+            // if(number == $scope.numberOfGroupMembers){
+            //     var done = function(){
+            //         $scope.setConfirmedDateTime("voteScrumPlanning1");
+            //     };
 
-                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                        date: date,
-                        day: day,
-                        voteTime: time,
-                        userId : $rootScope.userId
-                    }, 
-                    function() { 
-                        $scope.initialise();
-                },done);
-            } else if (number>0 && number<$scope.numberOfGroupMembers){
+            //     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+            //             date: date,
+            //             day: day,
+            //             voteTime: time,
+            //             userId : $rootScope.userId
+            //         }, 
+            //         function() { 
+            //             $scope.initialise();
+            //     },done);
+            // } else if (number>0 && number<$scope.numberOfGroupMembers){
+            //     if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
+            //         console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
+            //         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+            //                 date: date,
+            //                 day: day,
+            //                 voteTime: time,
+            //                 userId : $rootScope.userId
+            //             }, 
+            //             function() { 
+            //                 $scope.initialise();
+            //         });
+            //     } else {
+            //         var onComplete = function(error) {
+            //             if (error) {
+            //                 console.log('Synchronization failed');
+            //             } else {
+            //                 ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").once('value', function (snapshot) {
+            //                     var numberOfVotes = snapshot.val();
+            //                     if (numberOfVotes>0) {
+            //                         var onComplete = function(error) {
+            //                             if (error) {
+            //                                 console.log('Synchronization failed');
+            //                             } else {
+            //                                 console.log('Synchronization succeeded');
+            //                                 ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
+            //                                         date: date,
+            //                                         day: day,
+            //                                         voteTime: time,
+            //                                         userId : $rootScope.userId
+            //                                     }, 
+            //                                     function() { 
+            //                                         $scope.initialise();
+            //                                 });
+            //                             }
+            //                         };
+            //                         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child("count").set(numberOfVotes-1, onComplete);
+            //                     }
+            //                 });
+            //             }
+            //         };
+            //         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").child($scope.myScrumPlanningVoteId1).remove(onComplete);
+            //     }
+            // } else {
+            //     console.log("Number is wrong!");
+            // }
+            if (number>0 && number<=$scope.numberOfGroupMembers){
                 if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
                     console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
@@ -2307,6 +2519,29 @@ angular.module("mapal.controllers", [])
             
             ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
+                // if(numberOfVotes==null){
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.scrumPlanning2Vote(time,day, 1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(1, onComplete);
+                // } else if (numberOfVotes==$scope.numberOfGroupMembers) {
+                //     $scope.initialise();
+                // } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.scrumPlanning2Vote(time,day, numberOfVotes+1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(numberOfVotes+1, onComplete);
+                // } 
                 if(numberOfVotes==null){
                     var onComplete = function(error) {
                         if (error) {
@@ -2318,7 +2553,7 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child("count").set(1, onComplete);
                 } else if (numberOfVotes==$scope.numberOfGroupMembers) {
-                    $scope.initialise();
+                    $scope.scrumPlanning2Vote(time,day, numberOfVotes+1, date);
                 } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
                     var onComplete = function(error) {
                         if (error) {
@@ -2336,34 +2571,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.scrumPlanning2Vote = function(time,day,number,date){
-            if(number == $scope.numberOfGroupMembers){
-                var done = function(){
-                    $scope.setConfirmedDateTime("voteScrumPlanning1");
-                };
-
-                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                        date: date,
-                        day: day,
-                        voteTime: time,
-                        userId : $rootScope.userId
-                    }, 
-                    function() { 
-                        $scope.initialise();
-                },done);
-            } else if (number>0 && number<$scope.numberOfGroupMembers){
-                if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
-                    console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
-                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                            date: date,
-                            day: day,
-                            voteTime: time,
-                            userId : $rootScope.userId
-                        }, 
-                        function() { 
-                            $scope.initialise();
-                    });
-                } else {
-                    if($scope.myScrumPlanningVoteId2 == "" || $scope.myScrumPlanningVoteId2 == null){
+            if (number>0 && number<$scope.numberOfGroupMembers){
+                if($scope.myScrumPlanningVoteId2 == "" || $scope.myScrumPlanningVoteId2 == null){
                         console.log("\t\t myScrumPlanningVoteId2: "+$scope.myScrumPlanningVoteId2);
                         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").push({
                                 date: date,
@@ -2406,7 +2615,6 @@ angular.module("mapal.controllers", [])
                         };
                         ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning2").child($scope.myScrumPlanningVoteId2).remove(onComplete);
                     }
-                }
             } else {
                 console.log("Number is wrong!");
             }
@@ -2420,6 +2628,29 @@ angular.module("mapal.controllers", [])
             
             ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
+                // if(numberOfVotes==null){
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.sprintRetrospectiveVote(time,day, 1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(1, onComplete);
+                // } else if (numberOfVotes==$scope.numberOfGroupMembers) {
+                //     $scope.initialise();
+                // } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.sprintRetrospectiveVote(time,day, numberOfVotes+1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(numberOfVotes+1, onComplete);
+                // } 
                 if(numberOfVotes==null){
                     var onComplete = function(error) {
                         if (error) {
@@ -2431,7 +2662,7 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child("count").set(1, onComplete);
                 } else if (numberOfVotes==$scope.numberOfGroupMembers) {
-                    $scope.initialise();
+                    $scope.sprintRetrospectiveVote(time,day, numberOfVotes, date);
                 } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
                     var onComplete = function(error) {
                         if (error) {
@@ -2449,34 +2680,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.sprintRetrospectiveVote = function(time,day, number, date){
-            if(number == $scope.numberOfGroupMembers){
-                var done = function(){
-                    $scope.setConfirmedDateTime("voteScrumPlanning1");
-                };
-
-                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                        date: date,
-                        day: day,
-                        voteTime: time,
-                        userId : $rootScope.userId
-                    }, 
-                    function() { 
-                        $scope.initialise();
-                },done);
-            } else if (number>0 && number<$scope.numberOfGroupMembers){
-                if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
-                    console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
-                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                            date: date,
-                            day: day,
-                            voteTime: time,
-                            userId : $rootScope.userId
-                        }, 
-                        function() { 
-                            $scope.initialise();
-                    });
-                } else {
-                    if($scope.mySprintRetrospectiveVoteId == "" || $scope.mySprintRetrospectiveVoteId == null){
+            if (number>0 && number<=$scope.numberOfGroupMembers){
+                if($scope.mySprintRetrospectiveVoteId == "" || $scope.mySprintRetrospectiveVoteId == null){
                         console.log("\t\t mySprintRetrospectiveVoteId: "+$scope.mySprintRetrospectiveVoteId);
                         ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").push({
                                 date: date,
@@ -2519,11 +2724,9 @@ angular.module("mapal.controllers", [])
                         };
                         ref.child("groups").child($rootScope.groupId).child("voteSprintRetrospective").child($scope.mySprintRetrospectiveVoteId).remove(onComplete);
                     }
-                }
             } else {
                 console.log("Number is wrong!");
             }
-            
         }
 
         //Sprint Review selection
@@ -2534,6 +2737,29 @@ angular.module("mapal.controllers", [])
             
             ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").once('value', function (snapshot) {
                 var numberOfVotes = snapshot.val();
+                // if(numberOfVotes==null){
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.sprintReviewVote(time,day, 1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(1, onComplete);
+                // } else if (numberOfVotes==$scope.numberOfGroupMembers) {
+                //     $scope.initialise();
+                // } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
+                //     var onComplete = function(error) {
+                //         if (error) {
+                //             console.log('Synchronization failed');
+                //         } else {
+                //             console.log('Synchronization succeeded');
+                //             $scope.sprintReviewVote(time,day, numberOfVotes+1, date);
+                //         }
+                //     };
+                //     ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(numberOfVotes+1, onComplete);
+                // } 
                 if(numberOfVotes==null){
                     var onComplete = function(error) {
                         if (error) {
@@ -2545,7 +2771,7 @@ angular.module("mapal.controllers", [])
                     };
                     ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child("count").set(1, onComplete);
                 } else if (numberOfVotes==$scope.numberOfGroupMembers) {
-                    $scope.initialise();
+                    $scope.sprintReviewVote(time,day, numberOfVotes, date);
                 } else if (numberOfVotes>0 && numberOfVotes<$scope.numberOfGroupMembers) {
                     var onComplete = function(error) {
                         if (error) {
@@ -2563,34 +2789,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.sprintReviewVote = function(time,day, number, date){
-            if(number == $scope.numberOfGroupMembers){
-                var done = function(){
-                    $scope.setConfirmedDateTime("voteScrumPlanning1");
-                };
-
-                ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                        date: date,
-                        day: day,
-                        voteTime: time,
-                        userId : $rootScope.userId
-                    }, 
-                    function() { 
-                        $scope.initialise();
-                },done);
-            } else if (number>0 && number<$scope.numberOfGroupMembers){
-                if($scope.myScrumPlanningVoteId1 == "" || $scope.myScrumPlanningVoteId1 == null){
-                    console.log("\t\t myScrumPlanningVoteId1: "+$scope.myScrumPlanningVoteId1);
-                    ref.child("groups").child($rootScope.groupId).child("voteScrumPlanning1").push({
-                            date: date,
-                            day: day,
-                            voteTime: time,
-                            userId : $rootScope.userId
-                        }, 
-                        function() { 
-                            $scope.initialise();
-                    });
-                } else {
-                    if($scope.mySprintReviewVoteId == "" || $scope.mySprintReviewVoteId == null){
+            if (number>0 && number<=$scope.numberOfGroupMembers){
+                if($scope.mySprintReviewVoteId == "" || $scope.mySprintReviewVoteId == null){
                         console.log("\t\t mySprintReviewVoteId: "+$scope.mySprintReviewVoteId);
                         ref.child("groups").child($rootScope.groupId).child("voteSprintReview").push({
                                 date: date,
@@ -2633,12 +2833,19 @@ angular.module("mapal.controllers", [])
                         };
                         ref.child("groups").child($rootScope.groupId).child("voteSprintReview").child($scope.mySprintReviewVoteId).remove(onComplete);
                     }
-                }
             } else {
                 console.log("Number is wrong!");
             }
-            
         }
+
+        $scope.closeAllVotings = function(){
+            $scope.setConfirmedDateTime("voteSprintPlanning");
+            $scope.setConfirmedDateTime("voteScrumPlanning1");
+            $scope.setConfirmedDateTime("voteScrumPlanning2");
+            $scope.setConfirmedDateTime("voteSprintRetrospective");
+            $scope.setConfirmedDateTime("voteSprintReview");
+        }
+
         $scope.initialise();
     }
 })
@@ -2958,6 +3165,10 @@ angular.module("mapal.controllers", [])
             $scope.getTaskCreated();
         }
 
+        $scope.refreshTab = function(){
+            $scope.initialise();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
 
         $scope.getTaskCreated = function(){
             var taskRef = ref.child("tasks");
@@ -3267,6 +3478,12 @@ angular.module("mapal.controllers", [])
             $scope.editUserSettingsModal.hide();
             $scope.getStudentList();
         }
+
+        $scope.refreshTab = function(){
+            $scope.getStudentList();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+
         $scope.getStudentList();
     }
 })
@@ -3297,6 +3514,11 @@ angular.module("mapal.controllers", [])
             $scope.getTaskList();
         }
 
+        $scope.refreshTab = function(){
+            $scope.initialise();
+            $scope.$broadcast('scroll.refreshComplete');
+        }
+        
         $scope.getTaskList = function(){
             ref.child("tasks").once("value",function(snapshot){
                 var value = snapshot.val();
@@ -3318,7 +3540,12 @@ angular.module("mapal.controllers", [])
                 for (var key in value) {
                     if (value.hasOwnProperty(key)) {
                         if(value[key].groupTask == taskName){
-                            $rootScope.groupList.push(value[key]);
+                            if(value[key].groupGrade == null){
+                                value[key].groupStatus = "Pending";
+                                $rootScope.groupList.push(value[key]);
+                            } else {
+                                $rootScope.groupList.push(value[key]);
+                            }
                         }
                     }
                 }

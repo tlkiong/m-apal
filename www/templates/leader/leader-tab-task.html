@@ -3,6 +3,8 @@
       <img src="img/role_leader_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
 	<ion-content class="padding">
+		<ion-refresher pulling-text="Pull To Refresh" on-refresh="refreshTab()" refreshing-text="Fetching ..." refreshing-icon="ion-loading-b"></ion-refresher>
+		
 		<div class="item item-divider"align="center">
 	    	Task Assigned - {{myTask.groupTask}}
 	    </div>
