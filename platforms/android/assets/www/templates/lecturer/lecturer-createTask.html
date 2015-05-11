@@ -1,0 +1,19 @@
+<ion-view view-title="Create Task">
+	<ion-nav-buttons side="right">
+      <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
+    </ion-nav-buttons>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Task Name</span>
+                <input ng-model="taskItem.taskName" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Task Description</span>
+                <input ng-model="taskItem.taskDescription" type="text">
+            </label>
+            
+            <button class="button button-full button-positive" ng-click="confirmCreateTask(taskItem)">Confirm Task Creation</button>
+        </div>
+    </ion-content>
+</ion-view>

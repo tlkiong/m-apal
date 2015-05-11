@@ -1,0 +1,41 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">Create New Account</h1>
+        <button class="button button-clear button-primary" ng-click="registerUserModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Email Address</span>
+                <input ng-model="user.emailAddress" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Passsword</span>
+                <input ng-model="user.password" type="password">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Confirm Password</span>
+                <input ng-model="user.confirmPassword" type="password">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Full Name</span>
+                <input ng-model="user.fullname" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Contact Number</span>
+                <input ng-model="user.contactnumber" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">IC Number</span>
+                <input ng-model="user.icnumber" type="text">
+            </label>
+
+            <label class="item item-input">
+                <span class="input-label">Role</span>
+                <select ng-model="Role" ng-options="Role.types for Role in roles"></select>
+            </label>
+
+            <button class="button button-full button-positive" ng-click="createUser(user,Role)">Create</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

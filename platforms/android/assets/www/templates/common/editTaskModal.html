@@ -1,7 +1,7 @@
 <ion-modal-view>
     <ion-header-bar class="bar bar-header bar-positive">
         <h1 class="title">Edit Task</h1>
-        <button class="button button-clear button-primary" ng-click="editClassModal.hide()">Cancel</button>
+        <button class="button button-clear button-primary" ng-click="editTaskModal.hide()">Cancel</button>
     </ion-header-bar>
     <ion-content class="padding">
         <div class="list">
@@ -14,7 +14,7 @@
                 <input ng-model="taskItem.taskDescription" type="text" value="taskItem.taskDescription">
             </label>
             
-            <button class="button button-full button-positive" ng-click="updateTaskItem(taskItem)">Update Class</button>
+            <button class="button button-full button-positive" ng-click="updateTaskItem(taskItem)">Update Task</button>
         </div>
     </ion-content>
 </ion-modal-view>

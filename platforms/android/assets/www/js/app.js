@@ -8,7 +8,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 // 'mapal.services' is found in services.js
 // 'mapal.controllers' is found in controllers.js
-angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controllers', 'mapal.services'])
+angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepicker', 'mapal.controllers', 'mapal.services'])
 
 .run(function ($ionicPlatform, $rootScope, $location, Auth, $ionicLoading, $state) {
     $ionicPlatform.ready(function () {
@@ -29,6 +29,27 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         $rootScope.showMyAccount = false;
         $rootScope.showLogout = false;
 
+        // // $rootScope.date = new Date();
+        // $rootScope.date = "-";
+        // // $rootScope.time = new Date();
+        // $rootScope.time = "-";
+
+        $rootScope.dateOptions = {
+          format: 'yyyy-mm-dd', // ISO formatted date
+          onClose: function(e) {
+            // do something when the picker closes 
+            console.log("Date: "+e);
+          }
+        }
+
+        $rootScope.timeOptions = {
+          format: 'HH', // ISO formatted date
+          onClose: function(e) {
+            // do something when the picker closes 
+            console.log("Time: "+e);
+          }
+        }
+
         Auth.$onAuth(function (authData) {
             if (authData) {
                 console.log("Logged in as:", authData.email);
@@ -45,6 +66,27 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
                 template: 'Logging Out...'
             });
             Auth.$unauth();
+            $rootScope.fullName = null;
+            $rootScope.emailAddress = null;
+            $rootScope.contactNumber = null;
+            $rootScope.icNumber = null;
+            $rootScope.role = null;
+            $rootScope.classSchedule = null;
+            $rootScope.groupId = null;
+            $rootScope.userId = null;
+            $rootScope.signedIn = null;
+            $rootScope.group = null;
+            $rootScope.groupInfo = null;
+            $rootScope.task = null;
+            $rootScope.guidelines = null;
+            $rootScope.guidelineId = null;
+            $rootScope.taskItems = null;
+            $rootScope.taskDetails = null;
+            $rootScope.showGroupId = null;
+            $rootScope.groupList = null;
+            $rootScope.taskName = null;
+            $rootScope.taskList = null;
+
             $rootScope.showMyAccount = false;
             $rootScope.showLogout = false;
         }
@@ -89,7 +131,8 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
     // State to represent aboutUs View
     .state("aboutUs", {
         url: "/aboutUs",
-        templateUrl: "./templates/common/aboutUs.html"
+        templateUrl: "./templates/common/aboutUs.html",
+        controller: "AboutUsCtrl"
     })
     
 
@@ -425,6 +468,13 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
                 controller: "ReportCtrl"
             }
         }
+    }) 
+
+    // State to represent tasksDetails View
+    .state("groupList", {
+        url: "/lecturer-groupList",
+        templateUrl: "./templates/lecturer/lecturer-groupList.html",
+        controller: "ReportCtrl"
     })
 
     .state("lecturer-tab.students", {
@@ -447,6 +497,55 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controller
         }
     })
 
+    // State to represent tasksDetails View
+    .state("tasksDetails", {
+        url: "/lecturer-task-details",
+        templateUrl: "./templates/lecturer/lecturer-task-details.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent createTask View
+    .state("createTask", {
+        url: "/lecturer-createTask",
+        templateUrl: "./templates/lecturer/lecturer-createTask.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent confirmCreateTask View
+    .state("confirmCreateTask", {
+        url: "/lecturer-confirmCreateTask",
+        templateUrl: "./templates/lecturer/lecturer-confirmCreateTask.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent createGuideline View
+    .state("createGuideline", {
+        url: "/lecturer-createGuideline",
+        templateUrl: "./templates/lecturer/lecturer-createGuideline.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent confirmEditTask View
+    .state("confirmEditTask", {
+        url: "/lecturer-confirmEditTask",
+        templateUrl: "./templates/lecturer/lecturer-confirmEditTask.html",
+        controller: "TaskCtrl"
+    })
+
+    // State to represent createGuidelineUpdate View
+    .state("createGuidelineUpdate", {
+        url: "/lecturer-createGuidelineUpdate",
+        templateUrl: "./templates/lecturer/lecturer-createGuidelineUpdate.html",
+        controller: "TaskCtrl"
+    })
+    
+    // State to represent editGuideline View
+    .state("editGuideline", {
+        url: "/lecturer-editGuideline",
+        templateUrl: "./templates/lecturer/lecturer-editGuideline.html",
+        controller: "TaskCtrl"
+    })
+    
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise("/login");
 

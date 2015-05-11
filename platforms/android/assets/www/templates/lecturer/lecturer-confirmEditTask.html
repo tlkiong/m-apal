@@ -1,0 +1,36 @@
+<ion-view view-title="CONFIRM EDIT TASK">
+    <ion-content class="padding">
+        <ion-nav-buttons side="right">
+          <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
+        </ion-nav-buttons>
+        <div class="list card padding">
+          <ul class="list">
+            <li class="item">
+              <strong>Task Name: </strong>
+                      {{taskDetails.taskName}}
+            </li>
+            <li class="item">
+              <strong>Task Description: </strong><br>
+                    {{taskDetails.taskDescription}}
+            </li>
+            <li class="item">
+              <strong>Task Guidelines: </strong><br>
+                <div class="card">
+                  <div class="item item-text-wrap">
+                    <span><strong>  Data Structure: </strong></span>{{guidelines.dataStructure}}
+                    <br>
+                    <span><strong>  Data Type: </strong></span>{{guidelines.dataType}}
+                    <br>
+                    <span><strong>  Control Structure: </strong></span>{{guidelines.controlStructure}}
+                    <br>
+                    <span><strong>  Arithmetic Expression: </strong></span>{{guidelines.arithmeticExpression}}
+                  </div>
+                </div>
+            </li>
+          </ul>
+            <button ng-click="updateTask(taskDetails,guidelines)" class="button button-block button-positive activated">
+              Update Task
+            </button>
+        </div>
+    </ion-content>
+</ion-view>

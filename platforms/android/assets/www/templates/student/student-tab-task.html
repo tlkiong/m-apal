@@ -3,6 +3,8 @@
       <img src="img/role_student_icon.png" class="nav_bar_icon">
 	</ion-nav-buttons>
 	<ion-content class="padding">
+		<ion-refresher pulling-text="Pull To Refresh" on-refresh="refreshTab()" refreshing-text="Fetching ..." refreshing-icon="ion-loading-b"></ion-refresher>
+		
 		<div class="item item-divider"align="center">
 	    	Task Assigned - {{myTask.groupTask}}
 	    </div>
@@ -18,9 +20,21 @@
         	<div class="item item-divider" align="center">
 				Task Guideline
 			</div>
-	        <div class="item item-text-wrap">
-	        	{{myTask.groupTaskGuideline}}
-	        </div>
+	        
+	        <div class="list card">
+				<a href="#" class="item item-icon-left">
+					<strong>Arithmetic Expression: </strong> {{myTask.groupTaskGuideline.arithmeticExpression}}
+				</a>
+				<a href="#" class="item item-icon-left">
+					<strong>Control Structure: </strong> {{myTask.groupTaskGuideline.controlStructure}}
+				</a>
+				<a href="#" class="item item-icon-left">
+					<strong>Data Structure: </strong> {{myTask.groupTaskGuideline.dataStructure}}
+				</a>
+				<a href="#" class="item item-icon-left">
+					<strong>Data Type: </strong> {{myTask.groupTaskGuideline.dataType}}
+				</a>
+			</div>
         </div>
 	</ion-content>
 </ion-view>

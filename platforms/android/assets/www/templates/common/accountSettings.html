@@ -1,4 +1,9 @@
 <ion-view view-title="ACCOUNT SETTINGS">
+	<ion-nav-buttons side="right">
+      <button class="button" ng-click="back()">
+        Go Back
+      </button>
+    </ion-nav-buttons>
     <ion-content class="padding">
         <div class="list card padding">
         	<ul class="list">
@@ -10,7 +15,7 @@
 			    	<strong>Full Name: </strong>
                		{{userInfo.userFullName}}
 			    </li>
-			    <li class="item">
+			    <li class="item" ng-show="showGroupId">
 				    <strong>Group ID: </strong>
                 	{{userInfo.userGroupID}}
 			    </li>

@@ -1,0 +1,37 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">STUDENTS SETTINGS</h1>
+        <button class="button button-clear button-primary" ng-click="editUserSettingsModal.hide()">Cancel</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list card padding">
+            <label class="item item-input">
+                <strong>Email: </strong>
+                    {{userInformation.email}}
+            </label>
+            <label class="item item-input">
+                <strong>Group ID: </strong>
+                    {{userInformation.groupID}}
+            </label>
+            <label class="item item-input">
+                <strong>Full Name: </strong>
+                {{userInformation.fullName}}
+            </label>
+            <label class="item item-input">
+                <strong>Contact Number: </strong>
+                {{userInformation.contactNumber}}
+            </label>
+            <label class="item item-input">
+                <strong>IC Number</strong>
+                {{userInformation.icNumber}}
+            </label>
+            <label class="item item-input">
+                <strong class="input-label">Role</strong>
+                <select ng-model="Role" ng-options="Role.types for Role in roles"></select>
+            </label>
+            <button ng-click="editStudentSetting(userInformation, Role)" class="button button-block button-positive activated">
+                Update Information
+            </button>
+        </div>
+    </ion-content>
+</ion-modal-view>

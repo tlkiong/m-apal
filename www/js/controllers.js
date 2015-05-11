@@ -163,7 +163,11 @@ angular.module("mapal.controllers", [])
                     console.log("Contact Number: " + String($rootScope.contactNumber));
                     console.log("IC Number: " + String($rootScope.icNumber));
                     console.log("Role: " + String($rootScope.role));
-                    
+                    console.log("signedIn: " + String($rootScope.signedIn));
+                    console.log("groupId: " + String($rootScope.groupId));
+                    console.log("showMyAccount: " + String($rootScope.showMyAccount));
+                    console.log("showLogout: " + String($rootScope.showLogout));
+
                     
                     if(String($rootScope.role) == 'student'){
                         console.log("role is student");
@@ -225,7 +229,7 @@ angular.module("mapal.controllers", [])
                         $state.go('lecturer-tab.report');
                     } else {
                         $ionicLoading.hide();
-                        console.log("Role is not student, leader or lecturer: "+String($rootScope.role));
+                        alert("Role is not student, leader or lecturer: "+String($rootScope.role));
                         alert("Authentication failed");
                     }
                 });  
@@ -242,6 +246,18 @@ angular.module("mapal.controllers", [])
 })
 
 .controller("ClassScheduleCtrl", function ($scope, $rootScope, $ionicModal, $ionicLoading, $state, $ionicPopup, $firebaseAuth, $ionicHistory) {
+    console.log("come to class schedule ctrl");
+    console.log("Signed in Logged in as: " + String($rootScope.fullName));
+                    console.log("Signed in ID: " + String($rootScope.userId));
+                    console.log("Email Address: " + String($rootScope.emailAddress));
+                    console.log("Contact Number: " + String($rootScope.contactNumber));
+                    console.log("IC Number: " + String($rootScope.icNumber));
+                    console.log("Role: " + String($rootScope.role));
+                    console.log("signedIn: " + String($rootScope.signedIn));
+                    console.log("groupId: " + String($rootScope.groupId));
+                    console.log("showMyAccount: " + String($rootScope.showMyAccount));
+                    console.log("showLogout: " + String($rootScope.showLogout));
+                    
     if(!$rootScope.signedIn||$rootScope.signedIn===undefined){
         // An alert dialog
         var alertPopup = $ionicPopup.alert({
@@ -587,9 +603,10 @@ angular.module("mapal.controllers", [])
 
         var ref = new Firebase($rootScope.firebaseUrl);
 
-        $scope.userList = [];
+        var initialUserList = [];
 
         $scope.initialise = function (){
+            $scope.userList = angular.copy(initialUserList);
             ref.child("groups").child($rootScope.groupId).on("child_changed", function(snapshot){
                 var value = snapshot.val();
                 console.log(" value: "+value);
@@ -621,9 +638,10 @@ angular.module("mapal.controllers", [])
 
             ref.child("users").on("child_changed", function (snapshot) {
                 var value = snapshot.val();
+                value.key = String(snapshot.key());
                 console.log("\t out, value.groupId: "+value.groupId+" :fullname: "+value.fullName);
-                if(value.groupId == $rootScope.groupId){
-                    value.key = String(snapshot.key());
+                console.log("value.key: "+value.key+" :$rootScope.userId: "+$rootScope.userId);
+                if((value.groupId == $rootScope.groupId)&&(value.key!=$rootScope.userId)){
                     console.log("\t in, value.groupId: "+value.groupId+" :fullname: "+value.fullName);
                     $scope.userList.push(value);
                     $scope.$apply();
@@ -969,16 +987,16 @@ angular.module("mapal.controllers", [])
                             $state.go('studentAddClassSchedule');
                         }
                     });
-                }
+                } 
             });
 
-            ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
-                var value = snapshot.val();
-                console.log("The vote count for sprintplanning is " + value.count);
-                if(value.count == $scope.numberOfGroupMembers){
-                    $scope.initialise();
-                }
-            });
+            // ref.child("groups").child($rootScope.groupId).child("voteSprintPlanning").on("child_changed", function(snapshot) {
+            //     var value = snapshot.val();
+            //     console.log("The vote count for sprintplanning is " + value.count);
+            //     if(value.count == $scope.numberOfGroupMembers){
+            //         $scope.initialise();
+            //     }
+            // });
 
             var getServerTime = (function(ref) {
                 var offset = 0;
@@ -1207,6 +1225,11 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getUsersTimetable = function (userKey) {
+            ref.child("users").on("child_changed", function (snapshot) {
+                var value = snapshot.val();
+                $scope.initialise();
+            });
+
             ref.child("users").child(userKey).child("classSchedule").orderByChild("classDay").on("child_added", function (snapshot) {
                 var value = snapshot.val();
                 var dayOfClass = value.classDay;
@@ -1427,7 +1450,7 @@ angular.module("mapal.controllers", [])
 
                             if (votedDay == "Monday"){
                                 for (var inList in $scope.mondayList) {
-                                    console.log("\t inList: "+inList);
+                                    // console.log("\t inList: "+inList);
                                     if($scope.mondayList[inList].time == voteTime){
                                         if(object.userId == $rootScope.userId){
                                             $scope.mondayList[inList].sprintPlanningMondayCount.me = "ME";
@@ -1441,7 +1464,7 @@ angular.module("mapal.controllers", [])
                                 }
                             } else if (votedDay == "Tuesday"){
                                 for (var inList in $scope.tuesdayList) {
-                                    console.log("\t inList: "+inList);
+                                    // console.log("\t inList: "+inList);
                                     if($scope.tuesdayList[inList].time == voteTime){
                                         if(object.userId == $rootScope.userId){
                                             $scope.tuesdayList[inList].sprintPlanningTuesdayCount.me = "ME";
@@ -1454,7 +1477,7 @@ angular.module("mapal.controllers", [])
                                 }
                             } else if (votedDay == "Wednesday"){
                                 for (var inList in $scope.wednesdayList) {
-                                    console.log("\t inList: "+inList);
+                                    // console.log("\t inList: "+inList);
                                     if($scope.wednesdayList[inList].time == voteTime){
                                         if(object.userId == $rootScope.userId){
                                             $scope.wednesdayList[inList].sprintPlanningWednesdayCount.me = "ME";
@@ -1467,7 +1490,7 @@ angular.module("mapal.controllers", [])
                                 }
                             } else if (votedDay == "Thursday") {
                                 for (var inList in $scope.thursdayList) {
-                                    console.log("\t inList: "+inList);
+                                    // console.log("\t inList: "+inList);
                                     if($scope.thursdayList[inList].time == voteTime){
                                         if(object.userId == $rootScope.userId){
                                             $scope.thursdayList[inList].sprintPlanningThursdayCount.me = "ME";
@@ -1480,7 +1503,7 @@ angular.module("mapal.controllers", [])
                                 }
                             } else if (votedDay == "Friday") {
                                 for (var inList in $scope.fridayList) {
-                                    console.log("\t inList: "+inList);
+                                    // console.log("\t inList: "+inList);
                                     if($scope.fridayList[inList].time == voteTime){
                                         if(object.userId == $rootScope.userId){
                                             $scope.fridayList[inList].sprintPlanningFridayCount.me = "ME";
@@ -1494,11 +1517,7 @@ angular.module("mapal.controllers", [])
                             } else {
                                 console.log ("err, error?: "+votedDay);
                             }
-                        } else {
-                            if(parseInt(value[key])==$scope.numberOfGroupMembers){
-                                $scope.setConfirmedDateTime("voteSprintPlanning");
-                            }
-                        }
+                        } 
                     }
                 }
                 $scope.$apply();
@@ -1533,7 +1552,7 @@ angular.module("mapal.controllers", [])
 
                         if (votedDay == "Monday"){
                             for (var inList in $scope.mondayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.mondayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.mondayList[inList].scrumPlanningMonday1Count.me = "ME";
@@ -1546,7 +1565,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Tuesday"){
                             for (var inList in $scope.tuesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.tuesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.tuesdayList[inList].scrumPlanningTuesday1Count.me = "ME";
@@ -1559,7 +1578,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Wednesday"){
                             for (var inList in $scope.wednesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.wednesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.wednesdayList[inList].scrumPlanningWednesday1Count.me = "ME";
@@ -1572,7 +1591,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Thursday") {
                             for (var inList in $scope.thursdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.thursdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.thursdayList[inList].scrumPlanningThursday1Count.me = "ME";
@@ -1585,7 +1604,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Friday") {
                             for (var inList in $scope.fridayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.fridayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.fridayList[inList].scrumPlanningFriday1Count.me = "ME";
@@ -1598,10 +1617,6 @@ angular.module("mapal.controllers", [])
                             }
                         } else {
                             console.log ("err, error?: "+votedDay);
-                        }
-                    } else {
-                        if(parseInt(value[key])==$scope.numberOfGroupMembers){
-                            $scope.setConfirmedDateTime("voteScrumPlanning1");
                         }
                     }
                   }
@@ -1650,7 +1665,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Tuesday"){
                             for (var inList in $scope.tuesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.tuesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.tuesdayList[inList].scrumPlanningTuesday2Count.me = "ME";
@@ -1663,7 +1678,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Wednesday"){
                             for (var inList in $scope.wednesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.wednesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.wednesdayList[inList].scrumPlanningWednesday2Count.me = "ME";
@@ -1676,7 +1691,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Thursday") {
                             for (var inList in $scope.thursdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.thursdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.thursdayList[inList].scrumPlanningThursday2Count.me = "ME";
@@ -1689,7 +1704,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Friday") {
                             for (var inList in $scope.fridayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.fridayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.fridayList[inList].scrumPlanningFriday2Count.me = "ME";
@@ -1703,11 +1718,7 @@ angular.module("mapal.controllers", [])
                         } else {
                             console.log ("err, error?: "+votedDay);
                         }
-                    } else {
-                        if(parseInt(value[key])==$scope.numberOfGroupMembers){
-                            $scope.setConfirmedDateTime("voteScrumPlanning2");
-                        }
-                    }
+                    } 
                   }
                 }
                 $ionicLoading.hide();
@@ -1741,7 +1752,7 @@ angular.module("mapal.controllers", [])
 
                         if (votedDay == "Monday"){
                             for (var inList in $scope.mondayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.mondayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.mondayList[inList].sprintRetrospectiveMondayCount.me = "ME";
@@ -1754,7 +1765,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Tuesday"){
                             for (var inList in $scope.tuesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.tuesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.tuesdayList[inList].sprintRetrospectiveTuesdayCount.me = "ME";
@@ -1767,7 +1778,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Wednesday"){
                             for (var inList in $scope.wednesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.wednesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.wednesdayList[inList].sprintRetrospectiveWednesdayCount.me = "ME";
@@ -1780,7 +1791,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Thursday") {
                             for (var inList in $scope.thursdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.thursdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.thursdayList[inList].sprintRetrospectiveThursdayCount.me = "ME";
@@ -1793,7 +1804,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Friday") {
                             for (var inList in $scope.fridayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.fridayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.fridayList[inList].sprintRetrospectiveFridayCount.me = "ME";
@@ -1807,11 +1818,7 @@ angular.module("mapal.controllers", [])
                         } else {
                             console.log ("err, error?: "+votedDay);
                         }
-                    } else {
-                        if(parseInt(value[key])==$scope.numberOfGroupMembers){
-                            $scope.setConfirmedDateTime("voteSprintRetrospective");
-                        }
-                    }
+                    } 
                   }
                 }
                 $ionicLoading.hide();
@@ -1845,7 +1852,7 @@ angular.module("mapal.controllers", [])
 
                         if (votedDay == "Monday"){
                             for (var inList in $scope.mondayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.mondayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.mondayList[inList].sprintReviewMondayCount.me = "ME";
@@ -1858,7 +1865,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Tuesday"){
                             for (var inList in $scope.tuesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.tuesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.tuesdayList[inList].sprintReviewTuesdayCount.me = "ME";
@@ -1871,7 +1878,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Wednesday"){
                             for (var inList in $scope.wednesdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.wednesdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.wednesdayList[inList].sprintReviewWednesdayCount.me = "ME";
@@ -1884,7 +1891,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Thursday") {
                             for (var inList in $scope.thursdayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.thursdayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.thursdayList[inList].sprintReviewThursdayCount.me = "ME";
@@ -1897,7 +1904,7 @@ angular.module("mapal.controllers", [])
                             }
                         } else if (votedDay == "Friday") {
                             for (var inList in $scope.fridayList) {
-                                console.log("\t inList: "+inList);
+                                // console.log("\t inList: "+inList);
                                 if($scope.fridayList[inList].time == voteTime){
                                     if(object.userId == $rootScope.userId){
                                         $scope.fridayList[inList].sprintReviewFridayCount.me = "ME";
@@ -1910,10 +1917,6 @@ angular.module("mapal.controllers", [])
                             }
                         } else {
                             console.log ("err, error?: "+votedDay);
-                        }
-                    } else {
-                        if(parseInt(value[key])==$scope.numberOfGroupMembers){
-                            $scope.setConfirmedDateTime("voteSprintReview");
                         }
                     }
                   }
@@ -2271,6 +2274,9 @@ angular.module("mapal.controllers", [])
                                                 highestVotedObjects.votedTime = objectArray[i].votedTime;
                                             } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
                                                 console.log("ERROR! Not suppose have same time! (Not equal date)");
+                                                console.log("\tobjectArray[i].votedDate: "+objectArray[i].votedDate+
+                                                    "\n\t objectArray[i].votedDay: "+objectArray[i].votedDay+
+                                                    "\n\t objectArray[i].votedTime: "+objectArray[i].votedTime+"\n");
                                             } // If time lower, ignore
                                         } //If date lower, ignore
                                     } //If month lower, ignore
@@ -2282,6 +2288,9 @@ angular.module("mapal.controllers", [])
                                         highestVotedObjects.votedTime = objectArray[i].votedTime;
                                     } else if (objectArray[i].votedTime == highestVotedObjects.votedTime) {
                                         console.log("ERROR! Not suppose have same time! (Equal date)");
+                                        console.log("\tobjectArray[i].votedDate: "+objectArray[i].votedDate+
+                                            "\n\t objectArray[i].votedDay: "+objectArray[i].votedDay+
+                                            "\n\t objectArray[i].votedTime: "+objectArray[i].votedTime+"\n");
                                     } // If time lower, ignore
                                 }
                             }
@@ -3014,6 +3023,11 @@ angular.module("mapal.controllers", [])
             }
         }
 
+        $scope.taskItem = {
+            taskName: "",
+            taskDescription: ""
+        };
+
         $scope.confirmCreateTask = function(task) {
             if(task.taskName&&task.taskDescription){
                 $ionicLoading.show({
@@ -3031,6 +3045,10 @@ angular.module("mapal.controllers", [])
                         console.log("snapshot.val is: "+$scope.numberOfGuidelines);
                         $scope.getGuidelines(task, $scope.numberOfGuidelines);
                     }
+                    $scope.taskItem = {
+                        taskName: "",
+                        taskDescription: ""
+                    };
                 });
             } else {
                 // An alert dialog
@@ -3510,7 +3528,6 @@ angular.module("mapal.controllers", [])
 
         $scope.initialise = function(){
             $scope.groupTaskList = angular.copy(initialGroupTaskList);
-
             $scope.getTaskList();
         }
 
@@ -3541,7 +3558,7 @@ angular.module("mapal.controllers", [])
                     if (value.hasOwnProperty(key)) {
                         if(value[key].groupTask == taskName){
                             if(value[key].groupGrade == null){
-                                value[key].groupStatus = "Pending";
+                                value[key].groupGrade = "-";
                                 $rootScope.groupList.push(value[key]);
                             } else {
                                 $rootScope.groupList.push(value[key]);

@@ -1,0 +1,21 @@
+<ion-view view-title="GROUP LIST" hide-back-button="true">
+	<ion-nav-buttons side="right">
+      <button class="button" ng-click="goBack()">
+        Go Back
+      </button>
+    </ion-nav-buttons>
+	<ion-content class="padding">
+		<div class="item item-divider" align="center">
+	    	{{taskName}}
+	    </div>
+		
+	    <ion-list>
+		    <ion-item ng-repeat="item in groupList">
+		    	<span>{{item.groupName}}</span>
+		    	<span class="badge badge-assertive">{{item.groupGrade}}</span>
+		    	<span class="item-note">{{item.groupStatus}}</span>
+		    </ion-item>
+	    </ion-list>
+
+    </ion-content>
+</ion-view>

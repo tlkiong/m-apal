@@ -5,7 +5,11 @@
     </ion-header-bar>
     <ion-content class="padding">
         <ion-list>
-            <ion-item ng-click="closeGroup()" ng-tap="closeGroup()" align="center">
+            <label class="item item-input">
+                <span class="input-label">Grade</span>
+                <input ng-model="grade" type="text">
+            </label>
+            <ion-item ng-click="closeGroup(grade)" ng-tap="closeGroup(grade)" align="center">
                 CLOSE
             </ion-item>
             <ion-item ng-click="closeGroupConfirmationModal.hide()" ng-tap="closeGroupConfirmationModal.hide()" align="center">

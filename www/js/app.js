@@ -8,7 +8,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 // 'mapal.services' is found in services.js
 // 'mapal.controllers' is found in controllers.js
-angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepicker', 'mapal.controllers', 'mapal.services'])
+angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'mapal.controllers', 'mapal.services'])
 
 .run(function ($ionicPlatform, $rootScope, $location, Auth, $ionicLoading, $state) {
     $ionicPlatform.ready(function () {
@@ -66,29 +66,57 @@ angular.module('mapal', ['ionic', 'firebase', 'angularMoment', 'angular-datepick
                 template: 'Logging Out...'
             });
             Auth.$unauth();
-            $rootScope.fullName = null;
-            $rootScope.emailAddress = null;
-            $rootScope.contactNumber = null;
-            $rootScope.icNumber = null;
-            $rootScope.role = null;
-            $rootScope.classSchedule = null;
-            $rootScope.groupId = null;
-            $rootScope.userId = null;
-            $rootScope.signedIn = null;
-            $rootScope.group = null;
-            $rootScope.groupInfo = null;
-            $rootScope.task = null;
-            $rootScope.guidelines = null;
-            $rootScope.guidelineId = null;
-            $rootScope.taskItems = null;
-            $rootScope.taskDetails = null;
-            $rootScope.showGroupId = null;
-            $rootScope.groupList = null;
-            $rootScope.taskName = null;
-            $rootScope.taskList = null;
 
-            $rootScope.showMyAccount = false;
-            $rootScope.showLogout = false;
+            // $scope.$apply(function () {
+            //             $rootScope.fullName = null;
+            //             $rootScope.emailAddress = null;
+            //             $rootScope.contactNumber = null;
+            //             $rootScope.icNumber = null;
+            //             $rootScope.role = null;
+            //             $rootScope.classSchedule = null;
+            //             $rootScope.groupId = null;
+            //             $rootScope.userId = null;
+            //             $rootScope.signedIn = null;
+            //             $rootScope.group = null;
+            //             $rootScope.groupInfo = null;
+            //             $rootScope.task = null;
+            //             $rootScope.guidelines = null;
+            //             $rootScope.guidelineId = null;
+            //             $rootScope.taskItems = null;
+            //             $rootScope.taskDetails = null;
+            //             $rootScope.showGroupId = null;
+            //             $rootScope.groupList = null;
+            //             $rootScope.taskName = null;
+            //             $rootScope.taskList = null;
+
+            //             $rootScope.showMyAccount = false;
+            //             $rootScope.showLogout = false;
+            //         });
+            // $rootScope.fullName = null;
+            // $rootScope.emailAddress = null;
+            // $rootScope.contactNumber = null;
+            // $rootScope.icNumber = null;
+            // $rootScope.role = null;
+            // $rootScope.classSchedule = null;
+            // $rootScope.groupId = null;
+            // $rootScope.userId = null;
+            // $rootScope.signedIn = null;
+            // $rootScope.group = null;
+            // $rootScope.groupInfo = null;
+            // $rootScope.task = null;
+            // $rootScope.guidelines = null;
+            // $rootScope.guidelineId = null;
+            // $rootScope.taskItems = null;
+            // $rootScope.taskDetails = null;
+            // $rootScope.showGroupId = null;
+            // $rootScope.groupList = null;
+            // $rootScope.taskName = null;
+            // $rootScope.taskList = null;
+
+            // $rootScope.showMyAccount = false;
+            // $rootScope.showLogout = false;
+
+            
         }
 
         $rootScope.aboutUs = function () {

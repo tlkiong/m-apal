@@ -9,6 +9,10 @@
     <link href="lib/ionic/css/ionic.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="lib/angular-native-picker/build/themes/classic.css">
+    <link rel="stylesheet" href="lib/angular-native-picker/build/themes/classic.date.css">
+    <link rel="stylesheet" href="lib/angular-native-picker/build/themes/classic.time.css">
+
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
@@ -20,6 +24,9 @@
     <script src="lib/angular-fire/angularfire.min.js"></script>
     <script src="lib/angular-moment/moment.js"></script>
     <script src="lib/angular-moment/angular-moment.js"></script>
+
+    <!-- external library date picker -->
+    <script src="lib/angular-native-picker/build/angular-datepicker.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -59,13 +66,13 @@
             </header>
             <ion-content class="has-header">
               <ion-list>
-                <ion-item nav-clear menu-close ng-click="aboutUs()">
+                <ion-item nav-clear="" menu-toggle="" ng-click="aboutUs()">
                   About M-APAL
                 </ion-item>
-                <ion-item nav-clear menu-.close ng-click="accountSettings()" ng-show="showMyAccount">
+                <ion-item nav-clear="" menu-toggle="" ng-click="accountSettings()" ng-show="showMyAccount">
                   My Account
                 </ion-item>
-                <ion-item nav-clear menu-close ng-click="logout()" ng-show="showLogout">
+                <ion-item nav-clear="" menu-toggle="" ng-click="logout()" ng-show="showLogout">
                   Logout
                 </ion-item>
               </ion-list>

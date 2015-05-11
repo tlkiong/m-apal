@@ -14,7 +14,7 @@
               <strong>Task Name: </strong>
                       {{taskDetails.taskName}}
             </li>
-            <li class="item">
+            <li class="item item-text-wrap">
               <strong>Task Description: </strong><br>
                     {{taskDetails.taskDescription}}
             </li>
@@ -22,13 +22,17 @@
               <strong>Task Guidelines: </strong><br>
                 <div class="card">
                   <div class="item item-text-wrap">
-                    <span><strong>  Data Structure: </strong></span>{{taskDetails.taskGuideline.dataStructure}}
+                    <span><strong>  Data Structure: </strong></span> <br>
+                    {{taskDetails.taskGuideline.dataStructure}}
                     <br>
-                    <span><strong>  Data Type: </strong></span>{{taskDetails.taskGuideline.dataType}}
+                    <span><strong>  Data Type: </strong></span><br>
+                    {{taskDetails.taskGuideline.dataType}}
                     <br>
-                    <span><strong>  Control Structure: </strong></span>{{taskDetails.taskGuideline.controlStructure}}
+                    <span><strong>  Control Structure: </strong></span><br>
+                    {{taskDetails.taskGuideline.controlStructure}}
                     <br>
-                    <span><strong>  Arithmetic Expression: </strong></span>{{taskDetails.taskGuideline.arithmeticExpression}}
+                    <span><strong>  Arithmetic Expression: </strong></span><br>
+                    {{taskDetails.taskGuideline.arithmeticExpression}}
                   </div>
                 </div>
             </li>

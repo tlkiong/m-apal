@@ -1,0 +1,24 @@
+<ion-view view-title="Confirm Create Task">
+	<ion-nav-buttons side="right">
+      <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
+    </ion-nav-buttons>
+    <ion-content class="padding">
+        <div class="list">
+            <span><strong>Task Name: </strong></span> {{task.taskName}}
+            <br>
+            <span><strong>Task Description: </strong></span> {{task.taskDescription}}
+            <br>
+            <span><strong><u>Task Guidelines: </u></strong></span>
+            <br>
+            <span><strong>  Data Structure: </strong></span>{{guidelines.dataStructure}}
+            <br>
+            <span><strong>  Data Type: </strong></span>{{guidelines.dataType}}
+            <br>
+            <span><strong>  Control Structure: </strong></span>{{guidelines.controlStructure}}
+            <br>
+            <span><strong>  Arithmetic Expression: </strong></span>{{guidelines.arithmeticExpression}}
+            <!-- <button class="button button-full button-balanced" ng-click="showEditGuidelines(guidelines)">Edit Guidelines</button> -->
+            <button class="button button-full button-positive" ng-click="createTaskConfirmed(task,guidelines)">Confirm Create Task</button>
+        </div>
+    </ion-content>
+</ion-view>

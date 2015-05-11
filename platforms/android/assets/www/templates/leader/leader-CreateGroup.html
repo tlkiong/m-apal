@@ -14,13 +14,33 @@
                 <input ng-model="group.groupName" type="text">
             </label>
             <label class="item item-input">
-                <span class="input-label">Task</span>
+                <span class="input-label">Task Name</span>
                 <select ng-model="Task" ng-options="Task.taskName for Task in taskList"></select>
             </label>
             <label class="item item-input">
-                <span class="input-label">Start Date</span>
-                <input ng-model="group.startDate" type="text">
+                <span class="input-label">Meeting Venue</span>
+                <input ng-model="group.venue" type="text">
             </label>
+            <!-- <label class="item">
+                <strong>Timeframe (number of weeks)</strong>
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Sprint Planning: </span>
+                <input ng-model="group.sprintPlanningTimeframe" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Scrum Planning: </span>
+                <input ng-model="group.scrumPlanningTimeframe" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Sprint Review: </span>
+                <input ng-model="group.sprintReviewTimeframe" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Sprint Retrospective: </span>
+                <input ng-model="group.sprintRetrospectiveTimeframe" type="text">
+            </label> -->
+
             <button class="button button-full button-positive" ng-click="createGroup(group,Task)">Create Group</button>
         </div>
     </ion-content>

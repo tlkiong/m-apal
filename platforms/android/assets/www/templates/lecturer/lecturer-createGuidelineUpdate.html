@@ -1,0 +1,34 @@
+<ion-view view-title="Create Guideline">
+	<ion-nav-buttons side="right">
+      <img src="img/role_lecturer_icon.png" class="nav_bar_icon">
+    </ion-nav-buttons>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label"><strong>Keywords (eg: a,b,c,d): </strong></span>
+                <input ng-model="guidelines.keyword" type="text">
+            </label>
+            <label class="item item-input">
+                <span><strong><u>Task Guidelines: </u></strong></span>
+            </label>
+            <label class="item item-input">
+                <span class="input-label"><strong>Data Structure: </strong></span>
+                <input ng-model="guidelines.dataStructure" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label"><strong>Data Type: </strong></span>
+                <input ng-model="guidelines.dataType" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label"><strong>Control Structure: </strong></span>
+                <input ng-model="guidelines.controlStructure" type="text">
+            </label>
+            <label class="item item-input">
+                <span class="input-label"><strong>Arithmetic Expression: </strong></span>
+                <textarea ng-model="guidelines.arithmeticExpression" type="text"></textarea>
+            </label>
+            
+            <button class="button button-full button-positive" ng-click="createGuidelineUpdate(guidelines)">Create Guideline</button>
+        </div>
+    </ion-content>
+</ion-view>

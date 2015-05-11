@@ -10,10 +10,9 @@
 	    </div>
 		
 	    <ion-list>
-		    <ion-item ng-repeat="item in groupList">
+		    <ion-item ng-repeat="item in groupList" class="item-text-wrap">
 		    	<span>{{item.groupName}}</span>
 		    	<span class="badge badge-assertive">{{item.groupGrade}}</span>
-		    	<span class="item-note">{{item.groupStatus}}</span>
 		    </ion-item>
 	    </ion-list>
 

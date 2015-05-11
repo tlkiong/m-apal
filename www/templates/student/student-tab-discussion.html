@@ -7,7 +7,7 @@
             LOAD ALL MESSAGE
         </button>
 	    <ion-list>
-		    <ion-item ng-repeat="item in chatMessageList">
+		    <ion-item ng-repeat="item in chatMessageList" class=" item-text-wrap">
 		    	<span><strong>{{item.fullName}}:</strong> {{ item.message }}</span>
 		    </ion-item>
 	    </ion-list>
