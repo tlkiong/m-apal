@@ -520,7 +520,7 @@ angular.module("mapal.controllers", [])
             var value = snapshot.val();
             value.key = String(snapshot.key());
             $scope.taskList.push(value);
-            $scope.$apply();
+            // $scope.$apply();
             $scope.Task = $scope.taskList[0];
         });
 
@@ -529,7 +529,8 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.createGroup = function(group,Task){
-            console.log("In CreateGRoup")
+            console.log("In CreateGRoup");
+            console.log("group: "+group+" :Task: "+Task);
             $rootScope.group = {
                 groupName : group.groupName,
                 leaderName: $rootScope.fullName,
@@ -559,6 +560,11 @@ angular.module("mapal.controllers", [])
                     groupId: groupRef.key()
                 });
                 $rootScope.groupId = groupRef.key();
+                $rootScope.group = {
+                    groupName: "",
+                    venue:""
+                };
+                $scope.$apply();
                 $state.go('leader-viewGroupMemberList');
             }catch(error) {
                 console.log("HAHAHAHA Error! createGroup");
@@ -673,6 +679,8 @@ angular.module("mapal.controllers", [])
                     members: $scope.members
                 }
             });
+            $scope.userList = angular.copy(initialUserList);
+            $scope.$apply();
             $state.go('leader-tab.timeline');
         }
 
@@ -1259,6 +1267,16 @@ angular.module("mapal.controllers", [])
                                     break;
                                 }
                             }
+
+                            for(i=0;i<totalHours;i++){
+                                for(j=0;j<size;j++){
+                                    if((scope.fridayList[i].time == classStartTimeHour)){
+                                        $scope.fridayList.splice(j,0);
+                                        break;
+                                    }
+                                }
+                                classStartTimeHour+=1;
+                            }
                         }
                     }
                     break;
@@ -1271,6 +1289,16 @@ angular.module("mapal.controllers", [])
                                     $scope.mondayList.splice(i, totalHours);
                                     break;
                                 }
+                            }
+
+                            for(i=0;i<totalHours;i++){
+                                for(j=0;j<size;j++){
+                                    if((scope.mondayList[i].time == classStartTimeHour)){
+                                        $scope.mondayList.splice(j,0);
+                                        break;
+                                    }
+                                }
+                                classStartTimeHour+=1;
                             }
                         }
                     }
@@ -1285,6 +1313,16 @@ angular.module("mapal.controllers", [])
                                     break;
                                 }
                             }
+
+                            for(i=0;i<totalHours;i++){
+                                for(j=0;j<size;j++){
+                                    if((scope.tuesdayList[i].time == classStartTimeHour)){
+                                        $scope.tuesdayList.splice(j,0);
+                                        break;
+                                    }
+                                }
+                                classStartTimeHour+=1;
+                            }
                         }
                     }
                     break;
@@ -1298,6 +1336,16 @@ angular.module("mapal.controllers", [])
                                     break;
                                 }
                             }
+
+                            for(i=0;i<totalHours;i++){
+                                for(j=0;j<size;j++){
+                                    if((scope.thursdayList[i].time == classStartTimeHour)){
+                                        $scope.thursdayList.splice(j,0);
+                                        break;
+                                    }
+                                }
+                                classStartTimeHour+=1;
+                            }
                         }
                     }
                     break;
@@ -1310,6 +1358,16 @@ angular.module("mapal.controllers", [])
                                     $scope.wednesdayList.splice(i, totalHours);
                                     break;
                                 }
+                            }
+
+                            for(i=0;i<totalHours;i++){
+                                for(j=0;j<size;j++){
+                                    if((scope.wednesdayList[i].time == classStartTimeHour)){
+                                        $scope.wednesdayList.splice(j,0);
+                                        break;
+                                    }
+                                }
+                                classStartTimeHour+=1;
                             }
                         }
                     }
@@ -2848,11 +2906,15 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.closeAllVotings = function(){
+            $ionicLoading.show({
+                template: 'Closing votes...'
+            });
             $scope.setConfirmedDateTime("voteSprintPlanning");
             $scope.setConfirmedDateTime("voteScrumPlanning1");
             $scope.setConfirmedDateTime("voteScrumPlanning2");
             $scope.setConfirmedDateTime("voteSprintRetrospective");
             $scope.setConfirmedDateTime("voteSprintReview");
+            $ionicLoading.hide();
         }
 
         $scope.initialise();

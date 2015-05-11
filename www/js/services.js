@@ -1,6 +1,7 @@
 angular.module("mapal.services", ["firebase"])
 
-.constant("firebaseUrl", "https://tutorial-bucket-list.firebaseio.com/")
+// .constant("firebaseUrl", "https://tutorial-bucket-list.firebaseio.com/")
+.constant("firebaseUrl", "https://m-apal.firebaseio.com/")
 
 .factory("Auth", ["$firebaseAuth", "$rootScope", "firebaseUrl",
     function ($firebaseAuth, $rootScope, firebaseUrl) {
