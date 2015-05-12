@@ -3599,7 +3599,6 @@ angular.module("mapal.controllers", [])
         }
 
         $scope.getTaskList = function(){
-            $scope.groupTaskList = angular.copy(initialGroupTaskList);
             ref.child("tasks").once("value",function(snapshot){
                 var value = snapshot.val();
                 for (var key in value) {
@@ -3613,6 +3612,7 @@ angular.module("mapal.controllers", [])
 
         $scope.getGroupList = function (taskName){
             console.log("taskname: "+taskName);
+            $scope.groupTaskList = angular.copy(initialGroupTaskList);
             $rootScope.taskName = taskName;
             ref.child("groups").once("value",function(snapshot){
                 var value = snapshot.val();
